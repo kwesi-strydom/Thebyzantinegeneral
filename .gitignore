@@ -1,0 +1,13 @@
+.DS_Store
+*.zip
+*.docx
+*.pptx
+*.xlsx
+*.pdf
+*.numbers
+*.ipynb
+*.txt
+*.jsx
+*.svg
+~*
+push-to-github.sh
