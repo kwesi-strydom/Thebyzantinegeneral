@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Byzantine General, The True Story Behind the Invention of Bitcoin</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Byzantine General — Home</title>
+  <style>
   @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=PT+Sans+Narrow:wght@400;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap');
 
   /* Page containers — each is a fixed full-screen scroll container */
@@ -20,6 +20,7 @@
     position: relative;
     background: var(--bg);
   }
+  #landing-scroll-container.visible { display: block; }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1733,6 +1734,65 @@
     font-weight: 300;
   }
 
+  /* Countdown clock blocks */
+  .countdown-clock {
+    display: flex;
+    gap: clamp(12px, 3vw, 24px);
+    justify-content: center;
+    margin: 32px 0;
+  }
+  .countdown-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: clamp(60px, 12vw, 90px);
+  }
+  .countdown-block .cd-number {
+    font-family: var(--mono);
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 300;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: 2px;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    padding: clamp(12px, 2vw, 20px) clamp(14px, 2.5vw, 24px);
+    background: var(--bg-card);
+    min-width: clamp(60px, 12vw, 90px);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .countdown-block .cd-number::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--border);
+    opacity: 0.4;
+  }
+  .countdown-block .cd-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 10px;
+  }
+  .countdown-divider {
+    font-family: var(--mono);
+    font-size: clamp(24px, 4vw, 40px);
+    color: var(--accent-dim);
+    align-self: flex-start;
+    padding-top: clamp(14px, 2.5vw, 24px);
+    opacity: 0.5;
+  }
+  .countdown-released .cd-number {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   .gate-form {
     display: flex;
     gap: 0;
@@ -1885,16 +1945,10 @@
     .timeline-container iframe { height: 450px; }
   }
 </style>
+
 </head>
 <body>
 
-<!-- Theme Toggle -->
-<button id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="3.5"/><line x1="8" y1="0.5" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15.5"/><line x1="0.5" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15.5" y2="8"/><line x1="2.7" y1="2.7" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="13.3" y2="13.3"/><line x1="2.7" y1="13.3" x2="4.1" y2="11.9"/><line x1="11.9" y1="4.1" x2="13.3" y2="2.7"/></svg></button>
-
-<!-- ═══════════════════════════════════════
-     LOADING SCREEN, RAPID FLASH
-═══════════════════════════════════════ -->
-<!-- LOADING SCREEN (fixed overlay during flash sequence, click to skip) -->
 <div id="loader" onclick="skipLoader()">
   <div id="flashSequence">
     <!-- Images will be added here dynamically -->
@@ -1906,9 +1960,6 @@
   <!-- Overlay removed: title now lives solely in landing-hero for seamless transition -->
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCROLL-DRIVEN LANDING
-═══════════════════════════════════════ -->
 <div id="landing-scroll-container">
 
   <!-- HERO: Title section (first viewport) -->
@@ -2054,9 +2105,7 @@
 
 </div><!-- /landing-scroll-container -->
 
-<!-- ═══════════════════════════════════════
-     INTRODUCTION PAGE
-═══════════════════════════════════════ -->
+
 <div id="intro-page">
   <!-- Navigation Header -->
   <nav class="page-nav" id="introNav">
@@ -2065,7 +2114,7 @@
     </div>
     <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
     <div class="page-nav-right">
-      <button class="page-nav-btn primary" onclick="openAct1()">Act 1 →</button>
+      <button class="page-nav-btn primary" onclick="window.location.href='act1.html'">Act 1 →</button>
     </div>
   </nav>
 
@@ -2385,13 +2434,72 @@
       </div>
     </div>
 
-    <!-- ══════ GATE TO ACT 1 ══════ -->
-    <div class="gate-section">
+    <!-- ══════ COUNTDOWN TO NEXT ACT ══════ -->
+    <div class="gate-section" id="countdownGate">
       <div class="gate-door-icon"></div>
-      <h2 class="gate-title">Continue to Act 1</h2>
-      <p class="gate-subtitle">The Quest for Digital Cash, Where it all began.</p>
-      <a class="landing-cta-btn" onclick="openAct1()" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 1</a>
+      <h2 class="gate-title" id="countdownTitle">Act 1 Coming Soon</h2>
+      <p class="gate-subtitle" id="countdownSubtitle" style="margin-bottom: 8px;">The investigation begins.</p>
+      <div class="countdown-clock" id="countdownClock">
+        <div class="countdown-block">
+          <div class="cd-number" id="cdDays">00</div>
+          <div class="cd-label">Days</div>
+        </div>
+        <div class="countdown-divider">:</div>
+        <div class="countdown-block">
+          <div class="cd-number" id="cdHours">00</div>
+          <div class="cd-label">Hours</div>
+        </div>
+        <div class="countdown-divider">:</div>
+        <div class="countdown-block">
+          <div class="cd-number" id="cdMins">00</div>
+          <div class="cd-label">Minutes</div>
+        </div>
+        <div class="countdown-divider">:</div>
+        <div class="countdown-block">
+          <div class="cd-number" id="cdSecs">00</div>
+          <div class="cd-label">Seconds</div>
+        </div>
+      </div>
+      <a class="landing-cta-btn" id="countdownBtn" style="display:none; cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 1</a>
     </div>
+    <script>
+    (function(){
+      var NEXT_RELEASE = "2026-03-15T18:00:00Z";
+      var NEXT_URL = "act1.html";
+      var btn = document.getElementById('countdownBtn');
+      var clock = document.getElementById('countdownClock');
+      var title = document.getElementById('countdownTitle');
+      var subtitle = document.getElementById('countdownSubtitle');
+      var dEl = document.getElementById('cdDays');
+      var hEl = document.getElementById('cdHours');
+      var mEl = document.getElementById('cdMins');
+      var sEl = document.getElementById('cdSecs');
+      btn.onclick = function(){ window.location.href = NEXT_URL; };
+      function pad(n){ return n < 10 ? '0' + n : '' + n; }
+      function update(){
+        var now = new Date().getTime();
+        var target = new Date(NEXT_RELEASE).getTime();
+        var diff = target - now;
+        if(diff <= 0){
+          clock.style.display = 'none';
+          title.textContent = 'Act 1 is Now Available';
+          subtitle.textContent = 'The investigation begins.';
+          btn.style.display = '';
+          return;
+        }
+        var d = Math.floor(diff / 86400000);
+        var h = Math.floor((diff % 86400000) / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
+        dEl.textContent = pad(d);
+        hEl.textContent = pad(h);
+        mEl.textContent = pad(m);
+        sEl.textContent = pad(s);
+        requestAnimationFrame(update);
+      }
+      update();
+    })();
+    </script>
 
   </div><!-- /intro-container -->
 
@@ -2400,1877 +2508,8 @@
     <div class="footer-title">The Byzantine General</div>
     <div class="footer-sub">Research work · 2018–2026</div>
   </div>
-</div>
+</div><!-- /intro-page -->
 
-<!-- ═══════════════════════════════════════
-     ACT 1 PAGE
-═══════════════════════════════════════ -->
-<div id="act1-page">
-  <!-- Navigation Header -->
-  <nav class="page-nav" id="act1Nav">
-    <div class="page-nav-left">
-      <button class="page-nav-btn" onclick="backToIntro()">← Introduction</button>
-    </div>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
-    <div class="page-nav-right">
-      <button class="page-nav-btn primary" onclick="openAct2()">Act 2 →</button>
-    </div>
-  </nav>
-
-  <!-- ══════ TIMELINE (full-width, no container) ══════ -->
-  <div class="timeline-container">
-    <iframe
-      src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2:2PACX-1vTdn9VFPfrxzHzp16MqeaWqwNxpuxFajYi2lxhUsfFW93WXpqjmstOoE0GlBhuwdw&font=Default&lang=en&initial_zoom=2&height=650"
-      allowfullscreen
-      title="The Satoshi Mystery Timeline"
-    ></iframe>
-  </div>
-
-  <div class="intro-container">
-
-    <!-- ══════ ACT 1 TITLE + CYPHERPUNKS VIDEO ══════ -->
-    <div class="editorial-row" style="padding-top: 60px; border-top: none;">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="cypherpunksVideo" playsinline preload="metadata">
-            <source src="cypherpunks-act1.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="cypherpunksOverlay" onclick="toggleReelVideo('cypherpunksVideo', 'cypherpunksOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label" style="margin-bottom: 16px;">Act 1</div>
-        <h1 style="font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 16px;">The Quest for Digital Cash</h1>
-        <p style="font-family: var(--serif); font-size: clamp(15px, 2vw, 20px); font-weight: 400; font-style: italic; color: var(--text-dim); line-height: 1.6; margin-bottom: 24px;">How the Cypherpunks Movement laid the foundation for Bitcoin</p>
-        <div class="prose">
-          <p>To truly understand Bitcoin's invention, we must rewind to the early 1980s and the emergence of the cypherpunk movement. By the 1970s, a growing awareness emerged: computers could either enhance government control or empower individual freedom. Cryptography became the essential tool in this struggle.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ THE BYZANTINE GENERALS PROBLEM, side by side like two-door ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/wxJF7YZV/byz-problem-pic.jpg" alt="Byzantine Generals Problem">
-        <div class="img-caption">The Byzantine Generals Problem, consensus in a trustless network</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The Theoretical Obstacle</div>
-        <h2>The Byzantine Generals Problem</h2>
-        <div class="prose">
-          <p>The cypherpunks were united in a decades-long effort to create digital money secured with cryptography. But one major obstacle stood in their way: the Byzantine Generals Problem, a theoretical issue concerning consensus in distributed systems.</p>
-          <p>This was a crucial blow to the cypherpunks' hopes of inventing digital cash. Cryptography is ideal to secure online data and communications. However, without decentralized consensus, you cannot have decentralized money.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ CYPHERPUNK PRECURSORS,3 PORTRAITS + EXPANDABLE CARDS ══════ -->
-    <div class="editorial-full" style="max-width: 100%;">
-      <h2 style="font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: 8px;">Precursors to Bitcoin</h2>
-    </div>
-
-    <div class="photo-trio">
-      <div class="photo-trio-item" onclick="toggleDetailCard('card-adam')">
-        <img loading="lazy" src="https://i.postimg.cc/gcvqGqLt/Adam-back.jpg" alt="Adam Back">
-        <div class="photo-name">Adam Back</div>
-        <div class="photo-detail">HashCash · 1997</div>
-      </div>
-      <div class="photo-trio-item" onclick="toggleDetailCard('card-wei')">
-        <img loading="lazy" src="https://i.postimg.cc/jj51hNbP/wei.jpg" alt="Wei Dai">
-        <div class="photo-name">Wei Dai</div>
-        <div class="photo-detail">B-Money · 1998</div>
-      </div>
-      <div class="photo-trio-item" onclick="toggleDetailCard('card-hal')">
-        <img loading="lazy" src="https://i.postimg.cc/g0SC9sDQ/Hal.jpg" alt="Hal Finney">
-        <div class="photo-name">Hal Finney</div>
-        <div class="photo-detail">RPOW · mid-2000s</div>
-      </div>
-    </div>
-
-    <div class="detail-cards">
-      <div class="detail-card" id="card-adam">
-        <div class="detail-card-header" onclick="toggleDetailCard('card-adam')">
-          <span class="detail-card-title">Adam Back's HashCash (1997)</span>
-          <span class="detail-card-toggle">+</span>
-        </div>
-        <div class="detail-card-content">
-          <div class="prose">
-            <p>Using computational work to create digital scarcity, HashCash introduced the concept of proof-of-work, requiring computers to solve mathematical puzzles before sending emails, as a way to combat spam. This same principle would later become the backbone of Bitcoin's mining mechanism.</p>
-          </div>
-        </div>
-      </div>
-      <div class="detail-card" id="card-wei">
-        <div class="detail-card-header" onclick="toggleDetailCard('card-wei')">
-          <span class="detail-card-title">Wei Dai's B-Money (1998)</span>
-          <span class="detail-card-toggle">+</span>
-        </div>
-        <div class="detail-card-content">
-          <div class="prose">
-            <p>Focused on preserving privacy through cryptography, B-Money proposed a system where anonymous digital pseudonyms could transact using a decentralized ledger. Though never implemented, it laid crucial conceptual groundwork that Satoshi would later cite directly in the Bitcoin whitepaper.</p>
-          </div>
-        </div>
-      </div>
-      <div class="detail-card" id="card-hal">
-        <div class="detail-card-header" onclick="toggleDetailCard('card-hal')">
-          <span class="detail-card-title">Hal Finney's Reusable Proof of Work (mid-2000s)</span>
-          <span class="detail-card-toggle">+</span>
-        </div>
-        <div class="detail-card-content">
-          <div class="prose">
-            <p>Hal Finney built on Adam Back's HashCash to create a system where proof-of-work tokens could be reused, a step closer to a functioning digital currency. Finney would later become the recipient of the very first Bitcoin transaction from Satoshi Nakamoto himself.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ BITCOIN'S LAUNCH ══════ -->
-    <div class="statement">
-      None of these projects worked around the Byzantine Generals Problem. Until one did.
-    </div>
-
-    <!-- Whitepaper release: video + text side by side -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="whitepaperVideo" playsinline preload="metadata">
-            <source src="whitepaper-release.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="whitepaperOverlay" onclick="toggleReelVideo('whitepaperVideo', 'whitepaperOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The Launch of Bitcoin</div>
-        <h2>October 31, 2008</h2>
-        <div class="prose">
-          <p>Satoshi Nakamoto published the Bitcoin whitepaper to the Metzdowd cryptography mailing list.</p>
-          <p>On January 3, 2009, the genesis block was mined. It included a reference to a bank bailout headline from The Times, grounding Bitcoin's origin in the financial crisis.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Genesis block + whitepaper side by side as documents -->
-    <div class="doc-pair">
-      <div class="doc-item">
-        <img loading="lazy" src="https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg" alt="Bitcoin Whitepaper">
-        <div class="doc-item-caption">
-          <div class="doc-title">The Bitcoin Whitepaper</div>
-          <div class="doc-desc">Published October 31, 2008 · 9 pages</div>
-        </div>
-      </div>
-      <div class="doc-item">
-        <img loading="lazy" src="https://i.postimg.cc/4d3XVn88/Bitcoin-Genesis-block.jpg" alt="Genesis Block">
-        <div class="doc-item-caption">
-          <div class="doc-title">The Genesis Block</div>
-          <div class="doc-desc">Mined January 3, 2009 · Block #0</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ BITCOIN'S EARLY DAYS, side by side like two-door ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/4dfhT948/4-DC045-D8-2-D77-423-E-9-D27-A2-F3-E9-C883-E0.jpg" alt="Gavin Andresen and Jeff Garzik, early Bitcoin contributors">
-        <div class="img-caption">Early Bitcoin contributors, Jeff Garzik &amp; Gavin Andresen</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Bitcoin's Early Days</div>
-        <h2>260 forum posts. 140,000 words. Not a single typo.</h2>
-        <div class="prose">
-          <p>Over the next two years, Satoshi actively developed Bitcoin, contributing 260 forum posts and over 140,000 words without a single typo or misspelling. He worked to improve the software, mined early blocks, and nurtured a growing community.</p>
-          <p>Notable contributors during this phase included Peter Todd and Jeff Garzik, who helped identify and fix critical bugs, and Gavin Andresen, who became a key developer and eventually the project's main steward.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ SATOSHI'S DISAPPEARANCE, Video + Text side by side ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">The Disappearance</div>
-        <h2>WikiLeaks kicked the hornet's nest, then Satoshi vanished.</h2>
-        <div class="prose">
-          <p>Satoshi's exit was shrouded in controversy. In early December 2010, WikiLeaks began accepting Bitcoin donations after having its bank accounts frozen by the FBI. Satoshi publicly warned that WikiLeaks had "kicked the hornet's nest." His final public message came on December 12, 2010. On April 26th, 2011, Satoshi sent his <a href="https://riski.wiki/wiki/User:Gavinandresen/Blog/2022-04-26_Eleven_years_ago_today%E2%80%A6" target="_blank" style="color: var(--accent); text-decoration: underline;">last private email</a> to Gavin Andresen, saying: "I wish you wouldn't keep talking about me as a mysterious shadowy figure." Gavin replied that he had been invited to speak to the CIA about Bitcoin. After that exchange, Satoshi vanished entirely.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="wikileaksVideo" playsinline preload="metadata">
-            <source src="act1-wikileaks.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="wikileaksOverlay" onclick="toggleReelVideo('wikileaksVideo', 'wikileaksOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="doc-pair">
-      <div class="doc-item">
-        <img loading="lazy" src="https://i.postimg.cc/wjPsX7ss/115-D950-D-916-C-477-F-ABF9-78-A41-E41-F5-AD-1-105-c.jpg" alt="Satoshi's last public post on BitcoinTalk">
-        <div class="doc-item-caption">
-          <div class="doc-title">Satoshi's Last Public Post</div>
-          <div class="doc-desc">BitcoinTalk Forum · December 12, 2010 · Mentions WikiLeaks &amp; the FBI</div>
-        </div>
-      </div>
-      <div class="doc-item">
-        <img loading="lazy" src="https://i.postimg.cc/vZ14ZbS8/Gavin-Andresen-CIA.jpg" alt="Gavin Andresen's email about the CIA visit">
-        <div class="doc-item-caption">
-          <div class="doc-title">Satoshi's Last Private Message</div>
-          <div class="doc-desc">Email exchange with Gavin Andresen · Mentions the CIA · Then silence</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/9QT2SxjN/silk-road.jpg" alt="Silk Road">
-        <div class="img-caption">The Silk Road, Bitcoin's first real-world test</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The Silk Road</div>
-        <h2>Bitcoin's controversial proof of concept</h2>
-        <div class="prose">
-          <p>In the years following Satoshi's disappearance, Bitcoin grew steadily. 2013 was a pivotal year: the Silk Road, an anonymous dark web marketplace, was shut down by the FBI. Its creator, Ross Ulbricht, was arrested and sentenced to life in prison.</p>
-          <p>Ironically, the Silk Road demonstrated that Bitcoin could function as a usable currency. When it was shut down, mainstream audiences realized: this digital currency works, triggering a dramatic price surge.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dorian + Craig side by side as expandable contrast cards -->
-    <div class="doc-pair">
-      <div class="doc-item" id="card-dorian">
-        <img loading="lazy" src="https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg" alt="Dorian Nakamoto surrounded by reporters">
-        <div class="doc-item-caption">
-          <div class="doc-title">The Dorian Nakamoto Incident</div>
-          <div class="doc-desc">Newsweek, 2014 · Mistaken identity · Journalists descended on his home</div>
-          <button class="read-more-btn" onclick="toggleExpandCard('card-dorian')">Read more</button>
-        </div>
-        <div class="expand-content">
-          <div class="prose">
-            <p>In March 2014, Newsweek published a bombshell article claiming to have found the real Satoshi Nakamoto: Dorian Satoshi Nakamoto, a 64-year-old Japanese-American engineer living quietly in Temple City, California. Reporters descended on his home, chasing him down the street.</p>
-            <p>Dorian denied any involvement with Bitcoin. The real Satoshi even broke years of silence to post on the P2P Foundation: "I am not Dorian Nakamoto." The incident became a cautionary tale for further attempt to unravel the mystery.</p>
-          </div>
-        </div>
-      </div>
-      <div class="doc-item" id="card-craig">
-        <img loading="lazy" src="https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg" alt="Craig Wright on BBC">
-        <div class="doc-item-caption">
-          <div class="doc-title">Craig Wright's BBC Declaration</div>
-          <div class="doc-desc">May 2016 · Claimed to be Satoshi · Proof deemed invalid</div>
-          <button class="read-more-btn" onclick="toggleExpandCard('card-craig')">Read more</button>
-        </div>
-        <div class="expand-content">
-          <div class="prose">
-            <p>In May 2016, Australian computer scientist Craig Wright publicly claimed to be Satoshi Nakamoto in an exclusive BBC interview and blog post. He promised to provide cryptographic proof by signing a message with Satoshi's known private keys.</p>
-            <p>However, the proof he published was quickly debunked by the Bitcoin community, he had used a signature already publicly available on the blockchain.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ THE PERSISTENT MYSTERY, visual timeline patchwork ══════ -->
-    <div class="act1-timeline">
-      <div class="act1-timeline-track">
-        <div class="act1-timeline-line"></div>
-        <div class="act1-timeline-arrow"></div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg" alt="Bitcoin Whitepaper">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2008</div>
-          <div class="tl-node-label">Bitcoin Whitepaper</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/4d3XVn88/Bitcoin-Genesis-block.jpg" alt="Genesis Block">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2009</div>
-          <div class="tl-node-label">Genesis Block</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/L4LF2SHh/assange-clear.png" alt="Julian Assange / WikiLeaks">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2010</div>
-          <div class="tl-node-label">WikiLeaks &amp; Satoshi's Exit</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/9QT2SxjN/silk-road.jpg" alt="Silk Road" style="object-position: 15% center;">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2013</div>
-          <div class="tl-node-label">Silk Road Shutdown</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg" alt="Dorian Nakamoto">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2014</div>
-          <div class="tl-node-label">Dorian Nakamoto</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg" alt="Craig Wright BBC">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2016</div>
-          <div class="tl-node-label">Craig Wright's Claim</div>
-        </div>
-
-      </div>
-      <div class="act1-timeline-caption">The Satoshi mystery timeline, from whitepaper to controversy</div>
-    </div>
-
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">The Persistent Mystery</div>
-        <h2 style="font-size: clamp(24px, 3.5vw, 40px);">An unsolvable mystery?</h2>
-        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-          <p>From the surface, the period from 2008 to 2016 appears filled with attempts to uncover or claim the Satoshi identity. Since Wright's declaration, no serious contender has come forward. There have been murmurs about Peter Todd, Jack Dorsey, and Elon Musk, but nothing concrete.</p>
-          <p>However, a closer look at the developments that occurred during the past eight years reveals something more complicated: the quest for Satoshi has been the object of a persistent and deeply entangled controversy.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="timelineVideo" playsinline preload="metadata">
-            <source src="act1-timeline.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="timelineOverlay" onclick="toggleReelVideo('timelineVideo', 'timelineOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ GATE TO ACT 2 ══════ -->
-    <div class="gate-section">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title">Continue to Act 2</h2>
-      <p class="gate-subtitle">The Block Wars, Where the controversy begins.</p>
-      <a class="landing-cta-btn" onclick="openAct2()" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 2</a>
-    </div>
-
-  </div><!-- /act1 intro-container -->
-
-  <!-- Footer -->
-  <div class="site-footer">
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     ACT 2 PAGE
-═══════════════════════════════════════ -->
-<div id="act2-page">
-  <!-- Navigation Header -->
-  <nav class="page-nav" id="act2Nav">
-    <div class="page-nav-left">
-      <button class="page-nav-btn" onclick="backToAct1()">← Act 1</button>
-    </div>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
-    <div class="page-nav-right">
-      <button class="page-nav-btn primary" onclick="openAct3()">Act 3 →</button>
-    </div>
-  </nav>
-
-  <!-- ══════ TIMELINE (full-width, no container) ══════ -->
-  <div class="timeline-container">
-    <iframe
-      src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2:2PACX-1vRBZx6hJKwW-JVZIVfU9H0IYStVycNoGpeGlTNFMF6tEyCqjOMTr2I9dXrocaiikw&font=Default&lang=en&initial_zoom=2&height=650"
-      allowfullscreen
-      title="The Craig Wright Controversy Timeline"
-    ></iframe>
-  </div>
-
-  <div class="intro-container">
-
-    <!-- ══════ ACT 2 TITLE ══════ -->
-    <div class="editorial-full" style="padding-top: 60px; text-align: center; max-width: 100%;">
-      <div class="section-label" style="margin-bottom: 16px;">Act 2</div>
-      <h1 style="font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 16px;">An Ongoing Controversy amidst the Block Wars</h1>
-      <p style="font-family: var(--serif); font-size: clamp(15px, 2vw, 20px); font-weight: 400; font-style: italic; color: var(--text-dim); line-height: 1.6;">How Craig Wright's claim tore the Bitcoin community apart</p>
-    </div>
-
-    <!-- ══════ BTC / BCH / BSV, centered image ══════ -->
-    <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
-      <img loading="lazy" src="https://i.postimg.cc/jjvTh9jz/BTC-bcc-bsv.png" alt="Bitcoin, Bitcoin Cash, and Bitcoin SV" style="width: 100%; display: block;">
-    </div>
-
-    <!-- ══════ BLOCK WARS TEXT ══════ -->
-    <div class="editorial-full" style="border-top: none; padding-top: 0;">
-      <div class="section-label">The Bitcoin Block Wars</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: 24px;">Bitcoin Block Wars and the Satoshi Controversy</h2>
-      <div class="prose">
-        <p>In 2015, the Bitcoin community became deeply divided over the size of Bitcoin's transaction blocks. The "block size war" quickly escalated into an ideological and political battle for the soul of Bitcoin. It also became deeply entangled with the controversy revolving around the identity of Satoshi.</p>
-        <p>In the aftermath of Craig Wright's failed public proof session at the BBC on May 2, 2016, his claim to be Satoshi Nakamoto nonetheless garnered support from several influential figures within the Bitcoin ecosystem.</p>
-      </div>
-    </div>
-
-    <!-- ══════ KEY PLAYERS VIDEO + ALL 4 CARDS ══════ -->
-    <div class="editorial-row" style="align-items: start;">
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="firstVideo" playsinline preload="metadata">
-            <source src="act2-firstvideo.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="firstVideoOverlay" onclick="toggleReelVideo('firstVideo', 'firstVideoOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div style="flex: 1;">
-        <div class="detail-cards" style="margin: 0;">
-          <div class="detail-card" id="card-wujihan">
-            <div class="detail-card-header" onclick="toggleDetailCard('card-wujihan')">
-              <span class="detail-card-title">Who is Wu Jihan?</span>
-              <span class="detail-card-toggle">+</span>
-            </div>
-            <div class="detail-card-content">
-              <div class="prose">
-                <p>Wu Jihan is the co-founder of Bitmain, the world's largest manufacturer of Bitcoin mining hardware. By controlling a significant share of Bitcoin's mining power, Bitmain wielded enormous influence over the network's direction. Wu Jihan became one of the most vocal advocates for increasing the block size and was a key supporter of both Bitcoin Cash and Craig Wright's involvement in the ecosystem.</p>
-              </div>
-            </div>
-          </div>
-          <div class="detail-card" id="card-rogerver">
-            <div class="detail-card-header" onclick="toggleDetailCard('card-rogerver')">
-              <span class="detail-card-title">Who is Roger Ver?</span>
-              <span class="detail-card-toggle">+</span>
-            </div>
-            <div class="detail-card-content">
-              <div class="prose">
-                <p>Roger Ver, often nicknamed "Bitcoin Jesus," was one of the earliest investors in Bitcoin and a passionate evangelist for its adoption as a payment system. He believed Bitcoin should prioritize low fees and fast transactions over being a store of value. Ver became the most prominent public advocate for Bitcoin Cash and backed Craig Wright's claim, seeing alignment between Wright's vision and his own push for larger blocks.</p>
-              </div>
-            </div>
-          </div>
-          <div class="detail-card" id="card-bch">
-            <div class="detail-card-header" onclick="toggleDetailCard('card-bch')">
-              <span class="detail-card-title">What is Bitcoin Cash?</span>
-              <span class="detail-card-toggle">+</span>
-            </div>
-            <div class="detail-card-content">
-              <div class="prose">
-                <p>Bitcoin Cash (BCH) launched in the second half of 2017 as a hard fork of the Bitcoin network. Its primary goal was to increase the block size from 1MB to 8MB, addressing demands for higher transaction throughput. While one camp championed Bitcoin as "digital gold," Bitcoin Cash supporters prioritized speed and scalability, viewing it as the true peer-to-peer electronic cash system Satoshi described. The fork sparked intense debate about Bitcoin's identity and purpose.</p>
-              </div>
-            </div>
-          </div>
-          <div class="detail-card" id="card-bsv">
-            <div class="detail-card-header" onclick="toggleDetailCard('card-bsv')">
-              <span class="detail-card-title">What is Bitcoin SV?</span>
-              <span class="detail-card-toggle">+</span>
-            </div>
-            <div class="detail-card-content">
-              <div class="prose">
-                <p>Bitcoin Satoshi Vision (BSV) was created in November 2018 when Craig Wright, backed by online casino tycoon Calvin Ayre, initiated a hard fork of the Bitcoin Cash network. Marketed as "the true Bitcoin" and claiming to restore Satoshi's original protocol, BSV pushed for even larger block sizes. However, it struggled to attract meaningful adoption or developer support, and was eventually delisted by major exchanges including Binance and Kraken.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ VITALIK CONFRONTATION, photo trio style ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">The Deconomy Conference, Seoul 2018</div>
-        <h2>Vitalik Buterin calls Craig Wright a fraud</h2>
-        <div class="prose">
-          <p>Meanwhile, a large portion of the crypto community was vocal about Craig's claim. In 2018, at the Deconomy conference in Seoul, Ethereum's inventor Vitalik Buterin publicly called Craig Wright a fraud and questioned his technical credibility.</p>
-          <p>The confrontation was acrimonious and sparked intense division within the crypto community. Craig Wright's involvement in Bitcoin Cash further intensified the controversy and marked the apex of a deep-seated divide, one rooted in differing visions for the future of the currency and unresolved questions surrounding its origin.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/SQ3CfsQ7/Deconomy-conference.jpg" alt="Vitalik Buterin at Deconomy 2018">
-        <div class="img-caption">Vitalik Buterin denounces Craig Wright at Deconomy 2018</div>
-      </div>
-    </div>
-
-    <!-- ══════ BSV FAILED INITIATIVE ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/BvmmCKvQ/image.jpg" alt="Binance delists BSV">
-        <div class="img-caption">Binance CEO CZ publicly calls Craig Wright a fraud and delists BSV</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Bitcoin Satoshi Vision</div>
-        <h2>A failed initiative</h2>
-        <div class="prose">
-          <p>The overlap between Wright's Satoshi claim and the block size war was no coincidence. Supporters of the expansion argued that Satoshi himself had anticipated the need for greater throughput, pointing to the whitepaper's description of Bitcoin as "a peer-to-peer electronic cash system." Wright's claim became inextricably linked to the ideological battle over Bitcoin's purpose.</p>
-          <p>The dispute escalated in November 2018 when Wright, backed by Bodog online casino tycoon Calvin Ayre, initiated a hard fork of Bitcoin Cash to create Bitcoin Satoshi Vision (BSV). Marketed as "the true Bitcoin," BSV struggled to attract meaningful adoption.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ LEGAL ACTIONS VIDEO + POLARIZING BEHAVIOR ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">Entangled</div>
-        <h2>Wright's polarizing behavior</h2>
-        <div class="prose">
-          <p>Wright's increasingly polarizing behavior eventually prompted major exchanges, including Kraken and Binance, to delist BSV, citing both reputational concerns and a lack of sustained community traction.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="legalActionsVideo2" playsinline preload="metadata">
-            <source src="act2-legalactions.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="legalActionsOverlay2" onclick="toggleReelVideo('legalActionsVideo2', 'legalActionsOverlay2')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ FAKETOSHI, LEGAL BATTLES ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/t4yDQ5Z4/vitalik-Craig.jpg" alt="Craig Wright vs Vitalik Buterin">
-        <div class="img-caption">Craig Wright sues his critics, the legal offensive begins</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The Industry Turns Against Craig</div>
-        <h2>"Faketoshi" is born</h2>
-        <div class="prose">
-          <p>Between 2020 and 2024, Wright became entangled in numerous lawsuits, some initiated by him, others filed against him. A common thread running through many of these cases was his unwavering claim to be Satoshi Nakamoto.</p>
-          <p>He leveraged this assertion to pursue legal action against critics who questioned his claim, including prominent figures like Vitalik Buterin and the pseudonymous Twitter user known as Hodlonaut, alleging defamation and libel.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ HODLONAUT + COPA, side by side documents ══════ -->
-    <div class="doc-pair">
-      <div class="doc-item" id="card-hodlonaut">
-        <img loading="lazy" src="https://i.postimg.cc/hGtrht0F/Hodlonaut-law-suit.jpg" alt="Hodlonaut wins defamation case">
-        <div class="doc-item-caption">
-          <div class="doc-title">Hodlonaut Wins Defamation Case</div>
-          <div class="doc-desc">Norway, October 2023 · Court sides with anonymous critic</div>
-          <button class="read-more-btn" onclick="toggleExpandCard('card-hodlonaut')">Read more</button>
-        </div>
-        <div class="expand-content">
-          <div class="prose">
-            <p>In October 2023, Hodlonaut, a pseudonymous Bitcoin advocate, won a defamation lawsuit against Craig Wright in Norway. Hodlonaut had called Wright a fraud on Twitter, prompting Wright to sue. The court ruled in Hodlonaut's favor, finding that the claims were justified and that Wright had failed to prove his identity as Satoshi.</p>
-          </div>
-        </div>
-      </div>
-      <div class="doc-item" id="card-copa">
-        <img loading="lazy" src="https://i.postimg.cc/rsny2nsv/Craig-Wright-Copa.jpg" alt="Craig Wright outside COPA trial">
-        <div class="doc-item-caption">
-          <div class="doc-title">UK Court Rules Wright Is Not Satoshi</div>
-          <div class="doc-desc">March 2024 · COPA v Wright · "Lied extensively and repeatedly"</div>
-          <button class="read-more-btn" onclick="toggleExpandCard('card-copa')">Read more</button>
-        </div>
-        <div class="expand-content">
-          <div class="prose">
-            <p>In March 2024, the UK High Court concluded that Craig Wright is not Satoshi Nakamoto and did not write the Bitcoin Whitepaper. The ruling came as the result of a lawsuit between Wright and COPA, a coalition of tech companies who challenged his intellectual property claims regarding Bitcoin.</p>
-            <p>The court stated that Wright had "lied extensively and repeatedly" and "committed forgery on a grand scale" to prove that he was Satoshi. The ruling marked the formal collapse of Craig Wright's legal claim to Bitcoin's creation.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ ACT 2 VISUAL TIMELINE ══════ -->
-    <div class="act1-timeline">
-      <div class="act1-timeline-track">
-        <div class="act1-timeline-line"></div>
-        <div class="act1-timeline-arrow"></div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg" alt="Craig Wright BBC 2016">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2016</div>
-          <div class="tl-node-label">BBC Declaration</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/t4t6bN32/Craig-BSV.jpg" alt="Bitcoin Cash & BSV">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2017</div>
-          <div class="tl-node-label">Bitcoin Cash Fork</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/SQ3CfsQ7/Deconomy-conference.jpg" alt="Deconomy 2018">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2018</div>
-          <div class="tl-node-label">BSV Launch &amp; Vitalik</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/BvmmCKvQ/image.jpg" alt="Binance delists BSV">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2019</div>
-          <div class="tl-node-label">Exchanges Delist BSV</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/hGtrht0F/Hodlonaut-law-suit.jpg" alt="Hodlonaut lawsuit">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2023</div>
-          <div class="tl-node-label">Hodlonaut Wins</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/rsny2nsv/Craig-Wright-Copa.jpg" alt="COPA trial">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2024</div>
-          <div class="tl-node-label">COPA: Not Satoshi</div>
-        </div>
-
-      </div>
-      <div class="act1-timeline-caption">The Craig Wright controversy, from BBC declaration to court defeat</div>
-    </div>
-
-    <!-- ══════ CLOSING QUESTION ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">The Lingering Question</div>
-        <h2 style="font-size: clamp(24px, 3.5vw, 40px);">How did this controversy persist for so long?</h2>
-        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-          <p>The ruling marked the formal collapse of Craig Wright's legal claim to the identity of Satoshi Nakamoto. And yet, as the question of his association with Bitcoin's invention appears to have been settled, one is left to ask: how did this controversy persist for so long?</p>
-          <p>From 2016 until the UK court's decision, the industry seemed to have operated under a strange form of cognitive dissonance over the possibility that this deeply divisive individual might, in fact, have created Bitcoin.</p>
-          <p>How did so many influential, technically capable people take Wright's claim seriously, despite the apparent lack of verifiable proof? To answer this question, we must rewind to the very starting point of the controversy.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="lastVideo" playsinline preload="metadata">
-            <source src="act2-lastvideo.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="lastVideoOverlay" onclick="toggleReelVideo('lastVideo', 'lastVideoOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ GATE TO ACT 3 ══════ -->
-    <div class="gate-section">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title">Continue to Act 3</h2>
-      <p class="gate-subtitle">The BBC Reveal, What really happened that day.</p>
-      <a class="landing-cta-btn" onclick="openAct3()" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 3</a>
-    </div>
-
-  </div><!-- /act2 intro-container -->
-
-  <!-- Footer -->
-  <div class="site-footer">
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     ACT 3 PAGE
-═══════════════════════════════════════ -->
-<div id="act3-page">
-  <!-- Navigation Header -->
-  <nav class="page-nav" id="act3Nav">
-    <div class="page-nav-left">
-      <button class="page-nav-btn" onclick="backToAct2()">← Act 2</button>
-    </div>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
-    <div class="page-nav-right">
-      <button class="page-nav-btn primary" onclick="openAct4()">Act 4 →</button>
-    </div>
-  </nav>
-
-  <!-- ══════ TIMELINE (full-width, no container) ══════ -->
-  <div class="timeline-container">
-    <iframe
-      src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2:2PACX-1vS3LnrPyKaiefL1rYn7IHIm43ED7hIGbKfSL6fLdsX2f-pmT9Lv6xr2UDPwsWvMKA&font=Default&lang=en&initial_zoom=2&height=650"
-      allowfullscreen
-      title="The BBC Reveal Context Timeline"
-    ></iframe>
-  </div>
-
-  <div class="intro-container">
-
-    <!-- ══════ ACT 3 TITLE ══════ -->
-    <div class="editorial-full" style="padding-top: 60px; text-align: center; max-width: 100%;">
-      <div class="section-label" style="margin-bottom: 16px;">Act 3</div>
-      <h1 style="font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 16px;">The Root Cause of the Controversy</h1>
-      <p style="font-family: var(--serif); font-size: clamp(15px, 2vw, 20px); font-weight: 400; font-style: italic; color: var(--text-dim); line-height: 1.6;">Gavin Andresen verifies Craig Wright</p>
-    </div>
-
-    <!-- ══════ THE PRIVATE PROOF SESSION, Gavin image right, text left ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">The Overlooked Private Proof Session</div>
-        <h2>The meeting that changed everything</h2>
-        <div class="prose">
-          <p>In April 2016, just a few days before the BBC session, Gavin Andresen, then the leading figure in the Bitcoin community post-Satoshi, met Craig Wright in London. The meeting included several respected members of the Bitcoin community including Jon Matonis, former director of the Bitcoin Foundation who had privately corresponded with Satoshi.</p>
-          <p>Jon Matonis had contacted Gavin Andresen, urging him to evaluate Wright's claim. Gavin, who had privately corresponded with Satoshi, was seen as the ideal person for the task.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/15YfGzVM/Gavin-Andresen.jpg" alt="Gavin Andresen">
-        <div class="img-caption">Gavin Andresen, Bitcoin's lead developer after Satoshi</div>
-      </div>
-    </div>
-
-    <!-- ══════ THE PROOF, text left, Meeting with Gavin video right ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="prose">
-          <p>To vet Wright, Gavin first exchanged emails with him. The content and writing style convinced Gavin that Wright's knowledge aligned perfectly with that of Satoshi. Gavin agreed to meet him in person.</p>
-          <p>They gathered in a London hotel with a brand-new, untampered laptop. In Gavin's presence, Craig Wright used the private key associated with Bitcoin Genesis block to sign a message. Gavin also tested Wright's technical understanding of Bitcoin and insights from the community's early days. To him, the alignment across technical expertise, timeline, writing style, and more importantly, control of cryptographic keys left no doubt: Craig Wright was Satoshi Nakamoto.</p>
-          <p>A detailed account of this session and the conditions in which it happened remains available on <a href="https://web.archive.org/web/20250824133528/https://gavinandresen.ninja/satoshi" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: underline;">Gavin's blog</a>. He has never retracted it.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="meetingGavinVideo" playsinline preload="metadata">
-            <source src="act3-meeting-gavin.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="meetingGavinOverlay" onclick="toggleReelVideo('meetingGavinVideo', 'meetingGavinOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ CRYPTOGRAPHIC EVIDENCE VS SIGNALING THEORY ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/fk4v27Xm/23-DBED42-7711-442-E-8-E0-F-645-FB2856920.jpg" alt="Gavin and Vitalik at Consensus panel">
-        <div class="img-caption">Gavin Andresen and Vitalik Buterin, the Consensus panel, May 2016</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Cryptographic Evidence vs Signaling Theory</div>
-        <h2>Two titans, opposite conclusions</h2>
-        <div class="prose">
-          <p>Days after the BBC session, another significant, and often ignored event, took place at the Consensus conference in New York. Gavin Andresen and Vitalik Buterin shared a panel discussion.</p>
-          <p>Gavin was asked directly who he believed Satoshi was. He answered without hesitation: Craig Wright. He referenced the private key signing, Wright's technical skills, and the coherent timeline.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ Self-hosted video, Gavin vs Vitalik / Consensus 2016 (landscape) ══════ -->
-    <div style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
-      <div style="position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; overflow: hidden; background: #000;">
-        <video id="gavinVitalikVideo" playsinline preload="metadata" poster="act3-gavin-vitalik-thumb.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-          <source src="act3-gavin-vitalik.mp4" type="video/mp4">
-        </video>
-        <div class="video-play-overlay" id="gavinVitalikOverlay" onclick="toggleReelVideo('gavinVitalikVideo', 'gavinVitalikOverlay')" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-          <div class="play-button"></div>
-        </div>
-      </div>
-      <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-align: center; padding: 12px 0 0;">Consensus 2016, Gavin Andresen confirms Craig Wright is Satoshi</div>
-    </div>
-
-    <!-- ══════ VITALIK'S RESPONSE ══════ -->
-    <div class="editorial-full">
-      <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-        <p>Then Vitalik responded. Citing signaling theory and Occam's razor, he dismissed the claim. He argued that the lack of public proof made Wright's performance "noisy" and unconvincing.</p>
-        <p>This moment marked a decisive turning point. Despite Gavin Andresen's credibility and direct involvement with Satoshi, the majority of the crypto community aligned with Vitalik's skepticism. Gavin had private correspondence, firsthand exposure to a successful signature using the genesis key, and deep technical understanding, yet the collective consensus concluded he had been deceived.</p>
-      </div>
-    </div>
-
-    <!-- ══════ STATEMENT, GAVIN'S PRICE + Gavin's Rational Conclusion video ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-          <p>Gavin's support for Craig Wright carried a heavy price. Almost overnight, he was stripped of his access to the Bitcoin GitHub repository, the very project he had helped steward for six years.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="gavinRationalVideo" playsinline preload="metadata">
-            <source src="act3-gavin-rational.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="gavinRationalOverlay" onclick="toggleReelVideo('gavinRationalVideo', 'gavinRationalOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ THE PARADOX, image left, text right ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">An Unfathomable Paradox</div>
-        <h2>How could they reach opposite conclusions?</h2>
-        <div class="prose">
-          <p>To this day, the events surrounding the 2016 BBC session stand as one of the crypto industry's great paradoxes. What should have been a straightforward demonstration spiraled into reputational collapse.</p>
-          <p>How could two of the most respected figures in the space, Gavin Andresen and Vitalik Buterin, arrive at completely opposite conclusions on that issue?</p>
-          <p>From the outside, there was a clear asymmetry of information between Gavin and Vitalik. Gavin had been shown cryptographic proof; Vitalik had not. But crucially, neither had the broader public, which helps explain the deep division that followed within the community.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/7PG1y495/6-BDDEE0-E-F827-4497-9-CB3-6-DDB1-B9799-A2.jpg" alt="The paradox of context">
-        <div class="img-caption">The asymmetry of information, context changes everything</div>
-      </div>
-    </div>
-
-    <!-- ══════ GAVIN'S MISCALCULATION, Monty Hall connection ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/yxYgccZw/Screenshot-2025-04-23-at-17-00-19.png" alt="The Monty Hall Problem applied">
-        <div class="img-caption">The Monty Hall framework, applied to Satoshi's identity</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Gavin's Critical Miscalculation</div>
-        <h2>He believed the doors had all been opened</h2>
-        <div class="prose">
-          <p>More importantly, the community ultimately sided with Vitalik because Gavin made a critical miscalculation.</p>
-          <p>He assumed, without reservation, that someone with Craig Wright's deep technical knowledge of Bitcoin, who could replicate Satoshi's writing style in private correspondence and sign a message using the genesis key, had to be Satoshi.</p>
-          <p>In Monty Hall terms, Gavin believed that the evidence Craig Wright presented had effectively flung open all the other doors. To him, only one door remained closed, and behind it stood Satoshi.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ CLOSING, text left, Gavin misjudging video right ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-          <p>He further assumed, with absolute certainty, that if Craig had produced that proof privately, he would naturally be able, and willing, to reproduce it publicly on a global stage just days later.</p>
-          <p>On both fronts, history proved him wrong.</p>
-        </div>
-        <h2 style="font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); font-weight: 400; color: var(--text); line-height: 1.3; margin-top: 30px; margin-bottom: 12px;">So how could Gavin Andresen have been so mistaken?</h2>
-        <p style="font-family: var(--serif); font-size: clamp(16px, 2vw, 22px); font-weight: 400; font-style: italic; color: var(--accent); line-height: 1.5;">As with so much in this story, the answer lies in context.</p>
-      </div>
-      <div class="editorial-image no-frame">
-        <div class="act1-video-embed">
-          <video id="gavinMisjudgingVideo" playsinline preload="metadata">
-            <source src="act3-gavin-misjudging.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="gavinMisjudgingOverlay" onclick="toggleReelVideo('gavinMisjudgingVideo', 'gavinMisjudgingOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ GATE TO ACT 4 ══════ -->
-    <div class="gate-section">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title">Continue to Act 4</h2>
-      <p class="gate-subtitle">The Context That Eluded Gavin Andresen</p>
-      <a class="landing-cta-btn" onclick="openAct4()" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 4</a>
-    </div>
-
-  </div><!-- /act3 intro-container -->
-
-  <!-- Footer -->
-  <div class="site-footer">
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     ACT 4 PAGE
-═══════════════════════════════════════ -->
-<div id="act4-page">
-  <!-- Navigation Header -->
-  <nav class="page-nav" id="act4Nav">
-    <button class="page-nav-btn" onclick="backToAct3()">← Act 3</button>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
-    <button class="page-nav-btn primary" onclick="openAct5()">Act 5 →</button>
-  </nav>
-
-  <!-- ══════ KNIGHTLAB TIMELINE 4 (full-width, no container) ══════ -->
-  <div class="timeline-container">
-    <iframe
-      src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2%3A2PACX-1vRplEgsFt6ZAxvD8FhRv0Ok0B43ipRQF3bU61Bi_GvRE_5fkrsSPse8l30Dz0s1JA&font=Default&lang=en&initial_zoom=2&height=650"
-      allowfullscreen
-      title="The Context That Eluded Gavin Timeline"
-    ></iframe>
-  </div>
-
-  <div class="intro-container">
-
-    <!-- ══════ ACT 4 TITLE ══════ -->
-    <div class="editorial-full" style="text-align: center; padding: 40px 0 20px;">
-      <div class="section-label" style="text-align: center;">Act 4</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(26px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 24px;">Man on the Run</h2>
-    </div>
-
-    <!-- ══════ MISSING CONTEXT + VIDEO 1 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-          <p>To understand why Gavin Andresen misjudged the significance of the private proof session with Craig Wright, and how the events of 2016 spiraled into a public collapse, we must get a deeper and broader sense of the context in which these events took place. We must rewind even further in time, to early 2014.</p>
-        </div>
-      </div>
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act4ContextVideo" playsinline preload="metadata">
-            <source src="act4-2014context.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act4ContextOverlay" onclick="toggleReelVideo('act4ContextVideo', 'act4ContextOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ ATO INVESTIGATION, editorial row ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/pV8gT1FN/w-K-scheme.png" alt="W&K Info Defense scheme">
-        <div class="img-caption">The W&K Info Defense scheme, at the heart of Wright's tax rebate claims</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The Australian Tax Office Investigation</div>
-        <h2>Craig Wright under audit</h2>
-        <div class="prose">
-          <p>At the time, Craig Wright was under active investigation by the Australian Tax Office (ATO). The issue? His claiming tens of millions of dollars in R&D tax rebates through government programs intended to reward technological innovation. Wright's justification rested on an alleged portfolio of advanced cryptographic work, IP linked to blockchain development, and most significantly, assets associated with Bitcoin itself.</p>
-          <p>One of the central elements in this portfolio was W&K InfoDefense, a Florida-based company Wright had helped form in 2011. In 2013, Wright transferred ownership of W&K into his Australian company DeMorgan, effectively using W&K's intellectual property and Bitcoin holdings to inflate the value of his rebate claims.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ ATO DISCREPANCIES ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">Reversed Rebates &amp; Financial Ruin</div>
-        <h2>$5.6 million in penalties</h2>
-        <div class="prose">
-          <p>But the ATO audits uncovered serious discrepancies. Wright couldn't fully substantiate the supposed value of the IP or the extent of Bitcoin under his control. His documents raised more questions than they answered, and by 2014, the ATO had intensified its investigation.</p>
-          <p>Wright had already received millions from the Australian government before the audit turned against him. The ATO didn't just reject his claims, it reversed rebates that had already been paid, imposing a total liability exceeding $5.6 million, including $1.9 million in penalties for recklessness and misrepresentation.</p>
-          <p>To make matters worse, Wright's personal financial situation was unraveling. In 2013, he had reportedly lost 100,000 Bitcoin in an attempt to exchange them for gold, a loss he would later disclose during ATO hearings.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/m2fKDvwD/Craig-Wright-Police-Raid.jpg" alt="AFP raids Craig Wright's home">
-        <div class="img-caption">Australian Federal Police raid Craig Wright's home and offices</div>
-      </div>
-    </div>
-
-    <!-- ══════ 2015 CLAMPDOWN ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/fTHMGgwb/Ross-Jail.jpg" alt="Ross Ulbricht sentenced">
-        <div class="img-caption">Ross Ulbricht, founder of Silk Road, is sentenced to life in prison</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The 2015 Clampdown</div>
-        <h2>Being linked to Bitcoin's creation becomes dangerous</h2>
-        <div class="prose">
-          <p>As Craig Wright's audit troubles with the ATO escalated, broader forces were converging around Bitcoin. In May 2015, Ross Ulbricht, creator of the Silk Road marketplace, was sentenced to life in prison. His case, and the DOJ's framing of Bitcoin as a tool for criminal enterprise, heightened legal sensitivity to anyone tied to the protocol's origins.</p>
-          <p>At the same time, the fallout of Liberty Reserve, a Costa Rica-based digital payment network used by offshore gambling operators and black-market vendors, added to the climate of suspicion. Its 2013 takedown by U.S. authorities was viewed as a turning point for unregulated digital currencies.</p>
-          <p>By late 2015, being linked to the creation of Bitcoin was not just controversial, it was potentially criminal.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ FINANCIAL COLLAPSE + IP DEAL + VIDEO 2 ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act4FinDealVideo" playsinline preload="metadata">
-            <source src="act4-financialdeal.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act4FinDealOverlay" onclick="toggleReelVideo('act4FinDealVideo', 'act4FinDealOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Financial Collapse and the IP Deal</div>
-        <h2>A rescue with strings attached</h2>
-        <div class="prose">
-          <p>While the ATO was finalizing a clawback of more than $5.6 million in reversed rebates and penalties, Wright had already suffered a major personal loss: he had reportedly lost 100,000 Bitcoin in a 2013 scam involving a supposed gold deal with a man named Marc Ferrier.</p>
-          <p>These pressures brought Wright to a breaking point. In May 2015, he pitched his story to investors in Vancouver, claiming to be Satoshi Nakamoto. This led to a financial rescue orchestrated by Robert MacGregor (nTrust) and Calvin Ayre, who agreed to cover Wright's mounting debts, including a $15 million settlement with the ATO, in exchange for ownership of Wright's companies and their Bitcoin-related IP.</p>
-          <p>Their bet: if Wright could convincingly prove he was Satoshi, the IP portfolio they had acquired would become immensely valuable.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ GIZMODO / WIRED LEAKS ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">December 2015</div>
-        <h2>The Gizmodo and Wired leaks</h2>
-        <div class="prose">
-          <p>In early December 2015, Gizmodo and Wired published documents leaked from within Wright's network, asserting that he was Satoshi Nakamoto. These articles triggered immediate consequences. The next day, Australian Federal Police raided Wright's home and offices.</p>
-          <p>With both his legal and financial crises deepening, Wright fled to London.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/zXwGxK9N/Craig-Wright-Gizmodo.jpg" alt="Gizmodo/Wired expose">
-        <div class="img-caption">Gizmodo/Wired expose identifies Wright as Bitcoin's creator</div>
-      </div>
-    </div>
-
-    <!-- ══════ THE BUILD-UP TO THE BBC SESSION + VIDEO 3 ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act4WorstTimeVideo" playsinline preload="metadata">
-            <source src="act4-worsttime.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act4WorstTimeOverlay" onclick="toggleReelVideo('act4WorstTimeVideo', 'act4WorstTimeOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The Satoshi Affair</div>
-        <h2>The Build-Up to the BBC Session</h2>
-        <div class="prose">
-          <p>To manage the high-stakes reveal, Wright's backers enlisted UK journalist Andrew O'Hagan, known for his profile of Julian Assange. O'Hagan followed Wright for over six months, chronicling the psychological and legal pressure surrounding the planned public proof sessions of 2016.</p>
-          <p>Wright's refusal to perform the public signing on the BBC in May 2016 must be understood within that frame. It was a survival strategy. Wright believed that publicly signing with the genesis block key might trigger prosecution by U.S. authorities, especially after what had happened to Ulbricht and Liberty Reserve.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ GAVIN'S BLIND SPOT + VIDEO 4 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">Gavin's Blind Spot</div>
-        <h2>Identity vs. Control</h2>
-        <div class="prose">
-          <p>By May 2016, when Craig Wright appeared on the BBC, he was trapped, cornered by tax liabilities, leveraged by investors, and terrified of prosecution.</p>
-          <p>Gavin Andresen, unaware of the legal and financial pressure Wright faced, believed he was simply verifying one man's identity. He didn't realize that Wright might have only partial or contingent control over the genesis keys, or that his reveal was orchestrated under duress.</p>
-          <p>The deeper error was epistemological. Signing a message with the genesis block key only proves <strong>control</strong>, not <strong>authorship</strong>. And even that control can be partial, conditional, or delegated.</p>
-        </div>
-      </div>
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act4RiddleVideo" playsinline preload="metadata">
-            <source src="act4-greatriddle.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act4RiddleOverlay" onclick="toggleReelVideo('act4RiddleVideo', 'act4RiddleOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ WRIGHT'S ADMISSION ══════ -->
-    <div class="statement-divider">
-      <p>When asked directly if he was Satoshi, Wright replied:</p>
-      <p style="margin-top: 16px; font-family: var(--serif); font-size: clamp(22px, 3vw, 34px); font-weight: 400; font-style: italic; color: var(--accent); line-height: 1.4;">"I was the main part of it. Other people helped."</p>
-      <p style="margin-top: 16px;">In that moment, Wright subtly admitted the reality few want to confront: Satoshi Nakamoto was not a single person. Satoshi was a team.</p>
-    </div>
-
-    <!-- ══════ VIDEO 5: EPISTEMOLOGICAL MISTAKE ══════ -->
-    <div style="display: flex; justify-content: center; padding: 40px 0;">
-      <div class="act1-video-embed">
-        <video id="act4EpistVideo" playsinline preload="metadata">
-          <source src="act4-epistmistake.mp4" type="video/mp4">
-        </video>
-        <div class="video-play-overlay" id="act4EpistOverlay" onclick="toggleReelVideo('act4EpistVideo', 'act4EpistOverlay')">
-          <div class="play-button"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ ACT 4 VISUAL TIMELINE ══════ -->
-    <div class="act1-timeline">
-      <div class="act1-timeline-track">
-        <div class="act1-timeline-line"></div>
-        <div class="act1-timeline-arrow"></div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/gcHvZXNw/Whats-App-Image-2025-04-11-at-12-45-06.jpg" alt="ATO Investigation">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2013</div>
-          <div class="tl-node-label">ATO Investigation</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/fTHMGgwb/Ross-Jail.jpg" alt="Ross Ulbricht sentenced">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2015</div>
-          <div class="tl-node-label">Ulbricht Sentenced</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/m2fKDvwD/Craig-Wright-Police-Raid.jpg" alt="AFP raids Wright">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2015</div>
-          <div class="tl-node-label">Gizmodo Leaks &amp; Raid</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/vBWVXdwT/Liberty-Reserve.jpg" alt="Liberty Reserve sentenced">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2016</div>
-          <div class="tl-node-label">Liberty Reserve</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/gkz1VpDs/18-F534-CD-F4-AB-4-C9-D-B778-DEBCE6845122.jpg" alt="Calvin Ayre deal">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2016</div>
-          <div class="tl-node-label">Ayre &amp; MacGregor Deal</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/zXwGxK9N/Craig-Wright-Gizmodo.jpg" alt="Gizmodo expose">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2016</div>
-          <div class="tl-node-label">BBC Reveal</div>
-        </div>
-
-      </div>
-      <div class="act1-timeline-caption">The context that eluded Gavin, from ATO audit to the BBC reveal</div>
-    </div>
-
-    <!-- ══════ GATE TO ACT 5 ══════ -->
-    <div class="gate-section">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title">Continue to Act 5</h2>
-      <p class="gate-subtitle">The Team Hypothesis</p>
-      <a class="landing-cta-btn" onclick="openAct5()" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 5</a>
-    </div>
-
-  </div><!-- /act4 intro-container -->
-
-  <!-- Footer -->
-  <div class="site-footer">
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     ACT 5 PAGE
-═══════════════════════════════════════ -->
-<div id="act5-page">
-  <!-- Navigation Header -->
-  <nav class="page-nav" id="act5Nav">
-    <button class="page-nav-btn" onclick="backToAct4()">← Act 4</button>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
-    <button class="page-nav-btn primary" onclick="openAct6()">Act 6 →</button>
-  </nav>
-
-  <!-- ══════ KNIGHTLAB TIMELINE 5 (full-width) ══════ -->
-  <div class="timeline-container">
-    <iframe
-      src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2:2PACX-1vT9QD96NjtbQx5Hzc5vew88bKeRnMMjattS3kpk6lvcJFvpko7ENOl5rkAyhAX1HA&font=Default&lang=en&initial_zoom=2&height=650"
-      allowfullscreen
-      title="Satoshi Nakamoto as a Team Timeline"
-    ></iframe>
-  </div>
-
-  <div class="intro-container">
-
-    <!-- ══════ ACT 5 TITLE ══════ -->
-    <div class="editorial-full" style="text-align: center; padding: 40px 0 20px;">
-      <div class="section-label" style="text-align: center;">Act 5</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(26px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 24px;">Satoshi Nakamoto as a Team</h2>
-    </div>
-
-    <!-- ══════ INTRO + VIDEO 1 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-          <p>Once one entertains the possibility that Bitcoin was invented by a group, the investigation paradigm fundamentally shifts. Different individuals with complementary skills and motivations could have collaborated, none of them rightfully or ethically able to claim sole ownership over the Satoshi identity.</p>
-        </div>
-      </div>
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act5FirstVideo" playsinline preload="metadata">
-            <source src="act5-first.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act5FirstOverlay" onclick="toggleReelVideo('act5FirstVideo', 'act5FirstOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ SUPERHUMAN TRAITS, image right, text left ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">A Myth Built on Superhuman Traits</div>
-        <h2>Why one person doesn't fit</h2>
-        <div class="prose">
-          <p>The myth of Satoshi endures because it attributes superhuman capabilities to a single figure: expert-level coding skills, deep economic and cryptographic knowledge, and flawless written English across 260 posts and over 140,000 words, with no typos.</p>
-          <p>Satoshi had to conceive and code the Bitcoin software, build and manage the community, ensure constant mining activity, and be responsible for Bitcoin's survival during its precarious first two years. Such breadth and consistency is rare, if not impossible, for a single person.</p>
-          <p>It makes more sense that Satoshi was a group, a collective intelligence whose combined traits created a coherent whole greater than any of its parts. Yet this hypothesis is almost entirely absent from Bitcoin discourse.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/zfBMm6X2/77-B5-AF74-3-BE4-4864-B758-D3-B8-E268-BF8-A-1-105-c.jpg" alt="Satoshi's superhuman traits">
-        <div class="img-caption">The myth attributes superhuman capabilities to a single figure</div>
-      </div>
-    </div>
-
-    <!-- ══════ MAP OF NARRATIVE BLINDNESS ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/7YD7hsLP/91-E612-F9-F26-A-46-DB-8905-90-AB984-EE488.jpg" alt="3D map of Satoshi-related YouTube content">
-        <div class="img-caption"><a href="https://lustrous-paletas-82011f.netlify.app/" target="_blank" style="color: var(--accent); text-decoration: underline;">3D visualization map of Satoshi-related YouTube discourse</a></div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">The Map of Narrative Blindness</div>
-        <h2>A cultural blind spot</h2>
-        <div class="prose">
-          <p>To visualize how the team hypothesis is ignored in public discourse, we developed a <a href="https://lustrous-paletas-82011f.netlify.app/" target="_blank" style="color: var(--accent); text-decoration: underline;">3D map of Satoshi-related content</a>, built from transcripts of the 20 most-watched YouTube videos on the topic.</p>
-          <p>The map allows users to filter for mentions of "Gavin Andresen" or the idea of a "Satoshi team." When toggled, a striking pattern emerges: only a handful of videos reference Gavin's key meeting with Craig Wright, and almost none mention the team hypothesis at all.</p>
-          <p>This omission reflects a broader paradigm blindness, an active cultural reluctance to consider that Satoshi might have been a collective, not an individual.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ TEAM HYPOTHESIS, Beatles analogy ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">The Team Hypothesis</div>
-        <h2>No single member could claim the whole</h2>
-        <div class="prose">
-          <p>Let's imagine that Ringo Starr claimed, "I am The Beatles." The statement would be at best inaccurate, it would distort the collaborative reality that defined the group. He couldn't unilaterally claim the Beatles' catalog.</p>
-          <p>The same logic applies here: no single member of the Satoshi team could rightly claim to be Satoshi in isolation.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/C5DN3ZrJ/The-beatles.jpg" alt="The Beatles, collaborative genius">
-        <div class="img-caption">No single Beatle could claim to be The Beatles</div>
-      </div>
-    </div>
-
-    <!-- ══════ TEAM REFRAMES, Jobs/Wozniak analogy ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/rFz0wd1w/Jobs-Woz.jpg" alt="Steve Jobs and Steve Wozniak">
-        <div class="img-caption">Jobs and Wozniak, contrasting strengths that built Apple</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Reframing Authorship</div>
-        <h2>The team hypothesis reframes the discussion</h2>
-        <div class="prose">
-          <p>Imagine no one knew who invented the Apple computer. Ten years after its debut, a man named Steve Jobs comes forward, claiming he was the father of Apple. Apple fans would probe: "Are you a hardware engineer?" "Are you a programmer?" Jobs, denying either expertise, would seem an unlikely candidate.</p>
-          <p>But what if he simply said: "I was the main part of it. Other people helped." Most would still recognize Jobs as the father of Apple, despite knowing that Steve Wozniak assembled the first Apple 1 by hand.</p>
-          <p>Without Wozniak's technical mastery, there would be no Apple 1. Without Jobs' vision, drive, and strategic leadership, there might have been no Apple at all. History is filled with such partnerships: pairs whose contrasting strengths created something neither could achieve alone.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ TEAM CLARIFIES CONTRADICTIONS ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">Resolving the Paradox</div>
-        <h2>The team hypothesis clarifies contradictions</h2>
-        <div class="prose">
-          <p>Gavin Andresen, in hindsight, didn't uncover a fraud. He uncovered a fragment, a glimpse behind the Satoshi mask. The public, expecting the full mask, saw only a piece and discarded it entirely.</p>
-          <p>What if Craig Wright's incomplete image does not disqualify him, but instead confirms that Bitcoin was never the work of a lone genius, but the result of a collaboration between people with different yet complementary expertise?</p>
-          <p>Once we accept the team hypothesis, many of the contradictions around Craig Wright's behavior begin to make sense: his hesitation during the BBC session, the inconsistencies, the legal entanglements, the allegations of forgery. If Ringo Starr claimed to be the Beatles, he would inevitably struggle, not because he didn't participate, but because proof of the whole is dispersed across multiple collaborators.</p>
-        </div>
-      </div>
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act5SecondVideo" playsinline preload="metadata">
-            <source src="act5-second.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act5SecondOverlay" onclick="toggleReelVideo('act5SecondVideo', 'act5SecondOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ TOWARD THE FORGOTTEN PARTNER ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/zfRhLfG3/52-C0150-A-804-F-4118-BE23-213-D13214-CAD.jpg" alt="Craig Wright's email to Louis Kleiman">
-        <div class="img-caption">"Your son Dave and I are two of the three key people behind Bitcoin."</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Toward the Forgotten Partner</div>
-        <h2>A name that keeps surfacing</h2>
-        <div class="prose">
-          <p>Paying closer attention to the possibility that Bitcoin was invented by a team, a critical question emerges: Did Craig Wright ever disclose the names of his collaborators?</p>
-          <p>Turns out that he did. Throughout eight years of controversy, one name surfaces again and again: in court records, in emails, in early IP transfers.</p>
-          <p>Craig Wright felt compelled to contact an old Florida-based man named Louis Kleiman. In his email he wrote:</p>
-          <p style="font-style: italic; color: var(--accent);">"Your son Dave and I are two of the three key people behind Bitcoin."</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ VIDEO 3 ══════ -->
-    <div style="display: flex; justify-content: center; padding: 40px 0;">
-      <div class="act1-video-embed">
-        <video id="act5ThirdVideo" playsinline preload="metadata">
-          <source src="act5-third.mp4" type="video/mp4">
-        </video>
-        <div class="video-play-overlay" id="act5ThirdOverlay" onclick="toggleReelVideo('act5ThirdVideo', 'act5ThirdOverlay')">
-          <div class="play-button"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ CLOSING QUESTION ══════ -->
-    <div class="editorial-full" style="max-width: 800px; text-align: center; padding: 60px 0;">
-      <h2 style="font-family: var(--serif); font-size: clamp(24px, 3.5vw, 40px); font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: 16px;">Who is Dave Kleiman?</h2>
-      <p style="font-family: var(--serif); font-size: clamp(18px, 2.5vw, 26px); font-weight: 400; font-style: italic; color: var(--accent); line-height: 1.5;">And what role did he play in the invention of Bitcoin?</p>
-    </div>
-
-    <!-- ══════ ACT 5 VISUAL TIMELINE ══════ -->
-    <div class="act1-timeline">
-      <div class="act1-timeline-track">
-        <div class="act1-timeline-line"></div>
-        <div class="act1-timeline-arrow"></div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/zfBMm6X2/77-B5-AF74-3-BE4-4864-B758-D3-B8-E268-BF8-A-1-105-c.jpg" alt="Superhuman traits">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Myth</div>
-          <div class="tl-node-label">Superhuman Traits</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/7YD7hsLP/91-E612-F9-F26-A-46-DB-8905-90-AB984-EE488.jpg" alt="Narrative blindness">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Blind</div>
-          <div class="tl-node-label">Narrative Blindness</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/C5DN3ZrJ/The-beatles.jpg" alt="Team hypothesis">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Team</div>
-          <div class="tl-node-label">The Beatles Analogy</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/rFz0wd1w/Jobs-Woz.jpg" alt="Jobs and Wozniak">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Reframe</div>
-          <div class="tl-node-label">Jobs &amp; Wozniak</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/ZR7HZ5n1/Unsolved-Satoshi-puzzle.jpg" alt="Contradictions resolved">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Resolve</div>
-          <div class="tl-node-label">Contradictions Clarified</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/zfRhLfG3/52-C0150-A-804-F-4118-BE23-213-D13214-CAD.jpg" alt="Dave Kleiman email">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2014</div>
-          <div class="tl-node-label">The Forgotten Partner</div>
-        </div>
-
-      </div>
-      <div class="act1-timeline-caption">From myth to reality, the team hypothesis and the forgotten partner</div>
-    </div>
-
-    <!-- ══════ GATE TO ACT 6 ══════ -->
-    <div class="gate-section">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title">Continue to Act 6</h2>
-      <p class="gate-subtitle">The Life and Legacy of Dave Kleiman</p>
-      <a class="landing-cta-btn" onclick="openAct6()" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 6</a>
-    </div>
-
-  </div><!-- /act5 intro-container -->
-
-  <!-- Footer -->
-  <div class="site-footer">
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     ACT 6 PAGE
-═══════════════════════════════════════ -->
-<div id="act6-page">
-  <!-- Navigation Header -->
-  <nav class="page-nav" id="act6Nav">
-    <button class="page-nav-btn" onclick="backToAct5()">← Act 5</button>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
-    <button class="page-nav-btn primary" onclick="openAct7()">Act 7 →</button>
-  </nav>
-
-  <!-- ══════ KNIGHTLAB TIMELINE 6 (full-width) ══════ -->
-  <div class="timeline-container">
-    <iframe
-      src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2%3A2PACX-1vSdCx_WCLR6X5_oJU3KygUoOKJUEaxbyq4kb0X_DxmqsYwYHb-zOYaAGH5JTH0cVg&font=Default&lang=en&initial_zoom=2&height=650"
-      allowfullscreen
-      title="The Life and Legacy of Dave Kleiman"
-    ></iframe>
-  </div>
-
-  <div class="intro-container">
-
-    <!-- ══════ ACT 6 TITLE ══════ -->
-    <div class="editorial-full" style="text-align: center; padding: 40px 0 20px;">
-      <div class="section-label" style="text-align: center;">Act 6</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(26px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 24px;">The Missing Piece of the Satoshi Puzzle</h2>
-    </div>
-
-    <!-- ══════ INTRO + VIDEO 1 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
-          <p>With the team hypothesis now established and Craig Wright's role reframed as one potential piece of a larger puzzle, it becomes essential to examine the person he named as "key" to Bitcoin's creation: Dave Kleiman.</p>
-          <p>Do the other missing pieces fit?</p>
-        </div>
-      </div>
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act6FirstVideo" playsinline preload="metadata">
-            <source src="act6-first.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act6FirstOverlay" onclick="toggleReelVideo('act6FirstVideo', 'act6FirstOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ A BRILLIANT INDIVIDUAL, image right, text left ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">A Brilliant Individual</div>
-        <h2>Dave Kleiman (1967–2013)</h2>
-        <div class="prose">
-          <p>Dave Kleiman was born in 1967 in Palm Beach, Florida. He was adopted by Louis and Regina Kleiman. In 1989, at the age of 21, he was awarded the U.S. Army's Soldier of the Year title and the Army Achievement Medal, with official commendation praising his appearance, knowledge, and dedication to duty, noting he "never failed to produce anything but outstanding results."</p>
-          <p>In 1995, a devastating motorcycle accident left Dave paralyzed and confined to a wheelchair. Rather than retreat, he dedicated himself entirely to cybersecurity and encryption systems. His early company, Securit-e-doc, developed cryptographic tools for NASA and the Department of Defense.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/XJYDfMcD/DaveArmy.jpg" alt="Dave Kleiman in military uniform">
-        <div class="img-caption">Dave Kleiman, U.S. Army Soldier of the Year, 1989</div>
-      </div>
-    </div>
-
-    <!-- ══════ WINDOWS EXPERTISE ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/d1CnmqZ6/NASA-med.jpg" alt="NASA">
-        <div class="img-caption">Kleiman's cryptographic tools were used by NASA and the DoD</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Windows &amp; Bitcoin</div>
-        <h2>A telling technical alignment</h2>
-        <div class="prose">
-          <p>Kleiman's expertise with Windows systems was so advanced that he developed custom encryption layers to enhance the operating system, earning Microsoft's Most Valuable Professional award for multiple consecutive years in the "security" category.</p>
-          <p>The first version of Bitcoin was also built for Windows and remained incompatible with Linux for some time, an odd choice in a cypherpunk community dominated by Unix/Linux users, but one that aligns perfectly with Kleiman's development environment.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ EMBEDDED IN THE RIGHT CIRCLES ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">Embedded in the Right Circles</div>
-        <h2>The Metzdowd list and the SANS Institute</h2>
-        <div class="prose">
-          <p>In March 2003, just a few days after Adam Back, Dave Kleiman subscribed to the Metzdowd cryptography mailing list, the same forum where Satoshi would later release the Bitcoin whitepaper. This directly placed him in the intellectual stream from which Bitcoin emerged.</p>
-          <p>Around the same time, he began collaborating with Craig Wright. Both were regular contributors to the SANS Institute, the world's leading cybersecurity training organization. In 2007, they co-authored the official guide for the CHFI (Computer Hacking Forensic Investigator) certification, one year before the Bitcoin whitepaper was released.</p>
-          <p>His peers nicknamed him "Dave Mississippi", a reference to the overwhelming number of credentials trailing his name. His technical reputation was validated by Microsoft, NASA, and the U.S. Army. He was deeply embedded in the world of cryptography, self-taught, and driven by a relentless work ethic.</p>
-        </div>
-      </div>
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act6SecondVideo" playsinline preload="metadata">
-            <source src="act6-second.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act6SecondOverlay" onclick="toggleReelVideo('act6SecondVideo', 'act6SecondOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ HOSPITALIZATION AND DEATH ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/Qt71MTmb/military-cemetery.jpg" alt="Military cemetery">
-        <div class="img-caption">Dave Kleiman died alone in April 2013, his body found two weeks later</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Hospitalization and Premature Death</div>
-        <h2>A disappearance that mirrors Satoshi's</h2>
-        <div class="prose">
-          <p>What happened to Dave during Satoshi's active period is not well documented. In late 2010, around the same time Satoshi disappeared from the public Bitcoin forum, Dave was admitted to a VA hospital for treatment of life-threatening infections related to prolonged immobility and pressure sores.</p>
-          <p>Between 2011 and 2013, Dave spent most of his time hospitalized. In February 2011, he founded W&K Info Defense Research LLC in Florida, its main purpose: to develop and hold cybersecurity and cryptographic intellectual property and manage Bitcoin holdings.</p>
-          <p>In April 2013, Dave died from a combination of infection and drug complications. His body was discovered by a friend nearly two weeks after his death. He died alone, in squalor.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ AN ENCRYPTED LEGACY ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <div class="section-label">An Encrypted Legacy</div>
-        <h2>300,000 Bitcoin in encrypted files</h2>
-        <div class="prose">
-          <p>When Dave passed away, his family discovered multiple Bitcoin wallets on his machines, alongside encrypted files allegedly containing a significant trove of early Bitcoin. Wright claimed these files were essentially unrecoverable without Dave's knowledge, a scenario that mirrors the dormant Satoshi coins.</p>
-          <p>After Dave's death, Craig began moving W&K's ownership into his Australian companies, seeking to claim IP and tax benefits associated with the digital assets and intellectual property.</p>
-          <p>In March 2014, following a hearing with the Australian Tax Office, Craig exchanged emails with Dave's brother, Ira Kleiman. He assured Ira that Dave's shares in W&K belonged to him and informed him that Dave's encrypted files contained over 300,000 Bitcoin.</p>
-          <p>Dave's estate, led by Ira, later sued Wright for misappropriation of Bitcoin-related assets and intellectual property. In 2021, a U.S. federal court awarded W&K Info Defense Research LLC <strong>$100 million</strong> in damages, citing improperly transferred software and IP.</p>
-        </div>
-      </div>
-      <div class="editorial-image no-frame">
-        <img loading="lazy" src="https://i.postimg.cc/FzRzXKbg/Dave-Craig.jpg" alt="Dave Kleiman and Craig Wright">
-        <div class="img-caption">Dave Kleiman and Craig Wright, partners in Bitcoin's creation</div>
-      </div>
-    </div>
-
-    <!-- ══════ SQUARING THE CIRCLE + VIDEO 3 ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act6ThirdVideo" playsinline preload="metadata">
-            <source src="act6-third.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act6ThirdOverlay" onclick="toggleReelVideo('act6ThirdVideo', 'act6ThirdOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Squaring the Circle</div>
-        <h2>Dave Kleiman completes the puzzle</h2>
-        <div class="prose">
-          <p>If Satoshi was a team and Craig Wright was part of it, Dave Kleiman completes the puzzle.</p>
-          <p><strong>Geographic match:</strong> Dave lived in Florida, a perfect match for the Satoshi time zone analysis, which ruled out candidates like Craig Wright in Australia and pointed instead to someone active during U.S. East Coast hours.</p>
-          <p><strong>Technical match:</strong> Dave's self-taught programming background fits the profile of Bitcoin's early code. Jeff Garzik, one of the first Bitcoin Core developers, named Kleiman as his top Satoshi candidate, citing idiosyncrasies in the source code that reflected the work of a brilliant but non-academically trained coder, exactly like Dave.</p>
-          <p><strong>Cryptographic match:</strong> The hard drives and encrypted files recovered after Dave's death suggest he controlled the "Satoshi stash", and his death offers a plausible explanation for why hundreds of thousands of Bitcoin have never moved.</p>
-          <p>The fragments align: timezone, codebase, values, disappearance, all match the negative space left by Satoshi.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ CLOSING ══════ -->
-    <div class="editorial-full" style="max-width: 800px; text-align: center; padding: 60px 0;">
-      <div class="prose" style="font-size: clamp(17px, 2vw, 21px); line-height: 1.8;">
-        <p>Craig Wright mentioned not one but three key contributors to Bitcoin in his first email to Louis Kleiman. The picture isn't fully complete, who were the other contributors?</p>
-      </div>
-      <div class="editorial-image no-frame" style="max-width: 500px; margin: 30px auto;">
-        <img loading="lazy" src="https://i.postimg.cc/3xtYJ44x/Puzzlealmostcomplete.jpg" alt="The Satoshi puzzle almost complete">
-      </div>
-    </div>
-
-    <!-- ══════ ACT 6 VISUAL TIMELINE ══════ -->
-    <div class="act1-timeline">
-      <div class="act1-timeline-track">
-        <div class="act1-timeline-line"></div>
-        <div class="act1-timeline-arrow"></div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/XJYDfMcD/DaveArmy.jpg" alt="Dave Kleiman Army">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">1989</div>
-          <div class="tl-node-label">Soldier of the Year</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/d1CnmqZ6/NASA-med.jpg" alt="NASA work">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2003</div>
-          <div class="tl-node-label">Metzdowd &amp; NASA</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/NMHKH7m4/Kleiman-Wright-Book-1.jpg" alt="CHFI Book">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2007</div>
-          <div class="tl-node-label">CHFI Book with Wright</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/nc6LfQmb/D93-F8-E76-8-F9-A-43-CC-BD6-D-17-A1-E73-FC070-1-105-c.jpg" alt="Bitcoin whitepaper">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2008</div>
-          <div class="tl-node-label">Bitcoin Whitepaper</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/Qt71MTmb/military-cemetery.jpg" alt="Dave's death">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2013</div>
-          <div class="tl-node-label">Dave Kleiman Dies</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/FzRzXKbg/Dave-Craig.jpg" alt="$100M verdict">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2021</div>
-          <div class="tl-node-label">$100M Verdict</div>
-        </div>
-
-      </div>
-      <div class="act1-timeline-caption">The life and legacy of Dave Kleiman, from soldier to Satoshi</div>
-    </div>
-
-    <!-- ══════ GATE TO ACT 7 ══════ -->
-    <div class="gate-section">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title">Continue to Act 7</h2>
-      <p class="gate-subtitle">Behind Every Myth There Is a Tragedy</p>
-      <a class="landing-cta-btn" onclick="openAct7()" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 7</a>
-    </div>
-
-  </div><!-- /act6 intro-container -->
-
-  <!-- Footer -->
-  <div class="site-footer">
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     ACT 7 PAGE
-═══════════════════════════════════════ -->
-<div id="act7-page">
-  <!-- Navigation Header -->
-  <nav class="page-nav" id="act7Nav">
-    <button class="page-nav-btn" onclick="backToAct6()">← Act 6</button>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
-    <button class="page-nav-btn" style="visibility: hidden;">—</button>
-  </nav>
-
-  <div class="intro-container">
-
-    <!-- ══════ ACT 7 TITLE ══════ -->
-    <div class="editorial-full" style="text-align: center; padding: 40px 0 20px;">
-      <div class="section-label" style="text-align: center;">Act 7</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(26px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 24px;">The Complete Origins of Bitcoin</h2>
-      <p style="font-family: var(--serif); font-style: italic; color: var(--text-dim); font-size: 18px;">Behind Every Myth There Is a Tragedy</p>
-    </div>
-
-    <!-- ══════ PROMETHEUS' CURSE ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">Prometheus' Curse</h3>
-        <p>Dave Kleiman's tragic end is but one of the many tragedies that hit the group of people who contributed to inventing Bitcoin.</p>
-        <p style="margin-top: 16px;">In 2014, Craig presented Dave as one of the three key people behind Bitcoin. We have already established how in many respects, Dave's life complemented the Satoshi puzzle. Let's look into the other people mentioned by Craig over the years and see how they fit in the puzzle.</p>
-      </div>
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/FzFHBL15/prometheus.jpg" alt="Prometheus bringing fire to humanity">
-      </div>
-    </div>
-
-    <!-- ══════ DAVE REES ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/GpjT2rWQ/18-F16192-B7-BC-4979-96-DA-94-E84-D7-ADC78.jpg" alt="Dave Rees">
-      </div>
-      <div class="editorial-text">
-        <p>According to Wright, the Satoshi team also included <a href="https://mathshistory.st-andrews.ac.uk/Biographies/Rees_David/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">Dave Rees</a>, a renowned British mathematician whose reputation was first established during World War II as he worked alongside Alan Turing in breaking the codes of the Enigma machine.</p>
-        <p style="margin-top: 16px;">The British flavour of Satoshi's writing, punctuation, spelling, vocabulary, may well be explained by Rees' editorial contributions. Not much of Dave Rees' contribution to Bitcoin transpired during the court proceedings involving Craig and Ira Kleiman. Dave Rees passed away in 2013.</p>
-        <p style="margin-top: 16px;">We are left with an incomplete picture of how Dave Kleiman, Craig Wright, and potentially Dave Rees collaborated. This problem is compounded by Craig altering significantly his account of the conditions in which Bitcoin was invented.</p>
-      </div>
-    </div>
-
-    <!-- ══════ CRAIG'S SHIFTING NARRATIVE + VIDEO 1 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act7FirstVideo" playsinline preload="metadata">
-            <source src="act7-first.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act7FirstOverlay" onclick="toggleReelVideo('act7FirstVideo', 'act7FirstOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">Craig's Shifting Narrative</h3>
-        <p>Craig's narrative regarding how the "Satoshi team" operated was victim of externalities, specifically when Dave's estate took him to court over the misappropriation of W&K Info Defense assets. In 2014 and 2016, he emphasized Kleiman's centrality. But as litigation with Ira Kleiman progressed, he began minimizing Dave's contributions, claiming he merely edited some code. This strategic repositioning appears motivated by legal risk.</p>
-        <p style="margin-top: 16px;">Which leads to the question: how can we trust anything Craig says? He had a vested interest in coming out as Satoshi in 2016 and in downplaying Dave's role from 2019 onwards.</p>
-      </div>
-    </div>
-
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <p>The more Wright has tried to distance himself from Dave, the less credible his own story becomes.</p>
-        <p style="margin-top: 16px;">It was established in court that Craig backdated documents related to W&K, forged Dave's signature, and failed to provide cryptographic controls over thousands of Bitcoin wallets that he alleged were part of W&K's legacy.</p>
-        <p style="margin-top: 16px;">And so we must look for evidence that Craig cannot refute. One such piece of evidence came from another mystery person involved in the invention of Bitcoin.</p>
-      </div>
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/L5mkBgdh/2-F40287-B-6-D48-4271-A7-C3-E29-B6076-E52-E.jpg" alt="Craig Wright and Dave Kleiman">
-      </div>
-    </div>
-
-    <!-- ══════ UYEN NGUYEN, THE SATOSHI TEAM TRAINEE + VIDEO 2 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act7SecondVideo" playsinline preload="metadata">
-            <source src="act7-second.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act7SecondOverlay" onclick="toggleReelVideo('act7SecondVideo', 'act7SecondOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">The Satoshi Team Trainee</h3>
-        <p>Introduced in court documents as Craig Wright's assistant during the 2016 BBC proof session, Uyen Nguyen is a SANS Institute affiliate closely linked to both Craig and Dave Kleiman. According to Craig's testimony, Uyen joined the Bitcoin project in 2010 as a trainee under Dave Kleiman. Court proceedings also reveal that she was appointed as the signatory on the W&K filing documents.</p>
-        <p style="margin-top: 16px;">Before the December 2015 media tsunami, Uyen had also interacted with renowned cryptographer Ian Grigg, who would help coordinate with Jon Matonis the 2016 verification process with Gavin Andresen.</p>
-        <p style="margin-top: 16px;">After the failed BBC reveal, Uyen disappeared from public view. But before she did, she posted a handful of cryptic but powerful tweets using the alias "TulipBoy," offering rare glimpses into the early dynamics of the Satoshi team.</p>
-        <p style="margin-top: 16px;">In those tweets, she made one thing clear: <em>"Satoshi Nakamoto was Dave Kleiman and Craig Wright."</em> Notably, she never described Dave as a helper or assistant. In her account, at worst, they were equals; at best, Dave came first.</p>
-      </div>
-    </div>
-
-    <!-- ══════ THE ORIGIN OF THE NAME ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/sXK5FBZR/ACA1-EF00-2452-4-C61-BDBC-238-A071587-D3.jpg" alt="Ash Ketchum / Satoshi from Pokémon">
-      </div>
-      <div class="editorial-text">
-        <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">The Origin of the Name</h3>
-        <p>Among Uyen's most astonishing revelations was her explanation for the name Satoshi.</p>
-        <p style="margin-top: 16px;">When asked about it, Craig Wright claimed he chose the name as a reference to Ash Ketchum from Pokémon, arguing that "Ash" is short for "Satoshi." It's a connection that feels, at best, arbitrary.</p>
-        <p style="margin-top: 16px;">But Uyen told a different story: <em>"The name Satoshi comes from Satoshi David, a character in The House of Morgan, Casino Age. You now have a full origin of Satoshi Nakamoto."</em></p>
-      </div>
-    </div>
-
-    <div class="editorial-row">
-      <div class="editorial-text">
-        <p>The House of Morgan is a non-fiction book published in the early 1990s that describes the historical emergence of the J.P. Morgan financial empire. One key individual who helped J.P. Morgan restructure Japan's banking system after World War II was a double agent named Satoshi. Born into a Japanese family, young Satoshi was adopted after the war by an American family that gave him the Christian name of David.</p>
-        <p style="margin-top: 16px;">Like Satoshi David, Dave Kleiman was also adopted, and he, too, stood on the verge of launching a technology that could transform global banking.</p>
-      </div>
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/DyQ4h6Hb/14887615-C098-4-E6-E-9-FED-497-D8-A446693.jpg" alt="Satoshi David reference from The House of Morgan">
-      </div>
-    </div>
-
-    <!-- ══════ IMPLICATIONS OF THE TULIPBOY NAMING STORY ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/KjGyBfJV/A2628-A47-FC9-B-465-A-80-A0-823-AD3823-B96.jpg" alt="Evidence alignment illustration">
-      </div>
-      <div class="editorial-text">
-        <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">Implications of the TulipBoy Naming Story</h3>
-        <p>There is a massive difference between someone saying, "I picked the name Satoshi because of X," and someone referencing a specific historical figure from a published book, written decades earlier, with verifiable biographical details, no room for backdating, no possibility of fabrication.</p>
-        <p style="margin-top: 16px;">Uyen's reference to The House of Morgan is checkable and independent of all narrative manipulation. The historical character, Satoshi David, adopted after World War II and instrumental in reshaping Japan's financial system, is not an improvised backstory.</p>
-        <p style="margin-top: 16px;">The dissonance between Craig Wright's Pokémon explanation and the Satoshi David association is in obvious rupture with Craig's claim of being "the main part of it," and his further assertion about Dave's limited role.</p>
-        <p style="margin-top: 16px;">Through years of confusion, contradiction, and forgery, this one detail, the naming origin, points straight at the truth. Not just to Dave Kleiman's involvement, but to the Satoshi team hypothesis itself: anchored by the cryptographic evidence Craig Wright provided to Gavin Andresen, reinforced by the combined technical expertise of Craig and Dave, and supported by consistent timelines and testimonies from early Bitcoin pioneers.</p>
-        <p style="margin-top: 16px; font-style: italic; color: var(--accent);">Everything aligns. All of it points in the same direction.</p>
-      </div>
-    </div>
-
-    <!-- ══════ BEYOND THE MYTH ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/jjqkjpkp/CD5-CFB00-7-C22-4946-8-ABC-979-E6589-C0-BA.jpg" alt="The Satoshi mystery expanded timeline">
-      </div>
-      <div class="editorial-text">
-        <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">Beyond the Myth</h3>
-        <p>If we build a layered model of the Satoshi team, Kleiman, Wright, Rees, and Uyen, a plausible, coherent origin story emerges. And it explains the inconsistencies, contradictions, and strange behaviours that have marked the public discourse since 2016.</p>
-        <p style="margin-top: 16px;">Yes, Craig Wright has committed forgery and perjury. Yes, he refuses to use private keys in public. But remove the burden of the lone genius myth, and the Satoshi team hypothesis not only becomes plausible, it becomes hard to refute.</p>
-        <p style="margin-top: 16px;">Why then are these facts not more commonly known? These truths remain largely invisible not just because they disrupt the legend of Satoshi, but because they threaten to rewrite the mythology that underpins Bitcoin's identity.</p>
-      </div>
-    </div>
-
-    <!-- ══════ MYTH, POWER, AND THE BURDEN OF TRUTH ══════ -->
-    <div class="editorial-full">
-      <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">Myth, Power, and the Burden of Truth</h3>
-      <p>The idea of Satoshi as a flawless, selfless genius is powerful. But it also serves the power structure around Bitcoin: venture capitalists, maximalists, technocrats. Admitting the real story doesn't just threaten the myth of the man; it threatens the myth of the mission.</p>
-      <p style="margin-top: 16px;">At an individual level, a range of cognitive biases obscure our ability to see through the myth. At a collective level, the myth serves an essential function. It is economically useful, psychologically comforting, and politically powerful. The Satoshi myth preserves the idea of a decentralised saviour, a flawless genius who gifted humanity a financial alternative.</p>
-      <p style="margin-top: 16px;">But the truth, rooted in human tragedy and complexity, is less elegant and therefore more threatening to entrenched narratives and economic interests.</p>
-    </div>
-
-    <!-- ══════ BACK TO MONTY HALL + VIDEO 3 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <div class="act1-video-embed">
-          <video id="act7ThirdVideo" playsinline preload="metadata">
-            <source src="act7-third.mp4" type="video/mp4">
-          </video>
-          <div class="video-play-overlay" id="act7ThirdOverlay" onclick="toggleReelVideo('act7ThirdVideo', 'act7ThirdOverlay')">
-            <div class="play-button"></div>
-          </div>
-        </div>
-      </div>
-      <div class="editorial-text">
-        <h3 style="font-family: var(--serif); font-size: 24px; color: var(--accent); margin-bottom: 16px;">Back to Monty Hall</h3>
-        <p>Behind every myth, there is a tragedy. Behind the idealised story of a lone, selfless genius inventing a perfect system with perfect motives and perfect anonymity, there are humans: flawed, ambitious, trying to protect their work, claim credit, avoid blame, and survive the storm they helped unleash.</p>
-        <p style="margin-top: 16px;">The Kleiman–Wright–Rees team hypothesis sits quietly in the corner of this conversation, surrounded by mounting evidence. In any other context, it would have already triggered a reversal of the burden of proof. It would have become the default hypothesis to challenge.</p>
-        <p style="margin-top: 16px;">And yet, in the crypto community, it has been mostly ignored. Like the contestant in Monty Hall who refuses to switch doors despite better odds, most observers cling to their first guess: Nick Szabo, Adam Back, or the mystery itself.</p>
-      </div>
-    </div>
-
-    <div class="editorial-full">
-      <p>Of course, unanswered questions remain: about each contributor's exact role, about conflicting motivations, about the various trusts Craig Wright and Dave Kleiman set up over the years. But these are not reasons to ignore the obvious. They are invitations to investigate further.</p>
-      <p style="margin-top: 16px;">This blog is not the final word. It is an invitation to open source inquiry and end the taboo around the origins of Bitcoin.</p>
-      <p style="margin-top: 16px;">Kleiman, Wright, and Rees were not central to the cypherpunk movement. They were outsiders. But outsiders often see what insiders miss. They stood on the shoulders of giants and assembled something enduring.</p>
-      <p style="margin-top: 16px;">Bitcoin is no longer just a technology. It is a living organism, shaped, nurtured, and protected by thousands across the globe. And in that sense: we are all Satoshi.</p>
-    </div>
-
-    <!-- ══════ WE ARE ALL SATOSHI ══════ -->
-    <div class="editorial-full" style="text-align: center; padding: 60px 0 20px;">
-      <h3 style="font-family: var(--serif); font-size: 28px; color: var(--accent); margin-bottom: 24px;">We Are All Satoshi</h3>
-      <img loading="lazy" src="https://i.postimg.cc/MTLnprmz/Satoshi-puzzle-complete.jpg" alt="Satoshi puzzle complete" style="max-width: 600px; width: 100%; border-radius: 3px; margin: 0 auto 32px;">
-    </div>
-
-    <div class="editorial-full" style="text-align: center; padding: 40px 0;">
-      <p style="font-family: var(--mono); font-size: 14px; color: var(--text-muted); letter-spacing: 2px;">73262a56ce07170bd36f6769eb7708</p>
-    </div>
-
-    <!-- ══════ VISUAL TIMELINE PATCHWORK ══════ -->
-    <div class="act1-timeline">
-      <div class="act1-timeline-track">
-        <div class="act1-timeline-line"></div>
-        <div class="act1-timeline-arrow"></div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/FzFHBL15/prometheus.jpg" alt="Prometheus">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Rees</div>
-          <div class="tl-node-label">British Mathematician</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/L5mkBgdh/2-F40287-B-6-D48-4271-A7-C3-E29-B6076-E52-E.jpg" alt="Craig &amp; Dave">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Craig</div>
-          <div class="tl-node-label">Shifting Narrative</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/pT8XZXtn/24941-D08-DE74-4-BDD-95-B6-CF24-D1-DCE225.jpg" alt="Uyen / TulipBoy">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Uyen</div>
-          <div class="tl-node-label">The Satoshi Trainee</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/DyQ4h6Hb/14887615-C098-4-E6-E-9-FED-497-D8-A446693.jpg" alt="Satoshi David">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Satoshi</div>
-          <div class="tl-node-label">The Name Origin</div>
-        </div>
-
-        <div class="tl-node above">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/KjGyBfJV/A2628-A47-FC9-B-465-A-80-A0-823-AD3823-B96.jpg" alt="Evidence pyramid">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">Evidence</div>
-          <div class="tl-node-label">The Pyramid</div>
-        </div>
-
-        <div class="tl-node below">
-          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/MTLnprmz/Satoshi-puzzle-complete.jpg" alt="We Are All Satoshi">
-          <div class="tl-node-dot"></div>
-          <div class="tl-node-year">2026</div>
-          <div class="tl-node-label">We Are All Satoshi</div>
-        </div>
-
-      </div>
-      <div class="act1-timeline-caption">Behind every myth there is a tragedy, the complete origins of Bitcoin</div>
-    </div>
-
-    <!-- ══════ FINAL CLOSING ══════ -->
-    <div class="editorial-full" style="text-align: center; padding: 60px 0 40px;">
-      <p style="font-family: var(--serif); font-size: 20px; color: var(--text-dim); font-style: italic;">The Byzantine General, Research work · 2018–2026</p>
-    </div>
-
-  </div><!-- /act7 intro-container -->
-
-  <!-- Footer -->
-  <div class="site-footer">
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-</div>
 
 <script>
   // ═══════════════════════════════════════
@@ -4796,7 +3035,8 @@
 
   function backToArtboard() {
     ['intro-page','act1-page','act2-page','act3-page','act4-page','act5-page','act6-page','act7-page'].forEach(function(id) {
-      document.getElementById(id).classList.remove('visible');
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('visible');
     });
     document.getElementById('landing-scroll-container').classList.add('visible');
     window.scrollTo(0, 0);
@@ -5232,6 +3472,7 @@
 
   // Initialize loader on page load
   window.addEventListener('DOMContentLoaded', initLoader);
+
 </script>
 
 </body>
