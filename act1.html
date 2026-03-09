@@ -3,24 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Byzantine General — Home</title>
+  <title>The Byzantine General — Act 1 — The Quest for Digital Cash</title>
   <style>
   @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=PT+Sans+Narrow:wght@400;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap');
 
   /* Page containers — each is a fixed full-screen scroll container */
-  #intro-page, #act1-page, #act2-page, #act3-page, #act4-page, #act5-page, #act6-page, #act7-page {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    overflow-y: auto; overflow-x: hidden;
-    display: none;
+  #act1-page {
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
     background: var(--bg);
-    z-index: 500;
+    min-height: 100vh;
+    z-index: 0;
   }
   #landing-scroll-container {
     display: none;
     position: relative;
     background: var(--bg);
   }
-  #landing-scroll-container.visible { display: block; }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1388,7 +1389,83 @@
     .countdown-block .cd-label { font-size: 7px; letter-spacing: 2px; }
     .countdown-divider { font-size: 20px; padding-top: 12px; }
     .site-footer { padding: 40px 20px; }
-    .footer-socials { margin-bottom: 20px; gap: 14px; }
+    .footer-newsletter {
+    margin-bottom: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+  }
+  .footer-newsletter-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .footer-newsletter-sub {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 300;
+    max-width: 400px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .footer-newsletter-form {
+    display: flex;
+    gap: 0;
+    max-width: 420px;
+    width: 100%;
+  }
+  .footer-newsletter-form input[type="email"] {
+    flex: 1;
+    padding: 12px 16px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-right: none;
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  .footer-newsletter-form input[type="email"]::placeholder {
+    color: var(--text-dim);
+    opacity: 0.6;
+  }
+  .footer-newsletter-form input[type="email"]:focus {
+    border-color: var(--accent);
+  }
+  .footer-newsletter-form button {
+    padding: 12px 24px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .footer-newsletter-form button:hover {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+  .footer-newsletter-success {
+    display: none;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .footer-socials { margin-bottom: 20px; gap: 14px; }
     .footer-newsletter { margin-bottom: 28px; padding-bottom: 28px; gap: 12px; }
     .footer-newsletter-title { font-size: 16px; }
     .footer-newsletter-sub { font-size: 12px; }
@@ -1886,83 +1963,6 @@
     margin-top: 12px;
     letter-spacing: 2px;
   }
-
-  .footer-newsletter {
-    margin-bottom: 36px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding-bottom: 36px;
-    border-bottom: 1px solid var(--border);
-  }
-  .footer-newsletter-title {
-    font-family: var(--serif);
-    font-size: 18px;
-    color: var(--text);
-    letter-spacing: 1px;
-  }
-  .footer-newsletter-sub {
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--text-dim);
-    font-weight: 300;
-    max-width: 400px;
-    text-align: center;
-    line-height: 1.6;
-  }
-  .footer-newsletter-form {
-    display: flex;
-    gap: 0;
-    max-width: 420px;
-    width: 100%;
-  }
-  .footer-newsletter-form input[type="email"] {
-    flex: 1;
-    padding: 12px 16px;
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--text);
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    border-right: none;
-    border-radius: 0;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  .footer-newsletter-form input[type="email"]::placeholder {
-    color: var(--text-dim);
-    opacity: 0.6;
-  }
-  .footer-newsletter-form input[type="email"]:focus {
-    border-color: var(--accent);
-  }
-  .footer-newsletter-form button {
-    padding: 12px 24px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--bg);
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-  .footer-newsletter-form button:hover {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--bg);
-  }
-  .footer-newsletter-success {
-    display: none;
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--accent);
-    letter-spacing: 1px;
-  }
-
   .footer-socials {
     margin-bottom: 28px;
     display: flex;
@@ -2085,563 +2085,370 @@
 </head>
 <body>
 
-<div id="loader" onclick="skipLoader()">
-  <div id="flashSequence">
-    <!-- Images will be added here dynamically -->
-  </div>
-  <div class="loader-progress" id="loaderProgress">
-    <div class="loader-progress-fill" id="loaderProgressFill"></div>
-  </div>
-  <div id="loaderPercent" style="font-family: var(--mono); font-size: 11px; letter-spacing: 3px; color: var(--text-muted); margin-top: 12px; text-align: center; width: 160px; transition: opacity 0.3s ease;">0%</div>
-  <!-- Overlay removed: title now lives solely in landing-hero for seamless transition -->
-</div>
-
-<div id="landing-scroll-container">
-
-  <!-- HERO: Title section (first viewport) -->
-  <div class="landing-hero">
-    <div class="loader-number">001 / 007</div>
-    <div class="loader-title">The Byzantine General</div>
-    <div class="loader-subtitle">The true story behind the invention of Bitcoin</div>
-    <div class="landing-scroll-hint">Scroll to explore</div>
-    <div class="landing-scroll-arrow"></div>
-  </div>
-
-  <!-- TILES: Sticky viewport -->
-  <div class="landing-tiles-spacer" id="tilesSpacer">
-    <div class="landing-tiles-viewport" id="tilesViewport">
-      <div id="artboard-section">
-        <div class="artboard-header" id="landingHeader" style="opacity:0; transition: opacity 0.5s;">
-          <div class="artboard-logo">The Byzantine General</div>
-          <nav class="artboard-nav">
-            <a class="nav-primary" onclick="openIntro()">Introduction</a>
-            <a onclick="openIntro()">Chapters</a>
-            <a onclick="openIntro()">The Research</a>
-            <a href="javascript:void(0)">Newsletter</a>
-          </nav>
-        </div>
-
-        <div class="artboard-canvas-container">
-          <div class="artboard-canvas" id="artboardCanvas">
-      <!-- Column 1, parallax speed: 1.0 (base) -->
-      <div class="mosaic-column" data-parallax="1.0">
-        <div class="mosaic-tile" style="height:420px">
-          <img loading="lazy" src="https://i.postimg.cc/50yThcsy/byz-pic.png" alt="Satoshi Mask">
-        </div>
-        <div class="mosaic-tile" style="height:340px">
-          <img loading="lazy" src="https://i.postimg.cc/MTZzCVHF/ross-ulbricht-silk-road-nick-bilton-copy.png" alt="Ross Ulbricht">
-        </div>
-        <div class="mosaic-tile" style="height:380px">
-          <img loading="lazy" src="https://i.postimg.cc/kXcF6qzR/Myth.png" alt="Satoshi Myth">
-        </div>
-        <div class="mosaic-tile" style="height:360px">
-          <img loading="lazy" src="https://i.postimg.cc/qvrWZBTH/9-C1-E5-F58-C488-424-E-8-FC5-44-AE8-B4-D9-CC3.jpg" alt="Evidence">
-        </div>
-        <div class="mosaic-tile" style="height:400px">
-          <img loading="lazy" src="https://i.postimg.cc/wjPsX7ss/115-D950-D-916-C-477-F-ABF9-78-A41-E41-F5-AD-1-105-c.jpg" alt="Investigation">
-        </div>
-      </div>
-
-      <!-- Column 2, parallax speed: 0.6 (slower) -->
-      <div class="mosaic-column" data-parallax="0.6">
-        <div class="mosaic-tile" style="height:380px">
-          <img loading="lazy" src="https://i.postimg.cc/W3c5zwgw/newswekk.jpg" alt="Newsweek Satoshi">
-        </div>
-        <div class="mosaic-tile" style="height:440px">
-          <img loading="lazy" src="https://i.postimg.cc/zfnK8Wpp/Silk-road-thumbnail.png" alt="Silk Road">
-        </div>
-        <div class="mosaic-tile" style="height:320px">
-          <img loading="lazy" src="https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg" alt="Craig Wright BBC">
-        </div>
-        <div class="mosaic-tile" style="height:360px">
-          <img loading="lazy" src="https://i.postimg.cc/BngbZgHz/Bitcoin-Genesis-block.jpg" alt="Bitcoin Genesis Block">
-        </div>
-      </div>
-
-      <!-- Column 3, parallax speed: 1.3 (faster) -->
-      <div class="mosaic-column" data-parallax="1.3">
-        <div class="mosaic-tile" style="height:380px">
-          <img loading="lazy" src="https://i.postimg.cc/kGrcfT6K/cypherpunk-style.jpg" alt="Cypherpunks">
-        </div>
-        <div class="mosaic-tile" style="height:440px">
-          <img loading="lazy" src="https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg" alt="Satoshi">
-        </div>
-        <div class="mosaic-tile" style="height:300px">
-          <img loading="lazy" src="https://i.postimg.cc/BbJdMx71/FBI.png" alt="FBI">
-        </div>
-        <div class="mosaic-tile" style="height:380px">
-          <img loading="lazy" src="https://i.postimg.cc/4dL7p95L/47-DCA4-E0-19-FD-4-F53-AB28-6-ABC2-A822067.jpg" alt="Context">
-        </div>
-        <div class="mosaic-tile" style="height:340px">
-          <img loading="lazy" src="https://i.postimg.cc/GhgRJ9H0/A9410-D9-C-70-FB-4897-96-AE-159682-DAD6-D7.jpg" alt="Research">
-        </div>
-      </div>
-
-      <!-- Column 4, parallax speed: 0.8 -->
-      <div class="mosaic-column" data-parallax="0.8">
-        <div class="mosaic-tile" style="height:350px">
-          <img loading="lazy" src="https://i.postimg.cc/L4LF2SHh/assange-clear.png" alt="Assange">
-        </div>
-        <div class="mosaic-tile" style="height:400px">
-          <img loading="lazy" src="https://i.postimg.cc/50yThcsy/byz-pic.png" alt="Satoshi Mask">
-        </div>
-        <div class="mosaic-tile" style="height:320px">
-          <img loading="lazy" src="https://i.postimg.cc/MT5BjSCw/mount-gox.jpg" alt="Mount Gox">
-        </div>
-        <div class="mosaic-tile" style="height:380px">
-          <img loading="lazy" src="https://i.postimg.cc/kXcF6qzR/Myth.png" alt="Myth">
-        </div>
-        <div class="mosaic-tile" style="height:360px">
-          <img loading="lazy" src="https://i.postimg.cc/MTZzCVHF/ross-ulbricht-silk-road-nick-bilton-copy.png" alt="Ross Ulbricht">
-        </div>
-      </div>
-
-      <!-- Column 5, parallax speed: 1.1 -->
-      <div class="mosaic-column" data-parallax="1.1">
-        <div class="mosaic-tile" style="height:440px">
-          <img loading="lazy" src="https://i.postimg.cc/kGrcfT6K/cypherpunk-style.jpg" alt="Cypherpunks">
-        </div>
-        <div class="mosaic-tile" style="height:340px">
-          <img loading="lazy" src="https://i.postimg.cc/L4LF2SHh/assange-clear.png" alt="Assange">
-        </div>
-        <div class="mosaic-tile" style="height:380px">
-          <img loading="lazy" src="https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg" alt="Satoshi">
-        </div>
-        <div class="mosaic-tile" style="height:300px">
-          <img loading="lazy" src="https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg" alt="Craig Wright">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="scrollbar-track horizontal" id="hScrollTrack">
-    <div class="scrollbar-thumb" id="hScrollThumb"></div>
-  </div>
-  <div class="scrollbar-track vertical" id="vScrollTrack">
-    <div class="scrollbar-thumb" id="vScrollThumb"></div>
-  </div>
-
-  <div class="artboard-intro-panel" id="artboardIntro">
-    <div>
-      <div class="panel-instruction">SCROLL / DRAG TO EXPLORE THE ARTBOARD</div>
-      <div class="panel-description">Use the navigation above to dive into the investigation. The Byzantine General is a seven-year examination into Satoshi Nakamoto's true identity.</div>
-    </div>
-    <button class="panel-close" onclick="closeIntroPanel()">CLOSE</button>
-  </div>
-      </div><!-- /artboard-section -->
-    </div><!-- /landing-tiles-viewport -->
-  </div><!-- /landing-tiles-spacer -->
-
-  <!-- CTA: Access Research section -->
-  <div class="landing-cta-section" id="landingCta">
-    <h2>Begin the Investigation</h2>
-    <p style="font-family: var(--mono); font-size: 14px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 24px;">73262a56ce07170bd36f6769eb7708</p>
-    <a class="landing-cta-btn" href="javascript:void(0)" onclick="openIntro()">Access the Research</a>
-  </div>
-
-  <!-- Landing Footer -->
-  <div class="site-footer">
-    <div class="footer-newsletter">
-      <div class="footer-newsletter-title">Get each Act delivered to your inbox</div>
-      <div class="footer-newsletter-sub">Subscribe to the newsletter and follow the investigation as it unfolds, one Act per week.</div>
-      <form class="footer-newsletter-form" onsubmit="return handleSubscribe(this)">
-        <input type="email" name="email" placeholder="Enter your email" required>
-        <button type="submit">Subscribe</button>
-      </form>
-      <div class="footer-newsletter-success">You're in. Watch your inbox.</div>
-    </div>
-    <div class="footer-socials">
-      <div class="footer-socials-label">Follow us on socials</div>
-      <div class="footer-socials-icons">
-        <a href="https://x.com/satoshireveal" target="_blank" rel="noopener" aria-label="Follow on X">
-          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
-        <a href="https://www.youtube.com/@TheByzantineGeneral" target="_blank" rel="noopener" aria-label="Watch on YouTube">
-          <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12z"/></svg>
-        </a>
-        <a href="https://thebyzantinegeneral.substack.com/subscribe" target="_blank" rel="noopener" aria-label="Read on Substack">
-          <svg viewBox="0 0 24 24"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
-        </a>
-      </div>
-    </div>
-    <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
-  </div>
-
-</div><!-- /landing-scroll-container -->
-
-
-<div id="intro-page">
+<div id="act1-page">
+<div id="act1-page">
   <!-- Navigation Header -->
-  <nav class="page-nav" id="introNav">
+  <nav class="page-nav" id="act1Nav">
     <div class="page-nav-left">
-      <button class="page-nav-btn" onclick="backToArtboard()">← Home</button>
+      <button class="page-nav-btn" onclick="window.location.href='index.html'">← Introduction</button>
     </div>
-    <span class="page-nav-logo" onclick="backToArtboard()">The Byzantine General</span>
+    <span class="page-nav-logo" onclick="window.location.href='index.html'">The Byzantine General</span>
     <div class="page-nav-right">
-      <button class="page-nav-btn primary" id="act1NavBtn" onclick="goToAct1()">Act 1 →</button>
+      <button class="page-nav-btn primary" onclick="window.location.href=\'act2.html\'">Act 2 →</button>
     </div>
   </nav>
 
+  <!-- ══════ TIMELINE (full-width, no container) ══════ -->
+  <div class="timeline-container">
+    <iframe
+      src="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2:2PACX-1vTdn9VFPfrxzHzp16MqeaWqwNxpuxFajYi2lxhUsfFW93WXpqjmstOoE0GlBhuwdw&font=Default&lang=en&initial_zoom=2&height=650"
+      allowfullscreen
+      title="The Satoshi Mystery Timeline"
+    ></iframe>
+  </div>
+
   <div class="intro-container">
 
-    <!-- ══════ HERO: Video + Opening Text ══════ -->
-    <div class="intro-hero">
-      <div class="video-embed">
-        <video id="introVideo" playsinline preload="metadata" poster="thumb-intro-1.jpg">
-          <source src="reel-intro-1-1.mp4" type="video/mp4">
-        </video>
-        <div class="video-play-overlay" id="videoPlayOverlay" onclick="toggleIntroVideo()">
-          <div class="play-button"></div>
-        </div>
-        <div class="video-caption">The Satoshi Mystery</div>
-      </div>
-
-      <div class="intro-hero-text">
-        <div class="section-label">Introduction</div>
-        <h1>Deconstructing the Myth of Satoshi Nakamoto</h1>
-        <div class="subtitle">The true story behind the invention of Bitcoin</div>
-        <div class="prose">
-          <p>Bitcoin is one of the most disruptive technologies of our time. Seventeen years after its creation, the world's first decentralized currency has fueled an economy worth trillions of dollars and challenged the very foundation of monetary authority.</p>
-          <p>But Bitcoin's impact runs deeper than economics. Like artificial intelligence, it marks the beginning of a new epoch, one that could reshape society as profoundly as the Industrial Revolution once did.</p>
-          <p>Since the approval of Bitcoin ETFs in the United States, what began as a rebellion against state-backed money is now finding its way into the heart of government treasuries.</p>
-          <p><strong>And yet, at the center of this global shift lies a mystery: Who created Bitcoin?</strong></p>
-          <p>As this technology becomes a pillar of the world economy, we must reexamine its origin story and that of its creator.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ AN UNEXPECTED RESEARCH OUTCOME ══════ -->
-    <div class="editorial-row">
+    <!-- ══════ ACT 1 TITLE + CYPHERPUNKS VIDEO ══════ -->
+    <div class="editorial-row" style="padding-top: 60px; border-top: none;">
       <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/R0p6Ldr7/Bitcoin.png" alt="Bitcoin">
-        <div class="img-caption">The Bitcoin logo, symbol of a new financial paradigm.</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">An Unexpected Research Outcome</div>
-        <h2>The mystery wasn't unsolved. It was guarded.</h2>
-        <div class="prose">
-          <p>Seven years ago, a group of researchers based in Shanghai set out to investigate the mystery surrounding Satoshi Nakamoto. They decided to call this project The Byzantine General.</p>
-          <p>Their approach was simple: attend Bitcoin and crypto conferences, interview as many pioneers and industry leaders as possible, and ask them their thoughts on who invented Bitcoin. Unexpectedly, within just a few meetings, they encountered a surprising pattern.</p>
-          <p>These influential figures in the industry suggested that the identity of Satoshi Nakamoto wasn't an unsolved mystery. It was <strong>an open secret</strong>. Some of these people even claimed that they had "first-hand knowledge" of who invented Bitcoin.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ THE CUBE CLICKED INTO PLACE ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/V64knJ8s/EAF482-D1-2868-4-CF7-B452-F686-A2-F0696-B.jpg" alt="The Satoshi puzzle">
-        <div class="img-caption">The Satoshi puzzle clicked into place...</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">A Reality Incompatible With the Myth</div>
-        <h2>The cube clicked into place.</h2>
-        <div class="prose">
-          <p>It seemed, from the outside, that the mystery of Satoshi Nakamoto was an unsolvable puzzle: too layered, too obscure, like a Rubik's Cube with missing pieces.</p>
-          <p>But these people had access to the kind of insights that allowed them to assign proper weight to every assumption, and accurate value to every piece of evidence. When seen through that lens, the mystery didn't unravel; it resolved. The cube clicked into place. And what had once seemed unknowable became obvious.</p>
-          <p>According to the individuals the research team spoke with back then, the reason this knowledge remained hidden was that <strong>the truth was incompatible with the myth</strong>.</p>
-          <p>They did believe that the truth would eventually surface…But it didn't. Now, seven years later, a series of recent developments in the industry make this the right moment to bring it to light.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ PHILOSOPHICAL ARCHITECTURE STATEMENT ══════ -->
-    <div class="editorial-full">
-      <p style="font-family: var(--serif); font-size: clamp(18px, 2.5vw, 26px); font-weight: 400; font-style: italic; color: var(--text-dim); line-height: 1.7; text-align: center; max-width: 800px; margin: 0 auto;">
-        Because Bitcoin lacks a traditional hierarchical structure, the mystery surrounding Satoshi has become an integral part of the system's philosophical architecture.
-      </p>
-    </div>
-
-    <!-- ══════ SATOSHI AS A MYTHICAL FIGURE ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/kXcF6qzR/Myth.png" alt="Satoshi myth">
-        <div class="img-caption">The Satoshi myth mental positioning.</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Satoshi as a Mythical Figure</div>
-        <h2>The attributes of a superhero, not a human being.</h2>
-        <div class="prose">
-          <p>But because of this, many people in the industry, consciously or subconsciously, identify the merits and success of Bitcoin in parts with its mysterious origins.</p>
-          <p>To understand what we mean by identification, we would like to invite you to reflect on the mental positioning that Satoshi Nakamoto holds in your mind. For most, Satoshi occupies a space in the mind akin to that of a mythic figure: a lone genius, altruistic, supremely intelligent, untraceable, uninterested in fame or fortune.</p>
-          <p>These are the traits we often project (consciously or unconsciously) onto the inventor of Bitcoin.</p>
-          <p><strong>The only problem with these traits is that they are not the attributes of a "normal" human being. They are the attributes of a superhero.</strong></p>
-          <p>When we start viewing Satoshi through this lens, it becomes clear that he functions as a myth. Myths play powerful roles in both individual psychology and collective society. They are simple, symbolic narratives that represent ideals: often idealized traits or values.</p>
-          <p>Because of this, myths are difficult to challenge. They create shared meaning, bring people together, and often shape our understanding of reality. That emotional weight makes myths resistant to scrutiny. But to investigate the true origins of bitcoin we are going to need to deconstruct the myth surrounding Satoshi Nakamoto.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ DECONSTRUCTING THE MYTH ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <div class="video-embed" style="position: relative;">
-          <video id="reelIntro12" playsinline preload="metadata" style="width:100%; border-radius: 4px; display:block;">
-            <source src="reel-intro-1-2.mp4" type="video/mp4">
+        <div class="act1-video-embed">
+          <video id="cypherpunksVideo" playsinline preload="metadata">
+            <source src="cypherpunks-act1.mp4" type="video/mp4">
           </video>
-          <div class="video-play-overlay" id="reelIntro12Overlay" onclick="toggleReelVideo('reelIntro12', 'reelIntro12Overlay')">
+          <div class="video-play-overlay" id="cypherpunksOverlay" onclick="toggleReelVideo('cypherpunksVideo', 'cypherpunksOverlay')">
             <div class="play-button"></div>
           </div>
         </div>
       </div>
       <div class="editorial-text">
-        <div class="section-label">Deconstructing the Myth</div>
-        <h2>Cutting through the noise</h2>
+        <div class="section-label" style="margin-bottom: 16px;">Act 1</div>
+        <h1 style="font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 400; color: var(--text); line-height: 1.2; margin-bottom: 16px;">The Quest for Digital Cash</h1>
+        <p style="font-family: var(--serif); font-size: clamp(15px, 2vw, 20px); font-weight: 400; font-style: italic; color: var(--text-dim); line-height: 1.6; margin-bottom: 24px;">How the Cypherpunks Movement laid the foundation for Bitcoin</p>
         <div class="prose">
-          <p>To understand why the myth of Satoshi Nakamoto persists, we need to cut through the noise that surrounds it.</p>
-          <p>There is, on one hand, the external noise: the narratives produced by the media, the countless theories and conspiracies about his identity.</p>
-          <p>Then there is the internal noise that we must confront. This is the noise generated by our own emotional relationship with the figure of Satoshi, the attachment many people form to the myth itself.</p>
-          <p>As we will see, this emotional attachment produces a number of cognitive biases, most commonly in the form of <strong>epistemological confusion between facts, evidence, and interpretation</strong>.</p>
+          <p>To truly understand Bitcoin's invention, we must rewind to the early 1980s and the emergence of the cypherpunk movement. By the 1970s, a growing awareness emerged: computers could either enhance government control or empower individual freedom. Cryptography became the essential tool in this struggle.</p>
         </div>
       </div>
     </div>
 
-    <!-- ══════ CONTEXT AS A DEFINING FACTOR ══════ -->
+    <!-- ══════ THE BYZANTINE GENERALS PROBLEM, side by side like two-door ══════ -->
     <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/R0LfVKBb/two-doors.png" alt="Two doors">
-        <div class="img-caption">A counter-intuitive experiment illustrating conditional probability.</div>
+      <div class="editorial-image no-frame">
+        <img loading="lazy" src="https://i.postimg.cc/wxJF7YZV/byz-problem-pic.jpg" alt="Byzantine Generals Problem">
+        <div class="img-caption">The Byzantine Generals Problem, consensus in a trustless network</div>
       </div>
       <div class="editorial-text">
-        <div class="section-label">Context as a Defining Factor</div>
-        <h2>Imagine two doors.</h2>
+        <div class="section-label">The Theoretical Obstacle</div>
+        <h2>The Byzantine Generals Problem</h2>
         <div class="prose">
-          <p>To illustrate how cognitive bias and context affect our thinking, consider the following scenario:</p>
-          <p>Imagine that you are faced with two doors. Behind one of these doors is $1,000,000. What are the odds that the money is behind door one or door two? Most people say 50-50. But the correct answer is: <strong>it depends</strong>. It depends on the context in which this situation occurs.</p>
+          <p>The cypherpunks were united in a decades-long effort to create digital money secured with cryptography. But one major obstacle stood in their way: the Byzantine Generals Problem, a theoretical issue concerning consensus in distributed systems.</p>
+          <p>This was a crucial blow to the cypherpunks' hopes of inventing digital cash. Cryptography is ideal to secure online data and communications. However, without decentralized consensus, you cannot have decentralized money.</p>
         </div>
       </div>
     </div>
 
-    <!-- ══════ THE MONTY HALL PROBLEM ══════ -->
-    <div class="editorial-full">
-      <div class="section-label">Probability Misconceptions</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: 24px;">The Monty Hall Problem</h2>
-      <div class="prose">
-        <p>To better understand how and why context impacts such probabilities, let's look at the Monty Hall problem. Imagine you're on a game show with three doors. Behind one door is $1,000,000. Let's say you choose door number 1. The host, who knows where the prize is, opens another door, for example door number 3, to show it's empty. Then you're given a choice: stick with your original pick or switch.</p>
+    <!-- ══════ CYPHERPUNK PRECURSORS,3 PORTRAITS + EXPANDABLE CARDS ══════ -->
+    <div class="editorial-full" style="max-width: 100%;">
+      <h2 style="font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: 8px;">Precursors to Bitcoin</h2>
+    </div>
+
+    <div class="photo-trio">
+      <div class="photo-trio-item" onclick="toggleDetailCard('card-adam')">
+        <img loading="lazy" src="https://i.postimg.cc/gcvqGqLt/Adam-back.jpg" alt="Adam Back">
+        <div class="photo-name">Adam Back</div>
+        <div class="photo-detail">HashCash · 1997</div>
+      </div>
+      <div class="photo-trio-item" onclick="toggleDetailCard('card-wei')">
+        <img loading="lazy" src="https://i.postimg.cc/jj51hNbP/wei.jpg" alt="Wei Dai">
+        <div class="photo-name">Wei Dai</div>
+        <div class="photo-detail">B-Money · 1998</div>
+      </div>
+      <div class="photo-trio-item" onclick="toggleDetailCard('card-hal')">
+        <img loading="lazy" src="https://i.postimg.cc/g0SC9sDQ/Hal.jpg" alt="Hal Finney">
+        <div class="photo-name">Hal Finney</div>
+        <div class="photo-detail">RPOW · mid-2000s</div>
       </div>
     </div>
 
-    <!-- Monty Hall illustration 1 -->
-    <div style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
-      <img loading="lazy" src="https://i.postimg.cc/g0g1wGfK/EE81D303-EEB0-4422-9866-CD0AAC946942.jpg" alt="The Monty Hall Problem" style="width: 100%; border-radius: 4px; display: block;">
-    </div>
-
-    <!-- Explanation -->
-    <div class="editorial-full">
-      <div class="prose">
-        <p>Most people in that particular scenario stick with their original choice. Why is that? In short: <strong>Emotional biases</strong>.</p>
-        <p>First, they assume that the odds of the money being behind door 1 and 2 is 50-50. Second, they want to trust their first intuition, fearing to regret switching in case their first choice was the correct one. Often, participants also suspect that the anchor is trying to lure them away from their original correct choice.</p>
+    <div class="detail-cards">
+      <div class="detail-card" id="card-adam">
+        <div class="detail-card-header" onclick="toggleDetailCard('card-adam')">
+          <span class="detail-card-title">Adam Back's HashCash (1997)</span>
+          <span class="detail-card-toggle">+</span>
+        </div>
+        <div class="detail-card-content">
+          <div class="prose">
+            <p>Using computational work to create digital scarcity, HashCash introduced the concept of proof-of-work, requiring computers to solve mathematical puzzles before sending emails, as a way to combat spam. This same principle would later become the backbone of Bitcoin's mining mechanism.</p>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card" id="card-wei">
+        <div class="detail-card-header" onclick="toggleDetailCard('card-wei')">
+          <span class="detail-card-title">Wei Dai's B-Money (1998)</span>
+          <span class="detail-card-toggle">+</span>
+        </div>
+        <div class="detail-card-content">
+          <div class="prose">
+            <p>Focused on preserving privacy through cryptography, B-Money proposed a system where anonymous digital pseudonyms could transact using a decentralized ledger. Though never implemented, it laid crucial conceptual groundwork that Satoshi would later cite directly in the Bitcoin whitepaper.</p>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card" id="card-hal">
+        <div class="detail-card-header" onclick="toggleDetailCard('card-hal')">
+          <span class="detail-card-title">Hal Finney's Reusable Proof of Work (mid-2000s)</span>
+          <span class="detail-card-toggle">+</span>
+        </div>
+        <div class="detail-card-content">
+          <div class="prose">
+            <p>Hal Finney built on Adam Back's HashCash to create a system where proof-of-work tokens could be reused, a step closer to a functioning digital currency. Finney would later become the recipient of the very first Bitcoin transaction from Satoshi Nakamoto himself.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Monty Hall illustration 2 -->
-    <div style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
-      <img loading="lazy" src="https://i.postimg.cc/kg9HfV9d/454EF3E5-3FDE-438B-B0E6-77EC69F191CB.jpg" alt="Three doors with one open" style="width: 100%; border-radius: 4px; display: block;">
+    <!-- ══════ BITCOIN'S LAUNCH ══════ -->
+    <div class="statement">
+      None of these projects worked around the Byzantine Generals Problem. Until one did.
     </div>
 
-    <!-- ══════ ASYMMETRY OF INFORMATION ══════ -->
+    <!-- Whitepaper release: video + text side by side -->
     <div class="editorial-row">
       <div class="editorial-image">
-        <div class="video-embed" style="position: relative;">
-          <video id="reelIntro2" playsinline preload="metadata" poster="thumb-intro-2.jpg" style="width:100%; border-radius: 4px; display:block;">
-            <source src="reel-intro-2.mp4" type="video/mp4">
+        <div class="act1-video-embed">
+          <video id="whitepaperVideo" playsinline preload="metadata">
+            <source src="whitepaper-release.mp4" type="video/mp4">
           </video>
-          <div class="video-play-overlay" id="reelIntro2Overlay" onclick="toggleReelVideo('reelIntro2', 'reelIntro2Overlay')">
+          <div class="video-play-overlay" id="whitepaperOverlay" onclick="toggleReelVideo('whitepaperVideo', 'whitepaperOverlay')">
             <div class="play-button"></div>
           </div>
         </div>
       </div>
       <div class="editorial-text">
-        <div class="section-label">A Transfer of Probability</div>
-        <h2>Asymmetry of information</h2>
+        <div class="section-label">The Launch of Bitcoin</div>
+        <h2>October 31, 2008</h2>
         <div class="prose">
-          <p>The fact is that, statistically, you're twice as likely to win if you switch. Why? Because in that particular context, there is an asymmetry of information between you, who don't know behind which door the money is, and the anchor who knows with 100% certainty where the money is. That asymmetry is the reason for the shift in probability. Most people don't intuitively understand this because they neglect the context.</p>
+          <p>Satoshi Nakamoto published the Bitcoin whitepaper to the Metzdowd cryptography mailing list.</p>
+          <p>On January 3, 2009, the genesis block was mined. It included a reference to a bank bailout headline from The Times, grounding Bitcoin's origin in the financial crisis.</p>
         </div>
       </div>
     </div>
 
-    <!-- ══════ 100 DOORS ══════ -->
-    <!-- 100 doors illustration 1 -->
-    <div style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
-      <img loading="lazy" src="https://i.postimg.cc/8cMybG0P/F1DCF097-8254-454B-BCAF-5F44D84A89FB.jpg" alt="100 doors illustration" style="width: 100%; border-radius: 4px; display: block;">
-    </div>
-
-    <div class="editorial-full">
-      <div class="section-label">The One Hundred Doors Scenario</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: 24px;">99% vs 1%</h2>
-      <div class="prose">
-        <p>Now imagine this scenario expanded to 100 doors. You pick one. The host, knowing where the prize is, opens 98 of the others. The only doors left are your original choice and one unopened door.</p>
-        <p>It becomes obvious: your original choice still has only a 1% chance, while the unopened door now holds a 99% likelihood. This illustrates how probability shifts with new context and information.</p>
-      </div>
-    </div>
-
-    <!-- 100 doors illustration 2 -->
-    <div style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
-      <img loading="lazy" src="https://i.postimg.cc/Kv7qkZTz/4FBA037B-0790-4DD4-9D37-0D388961989E.jpg" alt="100 doors probability" style="width: 100%; border-radius: 4px; display: block;">
-    </div>
-
-    <!-- 100-Door Game -->
-    <div style="padding: 60px 0; border-top: 1px solid var(--border); max-width: 900px; margin: 0 auto;">
-      <div style="text-align: center; margin-bottom: 40px;">
-        <h2 style="font-family: var(--serif); font-size: clamp(24px, 4vw, 36px); font-weight: 400; color: var(--text); margin-bottom: 16px;">Now imagine 100 doors...</h2>
-        <p style="font-family: var(--sans); font-size: 14px; color: var(--text-dim); max-width: 600px; margin: 0 auto; line-height: 1.6;">You pick one door. The host opens 98 empty doors. Two doors remain: yours and one other. Would you switch?</p>
-      </div>
-      <div id="hundredDoorsGame" style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
-        <div id="hundredInstruction" style="text-align: center; margin-bottom: 40px;">
-          <div style="font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 12px;">Choose a door.</div>
-          <div style="font-family: var(--sans); font-size: 13px; color: var(--text-muted);">Click on one of the 100 doors below.</div>
+    <!-- Genesis block + whitepaper side by side as documents -->
+    <div class="doc-pair">
+      <div class="doc-item">
+        <img loading="lazy" src="https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg" alt="Bitcoin Whitepaper">
+        <div class="doc-item-caption">
+          <div class="doc-title">The Bitcoin Whitepaper</div>
+          <div class="doc-desc">Published October 31, 2008 · 9 pages</div>
         </div>
-        <div id="doorsGrid" style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;"></div>
-        <div id="hundredResult" style="display: none; text-align: center; margin: 40px 0;">
-          <div id="hundredResultText" style="font-family: var(--serif); font-size: 20px; color: var(--text); margin-bottom: 16px;"></div>
-          <div id="hundredResultExplain" style="font-family: var(--sans); font-size: 13px; color: var(--text-dim); max-width: 500px; margin: 0 auto; line-height: 1.6;"></div>
-          <button onclick="reset100DoorGame()" style="font-family: var(--mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-dim); background: none; border: 1px solid var(--border-dim); padding: 10px 24px; cursor: pointer; margin-top: 24px;">Play Again</button>
-        </div>
-        <div id="hundredStats" style="display: flex; justify-content: center; gap: 40px; padding-top: 24px; border-top: 1px solid var(--border); margin-top: 40px;">
-          <div style="text-align: center;"><div style="font-family: var(--mono); font-size: 22px; color: var(--text);" id="stat100SwitchWins">0</div><div style="font-family: var(--mono); font-size: 8px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px;">Switch Wins</div></div>
-          <div style="text-align: center;"><div style="font-family: var(--mono); font-size: 22px; color: var(--text);" id="stat100StayWins">0</div><div style="font-family: var(--mono); font-size: 8px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px;">Stay Wins</div></div>
-          <div style="text-align: center;"><div style="font-family: var(--mono); font-size: 22px; color: var(--accent);" id="stat100Total">0</div><div style="font-family: var(--mono); font-size: 8px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px;">Games Played</div></div>
+      </div>
+      <div class="doc-item">
+        <img loading="lazy" src="https://i.postimg.cc/4d3XVn88/Bitcoin-Genesis-block.jpg" alt="Genesis Block">
+        <div class="doc-item-caption">
+          <div class="doc-title">The Genesis Block</div>
+          <div class="doc-desc">Mined January 3, 2009 · Block #0</div>
         </div>
       </div>
     </div>
 
-    <!-- ══════ APPLYING MONTY HALL TO SATOSHI ══════ -->
-    <div class="editorial-full">
-      <div class="section-label">Applying Monty Hall to Satoshi</div>
-      <h2 style="font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: 24px;">Narrowing down the doors</h2>
-      <div class="prose">
-        <p>Over the years, numerous theories have been proposed about who Satoshi is. These theories are usually built on assumptions aiming at narrowing down the possibilities to one final "door".</p>
-        <p>The most common hypotheses revolve around the technical expertise, the breadth and depth of knowledge and know-how required to invent Bitcoin. Other factors taken into consideration include elements we could categorize as "social evidence" (such as the candidate's timeline matching that of Satoshi's).</p>
-      </div>
-    </div>
-
-    <!-- ══════ THE USUAL SUSPECTS ══════ -->
+    <!-- ══════ BITCOIN'S EARLY DAYS, side by side like two-door ══════ -->
     <div class="editorial-row reverse">
       <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/Kz0x3KPs/490-B8570-3-DA4-441-D-A779-12-EE72-C00451.jpg" alt="Satoshi candidates">
-        <div class="img-caption">The usual suspects proposed as potential Satoshi candidates.</div>
+        <img loading="lazy" src="https://i.postimg.cc/4dfhT948/4-DC045-D8-2-D77-423-E-9-D27-A2-F3-E9-C883-E0.jpg" alt="Gavin Andresen and Jeff Garzik, early Bitcoin contributors">
+        <div class="img-caption">Early Bitcoin contributors, Jeff Garzik &amp; Gavin Andresen</div>
       </div>
       <div class="editorial-text">
-        <div class="section-label">The Usual Suspects</div>
-        <h2>The Satoshi candidates</h2>
+        <div class="section-label">Bitcoin's Early Days</div>
+        <h2>260 forum posts. 140,000 words. Not a single typo.</h2>
         <div class="prose">
-          <p>The Usual suspects to the best "Satoshi Nakamoto candidate" award include: Nick Szabo, creator of Bit Gold. Hal Finney, early cryptographer and Bitcoin collaborator. Adam Back, creator of HashCash.</p>
-          <p>Each of these individuals has technical credibility and a timeline that matches that of Satoshi. The fact is that each of them has denied being Satoshi. But more importantly none have conclusive evidence attached to them.</p>
+          <p>Over the next two years, Satoshi actively developed Bitcoin, contributing 260 forum posts and over 140,000 words without a single typo or misspelling. He worked to improve the software, mined early blocks, and nurtured a growing community.</p>
+          <p>Notable contributors during this phase included Peter Todd and Jeff Garzik, who helped identify and fix critical bugs, and Gavin Andresen, who became a key developer and eventually the project's main steward.</p>
         </div>
       </div>
     </div>
 
-    <!-- ══════ EXPANDING POOL ══════ -->
+    <!-- ══════ SATOSHI'S DISAPPEARANCE, Video + Text side by side ══════ -->
     <div class="editorial-row">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/GhgRJ9H0/A9410-D9-C-70-FB-4897-96-AE-159682-DAD6-D7.jpg" alt="Expanding candidates">
-        <div class="img-caption">The expanding pool of Satoshi candidates.</div>
-      </div>
       <div class="editorial-text">
-        <div class="section-label">The Expanding Pool of Satoshi Candidates</div>
-        <h2>Diluting the possibilities</h2>
+        <div class="section-label">The Disappearance</div>
+        <h2>WikiLeaks kicked the hornet's nest, then Satoshi vanished.</h2>
         <div class="prose">
-          <p>New candidates have been proposed constantly (Peter Todd, Jack Dorsey, and others), diluting the pool of possibilities. As a result, the probability of correctly guessing Satoshi's identity is spread across an ever increasing list of names, which reinforces the notion that the mystery will never be solved...Which reinforces the myth.</p>
+          <p>Satoshi's exit was shrouded in controversy. In early December 2010, WikiLeaks began accepting Bitcoin donations after having its bank accounts frozen by the FBI. Satoshi publicly warned that WikiLeaks had "kicked the hornet's nest." His final public message came on December 12, 2010. On April 26th, 2011, Satoshi sent his <a href="https://riski.wiki/wiki/User:Gavinandresen/Blog/2022-04-26_Eleven_years_ago_today%E2%80%A6" target="_blank" style="color: var(--accent); text-decoration: underline;">last private email</a> to Gavin Andresen, saying: "I wish you wouldn't keep talking about me as a mysterious shadowy figure." Gavin replied that he had been invited to speak to the CIA about Bitcoin. After that exchange, Satoshi vanished entirely.</p>
         </div>
       </div>
-    </div>
-
-    <!-- ══════ CRYPTOGRAPHIC EVIDENCE ══════ -->
-    <div class="editorial-row reverse">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/3NWwhHL7/public-private-key-pair-feature.jpg" alt="Cryptographic proof">
-        <div class="img-caption">Cryptographic proof is the only conclusive evidence of Satoshi's identity.</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Cryptographic Evidence for the Win</div>
-        <h2>A category of evidence on an entirely different level</h2>
-        <div class="prose">
-          <p>It seems increasingly clear that a methodology based on identifying technical expertise and social proof will never produce a definitive answer. Fortunately, Bitcoin offers a category of evidence that exists on an entirely different level: <strong>cryptographic proofs</strong>.</p>
-          <p>We know that on January 3rd, 2009, Satoshi Nakamoto launched the Bitcoin software and mined the Genesis block. Associated with that block are a pair of cryptographic keys: one public, one private. To this day, no technology exists that can break the encryption protecting these keys.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ BLOWING OPEN ALL THE WRONG DOORS ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <img loading="lazy" src="https://i.postimg.cc/Qd78YdDH/70123-F04-7-C4-A-4337-9-E30-D779-B5-CAEDDA-1-105-c.jpg" alt="One door remains">
-        <div class="img-caption">The proof-based door carries nearly all the remaining probability weight.</div>
-      </div>
-      <div class="editorial-text">
-        <div class="section-label">Blowing Open All the Wrong Doors</div>
-        <h2>Only one door remains standing.</h2>
-        <div class="prose">
-          <p>As a result, anyone who can demonstrate control over the private key associated with the Genesis block would, in a single act, collapse the entire mystery. It would be the equivalent of the Monty Hall host flinging open all the wrong doors, leaving only one standing.</p>
-          <p>People could still choose to cling to their original guesses. But those who understand context and probability would recognize that the unopened door (now linked to proof) holds nearly all the remaining weight.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════ CLOSING STATEMENT + REEL INTRO 3 ══════ -->
-    <div class="editorial-row">
-      <div class="editorial-image">
-        <div class="video-embed" style="position: relative;">
-          <video id="reelIntro3" playsinline preload="metadata" poster="thumb-intro-3.jpg" style="width:100%; border-radius: 4px; display:block;">
-            <source src="reel-intro-3.mp4" type="video/mp4">
+      <div class="editorial-image no-frame">
+        <div class="act1-video-embed">
+          <video id="wikileaksVideo" playsinline preload="metadata">
+            <source src="act1-wikileaks.mp4" type="video/mp4">
           </video>
-          <div class="video-play-overlay" id="reelIntro3Overlay" onclick="toggleReelVideo('reelIntro3', 'reelIntro3Overlay')">
+          <div class="video-play-overlay" id="wikileaksOverlay" onclick="toggleReelVideo('wikileaksVideo', 'wikileaksOverlay')">
             <div class="play-button"></div>
           </div>
         </div>
       </div>
-      <div class="editorial-text" style="display:flex; align-items:center;">
-        <p style="font-family: var(--serif); font-size: clamp(18px, 2.5vw, 26px); font-weight: 400; font-style: italic; color: var(--text-dim); line-height: 1.7;">
-          And now, equipped with this clearer understanding of conditional probability and emotional biases, we are ready to dive into the series of historical events that led to Bitcoin's invention.
-        </p>
+    </div>
+
+    <div class="doc-pair">
+      <div class="doc-item">
+        <img loading="lazy" src="https://i.postimg.cc/wjPsX7ss/115-D950-D-916-C-477-F-ABF9-78-A41-E41-F5-AD-1-105-c.jpg" alt="Satoshi's last public post on BitcoinTalk">
+        <div class="doc-item-caption">
+          <div class="doc-title">Satoshi's Last Public Post</div>
+          <div class="doc-desc">BitcoinTalk Forum · December 12, 2010 · Mentions WikiLeaks &amp; the FBI</div>
+        </div>
+      </div>
+      <div class="doc-item">
+        <img loading="lazy" src="https://i.postimg.cc/vZ14ZbS8/Gavin-Andresen-CIA.jpg" alt="Gavin Andresen's email about the CIA visit">
+        <div class="doc-item-caption">
+          <div class="doc-title">Satoshi's Last Private Message</div>
+          <div class="doc-desc">Email exchange with Gavin Andresen · Mentions the CIA · Then silence</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="editorial-row reverse">
+      <div class="editorial-image no-frame">
+        <img loading="lazy" src="https://i.postimg.cc/9QT2SxjN/silk-road.jpg" alt="Silk Road">
+        <div class="img-caption">The Silk Road, Bitcoin's first real-world test</div>
+      </div>
+      <div class="editorial-text">
+        <div class="section-label">The Silk Road</div>
+        <h2>Bitcoin's controversial proof of concept</h2>
+        <div class="prose">
+          <p>In the years following Satoshi's disappearance, Bitcoin grew steadily. 2013 was a pivotal year: the Silk Road, an anonymous dark web marketplace, was shut down by the FBI. Its creator, Ross Ulbricht, was arrested and sentenced to life in prison.</p>
+          <p>Ironically, the Silk Road demonstrated that Bitcoin could function as a usable currency. When it was shut down, mainstream audiences realized: this digital currency works, triggering a dramatic price surge.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dorian + Craig side by side as expandable contrast cards -->
+    <div class="doc-pair">
+      <div class="doc-item" id="card-dorian">
+        <img loading="lazy" src="https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg" alt="Dorian Nakamoto surrounded by reporters">
+        <div class="doc-item-caption">
+          <div class="doc-title">The Dorian Nakamoto Incident</div>
+          <div class="doc-desc">Newsweek, 2014 · Mistaken identity · Journalists descended on his home</div>
+          <button class="read-more-btn" onclick="toggleExpandCard('card-dorian')">Read more</button>
+        </div>
+        <div class="expand-content">
+          <div class="prose">
+            <p>In March 2014, Newsweek published a bombshell article claiming to have found the real Satoshi Nakamoto: Dorian Satoshi Nakamoto, a 64-year-old Japanese-American engineer living quietly in Temple City, California. Reporters descended on his home, chasing him down the street.</p>
+            <p>Dorian denied any involvement with Bitcoin. The real Satoshi even broke years of silence to post on the P2P Foundation: "I am not Dorian Nakamoto." The incident became a cautionary tale for further attempt to unravel the mystery.</p>
+          </div>
+        </div>
+      </div>
+      <div class="doc-item" id="card-craig">
+        <img loading="lazy" src="https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg" alt="Craig Wright on BBC">
+        <div class="doc-item-caption">
+          <div class="doc-title">Craig Wright's BBC Declaration</div>
+          <div class="doc-desc">May 2016 · Claimed to be Satoshi · Proof deemed invalid</div>
+          <button class="read-more-btn" onclick="toggleExpandCard('card-craig')">Read more</button>
+        </div>
+        <div class="expand-content">
+          <div class="prose">
+            <p>In May 2016, Australian computer scientist Craig Wright publicly claimed to be Satoshi Nakamoto in an exclusive BBC interview and blog post. He promised to provide cryptographic proof by signing a message with Satoshi's known private keys.</p>
+            <p>However, the proof he published was quickly debunked by the Bitcoin community, he had used a signature already publicly available on the blockchain.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ THE PERSISTENT MYSTERY, visual timeline patchwork ══════ -->
+    <div class="act1-timeline">
+      <div class="act1-timeline-track">
+        <div class="act1-timeline-line"></div>
+        <div class="act1-timeline-arrow"></div>
+
+        <div class="tl-node above">
+          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg" alt="Bitcoin Whitepaper">
+          <div class="tl-node-dot"></div>
+          <div class="tl-node-year">2008</div>
+          <div class="tl-node-label">Bitcoin Whitepaper</div>
+        </div>
+
+        <div class="tl-node below">
+          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/4d3XVn88/Bitcoin-Genesis-block.jpg" alt="Genesis Block">
+          <div class="tl-node-dot"></div>
+          <div class="tl-node-year">2009</div>
+          <div class="tl-node-label">Genesis Block</div>
+        </div>
+
+        <div class="tl-node above">
+          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/L4LF2SHh/assange-clear.png" alt="Julian Assange / WikiLeaks">
+          <div class="tl-node-dot"></div>
+          <div class="tl-node-year">2010</div>
+          <div class="tl-node-label">WikiLeaks &amp; Satoshi's Exit</div>
+        </div>
+
+        <div class="tl-node below">
+          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/9QT2SxjN/silk-road.jpg" alt="Silk Road" style="object-position: 15% center;">
+          <div class="tl-node-dot"></div>
+          <div class="tl-node-year">2013</div>
+          <div class="tl-node-label">Silk Road Shutdown</div>
+        </div>
+
+        <div class="tl-node above">
+          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg" alt="Dorian Nakamoto">
+          <div class="tl-node-dot"></div>
+          <div class="tl-node-year">2014</div>
+          <div class="tl-node-label">Dorian Nakamoto</div>
+        </div>
+
+        <div class="tl-node below">
+          <img class="tl-node-img" loading="lazy" src="https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg" alt="Craig Wright BBC">
+          <div class="tl-node-dot"></div>
+          <div class="tl-node-year">2016</div>
+          <div class="tl-node-label">Craig Wright's Claim</div>
+        </div>
+
+      </div>
+      <div class="act1-timeline-caption">The Satoshi mystery timeline, from whitepaper to controversy</div>
+    </div>
+
+    <div class="editorial-row">
+      <div class="editorial-text">
+        <div class="section-label">The Persistent Mystery</div>
+        <h2 style="font-size: clamp(24px, 3.5vw, 40px);">An unsolvable mystery?</h2>
+        <div class="prose" style="font-size: clamp(16px, 1.8vw, 19px); line-height: 1.8;">
+          <p>From the surface, the period from 2008 to 2016 appears filled with attempts to uncover or claim the Satoshi identity. Since Wright's declaration, no serious contender has come forward. There have been murmurs about Peter Todd, Jack Dorsey, and Elon Musk, but nothing concrete.</p>
+          <p>However, a closer look at the developments that occurred during the past eight years reveals something more complicated: the quest for Satoshi has been the object of a persistent and deeply entangled controversy.</p>
+        </div>
+      </div>
+      <div class="editorial-image no-frame">
+        <div class="act1-video-embed">
+          <video id="timelineVideo" playsinline preload="metadata">
+            <source src="act1-timeline.mp4" type="video/mp4">
+          </video>
+          <div class="video-play-overlay" id="timelineOverlay" onclick="toggleReelVideo('timelineVideo', 'timelineOverlay')">
+            <div class="play-button"></div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- ══════ COUNTDOWN TO NEXT ACT ══════ -->
     <div class="gate-section" id="countdownGate">
       <div class="gate-door-icon"></div>
-      <h2 class="gate-title" id="countdownTitle">Act 1 Coming Soon</h2>
-      <p class="gate-subtitle" id="countdownSubtitle" style="margin-bottom: 8px;">The investigation begins.</p>
+      <h2 class="gate-title" id="countdownTitle">Act 2 Coming Soon</h2>
+      <p class="gate-subtitle" id="countdownSubtitle" style="margin-bottom: 8px;">The controversy begins.</p>
       <div class="countdown-clock" id="countdownClock">
-        <div class="countdown-block">
-          <div class="cd-number" id="cdDays">00</div>
-          <div class="cd-label">Days</div>
-        </div>
+        <div class="countdown-block"><div class="cd-number" id="cdDays">00</div><div class="cd-label">Days</div></div>
         <div class="countdown-divider">:</div>
-        <div class="countdown-block">
-          <div class="cd-number" id="cdHours">00</div>
-          <div class="cd-label">Hours</div>
-        </div>
+        <div class="countdown-block"><div class="cd-number" id="cdHours">00</div><div class="cd-label">Hours</div></div>
         <div class="countdown-divider">:</div>
-        <div class="countdown-block">
-          <div class="cd-number" id="cdMins">00</div>
-          <div class="cd-label">Minutes</div>
-        </div>
+        <div class="countdown-block"><div class="cd-number" id="cdMins">00</div><div class="cd-label">Minutes</div></div>
         <div class="countdown-divider">:</div>
-        <div class="countdown-block">
-          <div class="cd-number" id="cdSecs">00</div>
-          <div class="cd-label">Seconds</div>
-        </div>
+        <div class="countdown-block"><div class="cd-number" id="cdSecs">00</div><div class="cd-label">Seconds</div></div>
       </div>
-      <a class="landing-cta-btn" id="countdownBtn" style="display:none; cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 1</a>
+      <a class="landing-cta-btn" id="countdownBtn" style="display:none; cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 2</a>
     </div>
     <script>
-    var ACT1_RELEASED = false;
-    function goToAct1(){
-      if(ACT1_RELEASED){
-        window.location.href = 'act1.html';
-      } else {
-        document.getElementById('countdownGate').scrollIntoView({ behavior: 'smooth' });
-      }
-    }
     (function(){
-      var NEXT_RELEASE = "2026-03-15T18:00:00Z";
-      var NEXT_URL = "act1.html";
+      var NEXT_RELEASE = "2026-03-22T18:00:00Z";
+      var NEXT_URL = "act2.html";
+      var NEXT_ACT = "Act 2";
       var btn = document.getElementById('countdownBtn');
       var clock = document.getElementById('countdownClock');
       var title = document.getElementById('countdownTitle');
-      var subtitle = document.getElementById('countdownSubtitle');
       var dEl = document.getElementById('cdDays');
       var hEl = document.getElementById('cdHours');
       var mEl = document.getElementById('cdMins');
@@ -2653,28 +2460,20 @@
         var target = new Date(NEXT_RELEASE).getTime();
         var diff = target - now;
         if(diff <= 0){
-          ACT1_RELEASED = true;
           clock.style.display = 'none';
-          title.textContent = 'Act 1 is Now Available';
-          subtitle.textContent = 'The investigation begins.';
+          title.textContent = NEXT_ACT + ' is Now Available';
           btn.style.display = '';
           return;
         }
-        var d = Math.floor(diff / 86400000);
-        var h = Math.floor((diff % 86400000) / 3600000);
-        var m = Math.floor((diff % 3600000) / 60000);
-        var s = Math.floor((diff % 60000) / 1000);
-        dEl.textContent = pad(d);
-        hEl.textContent = pad(h);
-        mEl.textContent = pad(m);
-        sEl.textContent = pad(s);
+        dEl.textContent = pad(Math.floor(diff / 86400000));
+        hEl.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+        mEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
+        sEl.textContent = pad(Math.floor((diff % 60000) / 1000));
         requestAnimationFrame(update);
       }
       update();
     })();
     </script>
-
-  </div><!-- /intro-container -->
 
   <!-- Footer -->
   <div class="site-footer">
@@ -2702,11 +2501,11 @@
       </div>
     </div>
     <div class="footer-title">The Byzantine General</div>
-    <div class="footer-sub">Research work · 2018–2026</div>
+    <div class="footer-sub">Research work &middot; 2018&ndash;2026</div>
   </div>
-</div><!-- /intro-page -->
+</div>
 
-
+<script>
 <script>
   // ═══════════════════════════════════════
   // LOADING SCREEN RAPID FLASH
@@ -3231,8 +3030,7 @@
 
   function backToArtboard() {
     ['intro-page','act1-page','act2-page','act3-page','act4-page','act5-page','act6-page','act7-page'].forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) el.classList.remove('visible');
+      document.getElementById(id).classList.remove('visible');
     });
     document.getElementById('landing-scroll-container').classList.add('visible');
     window.scrollTo(0, 0);
@@ -3668,30 +3466,6 @@
 
   // Initialize loader on page load
   window.addEventListener('DOMContentLoaded', initLoader);
-
-  // Newsletter subscribe handler
-  function handleSubscribe(form) {
-    var email = form.querySelector('input[name="email"]').value;
-    var successMsg = form.parentElement.querySelector('.footer-newsletter-success');
-
-    // Open Substack subscribe in background with email pre-filled
-    var substackUrl = 'https://thebyzantinegeneral.substack.com/subscribe?email=' + encodeURIComponent(email);
-
-    // Submit to Substack via hidden iframe
-    var iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = substackUrl;
-    document.body.appendChild(iframe);
-
-    // Show success message
-    form.style.display = 'none';
-    successMsg.style.display = 'block';
-
-    // Also open Substack confirmation in new tab so they can confirm
-    window.open(substackUrl, '_blank');
-
-    return false;
-  }
 
 </script>
 
