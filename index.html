@@ -3450,11 +3450,28 @@
   }
 
 
+  // Map page IDs to separate HTML files
+  var pageFileMap = {
+    'intro-page': 'index.html',
+    'act1-page': 'act1.html', 'act2-page': 'act2.html',
+    'act3-page': 'act3.html', 'act4-page': 'act4.html',
+    'act5-page': 'act5.html', 'act6-page': 'act6.html',
+    'act7-page': 'act7.html'
+  };
+
   function switchPage(hideId, showId, afterCb) {
-    document.getElementById(hideId).classList.remove('visible');
+    // Always navigate to the separate HTML file for act pages
+    if (pageFileMap[showId]) {
+      window.location.href = pageFileMap[showId];
+      return;
+    }
+    var hideEl = document.getElementById(hideId);
+    if (hideEl) hideEl.classList.remove('visible');
     var target = document.getElementById(showId);
-    target.classList.add('visible');
-    target.scrollTop = 0;
+    if (target) {
+      target.classList.add('visible');
+      target.scrollTop = 0;
+    }
     if (afterCb) afterCb();
   }
 
@@ -3470,20 +3487,20 @@
     initHundredDoorGame();
   }
 
-  function openAct1() { switchPage('intro-page', 'act1-page'); }
-  function backToIntro() { switchPage('act1-page', 'intro-page', function() { montyInit(); initHundredDoorGame(); }); }
-  function openAct2() { switchPage('act1-page', 'act2-page'); }
-  function backToAct1() { switchPage('act2-page', 'act1-page'); }
-  function openAct3() { switchPage('act2-page', 'act3-page'); }
-  function backToAct2() { switchPage('act3-page', 'act2-page'); }
-  function openAct4() { switchPage('act3-page', 'act4-page'); }
-  function backToAct3() { switchPage('act4-page', 'act3-page'); }
-  function openAct5() { switchPage('act4-page', 'act5-page'); }
-  function backToAct4() { switchPage('act5-page', 'act4-page'); }
-  function openAct6() { switchPage('act5-page', 'act6-page'); }
-  function backToAct5() { switchPage('act6-page', 'act5-page'); }
-  function openAct7() { switchPage('act6-page', 'act7-page'); }
-  function backToAct6() { switchPage('act7-page', 'act6-page'); }
+  function openAct1() { window.location.href = 'act1.html'; }
+  function backToIntro() { window.location.href = 'index.html'; }
+  function openAct2() { window.location.href = 'act2.html'; }
+  function backToAct1() { window.location.href = 'act1.html'; }
+  function openAct3() { window.location.href = 'act3.html'; }
+  function backToAct2() { window.location.href = 'act2.html'; }
+  function openAct4() { window.location.href = 'act4.html'; }
+  function backToAct3() { window.location.href = 'act3.html'; }
+  function openAct5() { window.location.href = 'act5.html'; }
+  function backToAct4() { window.location.href = 'act4.html'; }
+  function openAct6() { window.location.href = 'act6.html'; }
+  function backToAct5() { window.location.href = 'act5.html'; }
+  function openAct7() { window.location.href = 'act7.html'; }
+  function backToAct6() { window.location.href = 'act6.html'; }
 
   function backToArtboard() {
     ['intro-page','act1-page','act2-page','act3-page','act4-page','act5-page','act6-page','act7-page'].forEach(function(id) {
