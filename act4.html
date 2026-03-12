@@ -2092,7 +2092,222 @@
     #doorsGrid { grid-template-columns: repeat(5, 1fr) !important; }
     .timeline-container iframe { height: 450px; }
   }
-</style>
+
+/* ── Quiz Gate ── */
+.quiz-gate {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+  text-align: center;
+}
+.quiz-gate .quiz-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 16px;
+}
+.quiz-gate .quiz-question {
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.2vw, 22px);
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-card);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.quiz-option:hover {
+  border-color: var(--accent-dim);
+  background: rgba(201,169,110,0.04);
+}
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: rgba(201,169,110,0.08);
+  color: var(--text);
+}
+.quiz-option .quiz-radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  margin-top: 1px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.quiz-option.selected .quiz-radio {
+  border-color: var(--accent);
+}
+.quiz-option.selected .quiz-radio::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.quiz-submit-btn {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  padding: 14px 40px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.2s;
+}
+.quiz-submit-btn:hover { opacity: 0.85; }
+.quiz-submit-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.quiz-feedback {
+  margin-top: 20px;
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 24px;
+}
+.quiz-feedback.wrong {
+  color: #c9836e;
+}
+.quiz-feedback.correct {
+  color: #8ebd8e;
+}
+.quiz-continue-wrap {
+  margin-top: 32px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s, transform 0.5s;
+  pointer-events: none;
+}
+.quiz-continue-wrap.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.quiz-continue-btn {
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 14px 36px;
+  transition: background 0.2s, color 0.2s;
+}
+.quiz-continue-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+/* Engagement section (Act 7) */
+.engagement-gate {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+  text-align: center;
+}
+.engagement-gate .quiz-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 16px;
+}
+.engagement-gate .quiz-question {
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.2vw, 22px);
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.engagement-gate .quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-card);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.engagement-gate .quiz-option:hover {
+  border-color: var(--accent-dim);
+  background: rgba(201,169,110,0.04);
+}
+.engagement-gate .quiz-option.selected {
+  border-color: var(--accent);
+  background: rgba(201,169,110,0.08);
+  color: var(--text);
+}
+.engagement-freetext {
+  width: 100%;
+  min-height: 80px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  resize: vertical;
+  margin-top: 12px;
+}
+.engagement-freetext::placeholder {
+  color: var(--text-muted);
+}
+.engagement-freetext:focus {
+  outline: none;
+  border-color: var(--accent-dim);
+}
+.engagement-thanks {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.engagement-thanks.visible { opacity: 1; }
+
+    </style>
 
 </head>
 <body>
@@ -2347,53 +2562,114 @@
       <div class="act1-timeline-caption">The context that eluded Gavin, from ATO audit to the BBC reveal</div>
     </div>
 
-    <!-- ══════ COUNTDOWN TO NEXT ACT ══════ -->
-    <div class="gate-section" id="countdownGate">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title" id="countdownTitle">Act 5 Coming Soon</h2>
-      <p class="gate-subtitle" id="countdownSubtitle" style="margin-bottom: 8px;">The evidence mounts.</p>
-      <div class="countdown-clock" id="countdownClock">
-        <div class="countdown-block"><div class="cd-number" id="cdDays">00</div><div class="cd-label">Days</div></div>
-        <div class="countdown-divider">:</div>
-        <div class="countdown-block"><div class="cd-number" id="cdHours">00</div><div class="cd-label">Hours</div></div>
-        <div class="countdown-divider">:</div>
-        <div class="countdown-block"><div class="cd-number" id="cdMins">00</div><div class="cd-label">Minutes</div></div>
-        <div class="countdown-divider">:</div>
-        <div class="countdown-block"><div class="cd-number" id="cdSecs">00</div><div class="cd-label">Seconds</div></div>
+    
+    <!-- ══════ QUIZ GATE ══════ -->
+    <div class="quiz-gate" id="quizGate">
+      <div class="quiz-label">Before you continue</div>
+      <div class="quiz-question">Why would Craig Wright sign a message with the Genesis block private key in private but refuse to do so publicly?</div>
+      <div class="quiz-options" id="quizOptions">
+        <div class="quiz-option" data-index="0" onclick="selectQuizOption(this)">
+          <div class="quiz-radio"></div>
+          <div>Because a controlled private setting allowed him to deceive a small audience using techniques that would not withstand public scrutiny or independent verification</div>
+        </div>
+        <div class="quiz-option" data-index="1" onclick="selectQuizOption(this)">
+          <div class="quiz-radio"></div>
+          <div>Because if the creation of Bitcoin was a prosecutable event, anyone in that position would face an impossible choice: needing to prove authorship privately to resolve a tax dispute while avoiding a public admission that could trigger criminal liability</div>
+        </div>
+        <div class="quiz-option" data-index="2" onclick="selectQuizOption(this)">
+          <div class="quiz-radio"></div>
+          <div>Because Satoshi's identity must remain secret to protect the Bitcoin network</div>
+        </div>
+        <div class="quiz-option" data-index="3" onclick="selectQuizOption(this)">
+          <div class="quiz-radio"></div>
+          <div>Because the Bitcoin Foundation asked him to keep the proof confidential</div>
+        </div>
       </div>
-      <a class="landing-cta-btn" id="countdownBtn" style="display:none; cursor:pointer; text-decoration:none; margin-top: 24px;">Enter Act 5</a>
+      <button class="quiz-submit-btn" id="quizSubmit" onclick="submitQuiz()" disabled>Submit</button>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-continue-wrap" id="quizContinue">
+        <a class="quiz-continue-btn" href="act5.html">Continue to Act 5</a>
+      </div>
     </div>
     <script>
     (function(){
-      var NEXT_RELEASE = "2026-04-12T18:00:00Z";
-      var NEXT_URL = "act5.html";
-      var NEXT_ACT = "Act 5";
-      var btn = document.getElementById('countdownBtn');
-      var clock = document.getElementById('countdownClock');
-      var title = document.getElementById('countdownTitle');
-      var dEl = document.getElementById('cdDays');
-      var hEl = document.getElementById('cdHours');
-      var mEl = document.getElementById('cdMins');
-      var sEl = document.getElementById('cdSecs');
-      btn.onclick = function(){ window.location.href = NEXT_URL; };
-      function pad(n){ return n < 10 ? '0' + n : '' + n; }
-      function update(){
-        var now = new Date().getTime();
-        var target = new Date(NEXT_RELEASE).getTime();
-        var diff = target - now;
-        if(diff <= 0){
-          clock.style.display = 'none';
-          title.textContent = NEXT_ACT + ' is Now Available';
-          btn.style.display = '';
-          return;
-        }
-        dEl.textContent = pad(Math.floor(diff / 86400000));
-        hEl.textContent = pad(Math.floor((diff % 86400000) / 3600000));
-        mEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
-        sEl.textContent = pad(Math.floor((diff % 60000) / 1000));
-        requestAnimationFrame(update);
+      var STORAGE_KEY = 'byz_act4_complete';
+      var CORRECT = 1;
+      var ALL_CORRECT = false;
+      var HINT = "Think about the legal implications of publicly claiming to have created Bitcoin. Re-read the section on the ATO investigation.";
+      var selected = -1;
+
+      // Check if already completed
+      if(localStorage.getItem(STORAGE_KEY) === 'true') {
+        document.getElementById('quizGate').querySelector('.quiz-label').textContent = 'Completed';
+        document.getElementById('quizSubmit').style.display = 'none';
+        document.getElementById('quizOptions').style.display = 'none';
+        document.getElementById('quizGate').querySelector('.quiz-question').style.display = 'none';
+        var cw = document.getElementById('quizContinue');
+        cw.classList.add('revealed');
+        // Also enable nav buttons
+        enableNextNav();
       }
-      update();
+
+      window.selectQuizOption = function(el) {
+        var opts = document.querySelectorAll('#quizOptions .quiz-option');
+        opts.forEach(function(o){ o.classList.remove('selected'); });
+        el.classList.add('selected');
+        selected = parseInt(el.getAttribute('data-index'));
+        document.getElementById('quizSubmit').disabled = false;
+        document.getElementById('quizFeedback').textContent = '';
+        document.getElementById('quizFeedback').className = 'quiz-feedback';
+      };
+
+      window.submitQuiz = function() {
+        if(selected < 0) return;
+        var fb = document.getElementById('quizFeedback');
+        if(ALL_CORRECT || selected === CORRECT) {
+          localStorage.setItem(STORAGE_KEY, 'true');
+          fb.textContent = ALL_CORRECT ? HINT : 'Correct.';
+          fb.className = 'quiz-feedback correct';
+          document.getElementById('quizSubmit').style.display = 'none';
+          var cw = document.getElementById('quizContinue');
+          setTimeout(function(){ cw.classList.add('revealed'); }, 400);
+          enableNextNav();
+        } else {
+          fb.textContent = 'Not quite. ' + HINT;
+          fb.className = 'quiz-feedback wrong';
+        }
+      };
+
+      function enableNextNav() {
+        // Enable any disabled next-act nav buttons
+        var navBtns = document.querySelectorAll('.page-nav-btn.primary[data-locked]');
+        navBtns.forEach(function(b){
+          b.removeAttribute('data-locked');
+          b.style.opacity = '';
+          b.style.pointerEvents = '';
+          b.style.cursor = '';
+        });
+      }
+    })();
+    </script>
+
+
+  
+    <script>
+    // Lock next-act nav button until quiz complete
+    (function(){
+      if(localStorage.getItem('byz_act4_complete') !== 'true') {
+        var btns = document.querySelectorAll('.page-nav-btn.primary');
+        btns.forEach(function(b){
+          if(b.textContent.indexOf('Act') > -1 || b.textContent.indexOf('→') > -1) {
+            // Only lock the forward button (the one with →)
+            if(b.textContent.indexOf('→') > -1) {
+              b.setAttribute('data-locked', 'true');
+              b.style.opacity = '0.3';
+              b.style.pointerEvents = 'none';
+              b.style.cursor = 'default';
+            }
+          }
+        });
+      }
     })();
     </script>
 
@@ -2428,7 +2704,6 @@
   </div>
 </div>
 
-<script>
 <script>
   // ═══════════════════════════════════════
   // LOADING SCREEN RAPID FLASH

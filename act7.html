@@ -2033,7 +2033,222 @@
     #doorsGrid { grid-template-columns: repeat(5, 1fr) !important; }
     .timeline-container iframe { height: 450px; }
   }
-</style>
+
+/* ── Quiz Gate ── */
+.quiz-gate {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+  text-align: center;
+}
+.quiz-gate .quiz-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 16px;
+}
+.quiz-gate .quiz-question {
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.2vw, 22px);
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-card);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.quiz-option:hover {
+  border-color: var(--accent-dim);
+  background: rgba(201,169,110,0.04);
+}
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: rgba(201,169,110,0.08);
+  color: var(--text);
+}
+.quiz-option .quiz-radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  margin-top: 1px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.quiz-option.selected .quiz-radio {
+  border-color: var(--accent);
+}
+.quiz-option.selected .quiz-radio::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.quiz-submit-btn {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  padding: 14px 40px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.2s;
+}
+.quiz-submit-btn:hover { opacity: 0.85; }
+.quiz-submit-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.quiz-feedback {
+  margin-top: 20px;
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 24px;
+}
+.quiz-feedback.wrong {
+  color: #c9836e;
+}
+.quiz-feedback.correct {
+  color: #8ebd8e;
+}
+.quiz-continue-wrap {
+  margin-top: 32px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s, transform 0.5s;
+  pointer-events: none;
+}
+.quiz-continue-wrap.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.quiz-continue-btn {
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 14px 36px;
+  transition: background 0.2s, color 0.2s;
+}
+.quiz-continue-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+/* Engagement section (Act 7) */
+.engagement-gate {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+  text-align: center;
+}
+.engagement-gate .quiz-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 16px;
+}
+.engagement-gate .quiz-question {
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.2vw, 22px);
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.engagement-gate .quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-card);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.engagement-gate .quiz-option:hover {
+  border-color: var(--accent-dim);
+  background: rgba(201,169,110,0.04);
+}
+.engagement-gate .quiz-option.selected {
+  border-color: var(--accent);
+  background: rgba(201,169,110,0.08);
+  color: var(--text);
+}
+.engagement-freetext {
+  width: 100%;
+  min-height: 80px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  resize: vertical;
+  margin-top: 12px;
+}
+.engagement-freetext::placeholder {
+  color: var(--text-muted);
+}
+.engagement-freetext:focus {
+  outline: none;
+  border-color: var(--accent-dim);
+}
+.engagement-thanks {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.engagement-thanks.visible { opacity: 1; }
+
+    </style>
 
 </head>
 <body>
@@ -2279,18 +2494,71 @@
       <div class="act1-timeline-caption">Behind every myth there is a tragedy, the complete origins of Bitcoin</div>
     </div>
 
-    <!-- ══════ FINAL CLOSING ══════ -->
-    <div class="editorial-full" style="text-align: center; padding: 60px 0 40px;">
-      <p style="font-family: var(--serif); font-size: 20px; color: var(--text-dim); font-style: italic;">The Byzantine General, Research work · 2018–2026</p>
     
+    <!-- ══════ ENGAGEMENT QUESTION ══════ -->
+    <div class="engagement-gate" id="engagementGate">
+      <div class="quiz-label">Your turn</div>
+      <div class="quiz-question">You've now seen the evidence supporting the hypothesis that Satoshi Nakamoto was a team of people, including Dave Kleiman and Craig Wright. What question would you most want answered next?</div>
+      <div class="quiz-options" id="engagementOptions">
+        <div class="quiz-option" data-index="0" onclick="selectEngagementOption(this)">
+          <div class="quiz-radio"></div>
+          <div>What was the outcome of the Bitcoin Block Size War?</div>
+        </div>
+        <div class="quiz-option" data-index="1" onclick="selectEngagementOption(this)">
+          <div class="quiz-radio"></div>
+          <div>Why has Craig Wright continued to refuse to sign publicly with the Genesis block keys to this day?</div>
+        </div>
+        <div class="quiz-option" data-index="2" onclick="selectEngagementOption(this)">
+          <div class="quiz-radio"></div>
+          <div>What happened to Gavin Andresen's standing in the Bitcoin community after he supported Craig Wright?</div>
+        </div>
+        <div class="quiz-option" data-index="3" onclick="selectEngagementOption(this)">
+          <div class="quiz-radio"></div>
+          <div>Why is the Kleiman/Wright team hypothesis virtually absent from mainstream coverage of Satoshi's identity?</div>
+        </div>
+        <div class="quiz-option" data-index="4" onclick="selectEngagementOption(this)">
+          <div class="quiz-radio"></div>
+          <div>How can the unraveling of the myth of Satoshi help us revisit other myths pervading society?</div>
+        </div>
+      </div>
+      <textarea class="engagement-freetext" id="engagementFreetext" placeholder="Or ask your own question..."></textarea>
+      <div style="margin-top: 20px;">
+        <button class="quiz-submit-btn" id="engagementSubmit" onclick="submitEngagement()">Submit</button>
+      </div>
+      <div class="engagement-thanks" id="engagementThanks">Thank you for following the investigation. Your question has been recorded.</div>
+      <div class="quiz-continue-wrap revealed" style="margin-top: 24px;">
+        <a class="quiz-continue-btn" href="index.html">Return Home</a>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var selectedIdx = -1;
 
-    <!-- ══════ RETURN HOME ══════ -->
-    <div class="gate-section">
-      <div class="gate-door-icon"></div>
-      <h2 class="gate-title">The End</h2>
-      <p class="gate-subtitle">The Byzantine General, Complete.</p>
-      <a class="landing-cta-btn" onclick="window.location.href='index.html'" style="cursor:pointer; text-decoration:none; margin-top: 24px;">Return Home</a>
-    </div></div>
+      window.selectEngagementOption = function(el) {
+        var opts = document.querySelectorAll('#engagementOptions .quiz-option');
+        opts.forEach(function(o){ o.classList.remove('selected'); });
+        el.classList.add('selected');
+        selectedIdx = parseInt(el.getAttribute('data-index'));
+      };
+
+      window.submitEngagement = function() {
+        var freetext = document.getElementById('engagementFreetext').value.trim();
+        if(selectedIdx < 0 && !freetext) return;
+        // Store in localStorage for now
+        var response = { option: selectedIdx, freetext: freetext, timestamp: new Date().toISOString() };
+        localStorage.setItem('byz_act7_response', JSON.stringify(response));
+        document.getElementById('engagementSubmit').style.display = 'none';
+        document.getElementById('engagementThanks').classList.add('visible');
+        // Disable further interaction
+        var opts = document.querySelectorAll('#engagementOptions .quiz-option');
+        opts.forEach(function(o){ o.style.pointerEvents = 'none'; o.style.opacity = '0.6'; });
+        document.getElementById('engagementFreetext').disabled = true;
+        document.getElementById('engagementFreetext').style.opacity = '0.6';
+      };
+    })();
+    </script>
+
+
 
   <!-- Footer -->
   <div class="site-footer">
@@ -2324,7 +2592,6 @@
 
 </div>
 
-<script>
 <script>
   // ═══════════════════════════════════════
   // LOADING SCREEN RAPID FLASH
