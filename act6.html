@@ -2017,6 +2017,8 @@
     height: 24px;
     fill: currentColor;
   }
+  .footer-newsletter-success { display: none; color: var(--accent); margin-top: 10px; }
+  .footer-newsletter-error { display: none; color: #e74c3c; margin-top: 10px; }
 
   /* 100-DOOR GAME STYLES */
   .door-100 {
@@ -2317,7 +2319,7 @@
   <nav class="page-nav" id="act6Nav">
     <button class="page-nav-btn" onclick="backToAct5()">← Act 5</button>
     <span class="page-nav-logo" onclick="window.location.href='index.html'">The Byzantine General</span>
-    <button class="page-nav-btn primary" onclick="window.location.href=\'act7.html\'">Act 7 →</button>
+    <button class="page-nav-btn primary" onclick="window.location.href='act7.html'">Act 7 →</button>
   </nav>
 
   <!-- ══════ KNIGHTLAB TIMELINE 6 (full-width) ══════ -->
@@ -2568,7 +2570,7 @@
       var STORAGE_KEY = 'byz_act6_complete';
       var CORRECT = -1;
       var ALL_CORRECT = true;
-      var HINT = "Every answer is correct. Each of these facets of Dave Kleiman's life and work addresses a different inconsistency in Craig Wright's solo claim. Together, they form a coherent picture of why a partnership between the two resolves what a single-person theory cannot.";
+      var HINT = "Correct.";
       var selected = -1;
 
       // Check if already completed
