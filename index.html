@@ -303,7 +303,7 @@
 
   /* Right panel: video / mask */
   .hero-right {
-    flex: 1;
+    flex: 1.15;
     position: relative;
     display: flex;
     align-items: center;
@@ -323,7 +323,13 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: 40% center;
+  }
+  .hero-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   /* Fallback image when video not loaded */
   .hero-fallback-img {
@@ -3237,15 +3243,86 @@
     var progressFill = document.getElementById('heroProgressFill');
     var progressPct = document.getElementById('heroProgressPct');
     var scrollPrompt = document.getElementById('heroScrollPrompt');
+    var rightPanel = document.querySelector('.hero-right');
 
     if (!spacer) return;
 
-    // Force video to load metadata immediately
+    // --- Canvas-based frame rendering for buttery smooth scrubbing ---
+    var canvas = null;
+    var ctx = null;
+    var frames = [];          // Array of ImageBitmap or canvas snapshots
+    var totalFrames = 60;     // Extract 60 frames from the video
+    var framesReady = false;
+    var currentFrameIdx = -1;
+
+    // Create canvas to replace video element
+    if (rightPanel && video) {
+      canvas = document.createElement('canvas');
+      canvas.className = 'hero-canvas';
+      canvas.style.position = 'absolute';
+      canvas.style.inset = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      ctx = canvas.getContext('2d');
+    }
+
+    // Force video to load
     if (video) {
       video.preload = 'auto';
       video.load();
-      // Also pause to prevent any autoplay
       video.pause();
+    }
+
+    // Extract frames from video into memory for instant rendering
+    function extractFrames() {
+      if (!video || !video.duration || !isFinite(video.duration)) return;
+      var duration = video.duration;
+      var step = duration / totalFrames;
+      var idx = 0;
+      // Use a hidden video for extraction
+      video.muted = true;
+      video.pause();
+
+      // Set canvas to video native resolution
+      canvas.width = video.videoWidth || 1188;
+      canvas.height = video.videoHeight || 772;
+
+      function captureFrame() {
+        if (idx >= totalFrames) {
+          framesReady = true;
+          // Hide original video, show canvas
+          video.style.display = 'none';
+          rightPanel.insertBefore(canvas, video);
+          // Draw first frame immediately
+          drawFrame(0);
+          return;
+        }
+        video.currentTime = idx * step;
+      }
+
+      video.addEventListener('seeked', function onSeeked() {
+        // Capture current frame to an offscreen canvas
+        var offscreen = document.createElement('canvas');
+        offscreen.width = canvas.width;
+        offscreen.height = canvas.height;
+        var octx = offscreen.getContext('2d');
+        octx.drawImage(video, 0, 0, offscreen.width, offscreen.height);
+        frames[idx] = offscreen;
+        idx++;
+        captureFrame();
+      });
+
+      captureFrame();
+    }
+
+    function drawFrame(frameIdx) {
+      if (!ctx || !frames[frameIdx]) return;
+      frameIdx = Math.max(0, Math.min(frames.length - 1, frameIdx));
+      if (frameIdx === currentFrameIdx) return;
+      currentFrameIdx = frameIdx;
+
+      // Cover-fit: draw to fill canvas maintaining aspect ratio
+      ctx.drawImage(frames[frameIdx], 0, 0, canvas.width, canvas.height);
     }
 
     // Animate text elements in
@@ -3257,7 +3334,7 @@
       });
     }, 400);
 
-    // Generate floating particles in right panel
+    // Generate floating particles
     var pc = document.getElementById('heroParticles');
     if (pc) {
       for (var i = 0; i < 20; i++) {
@@ -3273,14 +3350,21 @@
       }
     }
 
-    // Scroll handler: map scroll position to video time
+    // --- Scroll handling with requestAnimationFrame ---
     var lastProgress = 0;
     var videoReady = false;
+    var rafPending = false;
 
     function setVideoTime(progress) {
+      if (framesReady) {
+        // Instant canvas rendering - no seeking lag!
+        var frameIdx = Math.round(progress * (totalFrames - 1));
+        drawFrame(frameIdx);
+        return true;
+      }
+      // Fallback: direct video seeking before frames are extracted
       if (video && videoReady && video.duration && isFinite(video.duration)) {
         var targetTime = progress * video.duration;
-        // Only seek if difference is meaningful (avoids jitter)
         if (Math.abs(video.currentTime - targetTime) > 0.05) {
           video.currentTime = targetTime;
         }
@@ -3289,34 +3373,43 @@
       return false;
     }
 
-    function onHeroScroll() {
+    function updateHero() {
+      rafPending = false;
       var rect = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var maxScroll = spacer.offsetHeight - window.innerHeight;
       var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
       lastProgress = progress;
 
-      // Drive video playback
+      // Drive video/canvas
       setVideoTime(progress);
 
       // Update progress bar
       if (progressFill) progressFill.style.width = (progress * 100) + '%';
       if (progressPct) progressPct.textContent = Math.round(progress * 100) + '%';
 
-      // Fade out scroll prompt after first scroll
+      // Fade out scroll prompt
       if (scrollPrompt) {
         scrollPrompt.style.opacity = progress > 0.05 ? '0' : '';
       }
     }
 
-    // When video metadata loads, apply current scroll position
+    function onHeroScroll() {
+      if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(updateHero);
+      }
+    }
+
+    // When video metadata loads, start frame extraction
     if (video) {
       video.addEventListener('loadedmetadata', function() {
         videoReady = true;
         video.pause();
         setVideoTime(lastProgress);
+        // Start extracting frames for smooth canvas playback
+        if (canvas) extractFrames();
       });
-      // Also handle canplaythrough for extra safety
       video.addEventListener('canplaythrough', function() {
         videoReady = true;
         video.pause();
