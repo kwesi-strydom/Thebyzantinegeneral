@@ -65,7 +65,7 @@
   body.light-mode .video-caption {
     background: linear-gradient(transparent, rgba(0,0,0,0.5));
   }
-  body.light-mode .landing-hero { background: var(--bg); }
+  body.light-mode .hero-sticky { background: var(--bg); }
   body.light-mode #flashSequence { background: var(--bg); }
   body.light-mode .artboard-nav a:hover {
     border-color: rgba(0,0,0,0.15);
@@ -170,79 +170,219 @@
   ═══════════════════════════════════════ */
   #landing-scroll-container.visible { display: block; }
 
-  /* Title hero, first viewport, background image with Satoshi mask & Bitcoin */
-  .landing-hero {
-    height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+  /* ═══ SCROLL-DRIVEN HERO: Split-screen mask assembly ═══ */
+  .hero-scroll-spacer {
+    height: 350vh;
     position: relative;
     z-index: 2;
+  }
+  .hero-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
     background: #000;
   }
-  /* Background image layer — fades in from black */
-  .landing-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url('https://i.postimg.cc/KzKxwh5P/Sat-bit-dark.png') center center / cover no-repeat;
-    opacity: 0;
-    animation: heroImageFadeIn 2.5s ease-out 0.5s forwards;
-    z-index: 0;
-  }
-  /* Dark overlay on top of image */
-  .landing-hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 1;
-  }
-  /* Keep all text above the overlay */
-  .landing-hero > * {
+
+  /* Left panel: title content */
+  .hero-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 60px 60px 80px;
     position: relative;
     z-index: 2;
   }
-  @keyframes heroImageFadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+  .hero-number {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
   }
-  .landing-hero .loader-number {
-    font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.7);
-    letter-spacing: 3px; opacity: 1;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  .hero-number.visible { opacity: 1; transform: translateY(0); }
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-top: 20px;
+    line-height: 1.1;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease 0.2s, transform 1s ease 0.2s;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.5);
   }
-  .landing-hero .loader-title {
-    font-family: var(--serif); font-size: clamp(32px, 6vw, 64px);
-    font-weight: 400; letter-spacing: 0.06em;
-    text-transform: uppercase; color: #fff; text-align: center;
-    opacity: 1; animation: none;
-    text-shadow: 0 2px 16px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.6);
+  .hero-title.visible { opacity: 1; transform: translateY(0); }
+  .hero-subtitle {
+    font-family: var(--serif);
+    font-size: clamp(14px, 2vw, 20px);
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(255,255,255,0.7);
+    margin-top: 20px;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
   }
-  .landing-hero .loader-subtitle {
-    font-family: var(--serif); font-size: clamp(14px, 2.5vw, 22px);
-    font-weight: 400; font-style: italic; letter-spacing: 0.02em;
-    color: rgba(255,255,255,0.85); text-align: center;
-    opacity: 1; animation: none;
-    margin-top: 12px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  .hero-subtitle.visible { opacity: 1; transform: translateY(0); }
+  .hero-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    margin-top: 32px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.8s ease 0.8s;
   }
-  .landing-scroll-hint {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--accent);
-    margin-top: 48px;
-    animation: pulse 1.5s ease-in-out infinite;
+  .hero-divider.visible { transform: scaleX(1); }
+  .hero-scroll-prompt {
+    margin-top: 40px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    opacity: 0;
+    transition: opacity 0.8s ease 1s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
-  .landing-scroll-arrow {
-    margin-top: 16px;
-    width: 20px; height: 20px;
+  .hero-scroll-prompt.visible {
+    opacity: 1;
+    animation: pulse 2s ease-in-out 2s infinite;
+  }
+  .hero-scroll-prompt .arrow {
+    width: 12px; height: 12px;
     border-right: 1px solid var(--accent-dim);
     border-bottom: 1px solid var(--accent-dim);
     transform: rotate(45deg);
     animation: bobDown 2s ease-in-out infinite;
   }
+  .hero-progress {
+    position: absolute;
+    bottom: 60px;
+    left: 80px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.5s ease 1.2s;
+  }
+  .hero-progress.visible { opacity: 1; }
+  .hero-progress-track {
+    width: 100px;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .hero-progress-fill {
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.1s ease;
+    width: 0%;
+  }
+  .hero-progress-pct { min-width: 28px; }
+
+  /* Right panel: video / mask */
+  .hero-right {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 120px;
+    background: linear-gradient(to right, #000 0%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  /* Fallback image when video not loaded */
+  .hero-fallback-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    animation: heroFallbackIn 2.5s ease-out 0.5s forwards;
+  }
+  @keyframes heroFallbackIn {
+    from { opacity: 0; }
+    to { opacity: 0.8; }
+  }
+  .hero-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hero-particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    animation: heroFloat linear infinite;
+  }
+  @keyframes heroFloat {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+  }
   @keyframes bobDown {
     0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.4; }
     50% { transform: rotate(45deg) translateY(6px); opacity: 1; }
+  }
+
+  /* Mobile: stack vertically */
+  @media (max-width: 768px) {
+    .hero-sticky { flex-direction: column; }
+    .hero-left {
+      flex: none;
+      height: 40vh;
+      padding: 40px 24px;
+      justify-content: flex-end;
+    }
+    .hero-right { flex: 1; height: 60vh; }
+    .hero-right::before {
+      width: 100%; height: 60px;
+      left: 0; right: 0; top: 0; bottom: auto;
+      background: linear-gradient(to bottom, #000 0%, transparent 100%);
+    }
+    .hero-progress {
+      bottom: auto; top: 20px;
+      left: 24px;
+    }
   }
 
   /* Artboard tiles viewport, sticky */
@@ -2324,13 +2464,35 @@
 
 <div id="landing-scroll-container">
 
-  <!-- HERO: Title section (first viewport) -->
-  <div class="landing-hero">
-    <div class="loader-number">001 / 007</div>
-    <div class="loader-title">The Byzantine General</div>
-    <div class="loader-subtitle">The true story behind the invention of Bitcoin</div>
-    <div class="landing-scroll-hint">Scroll to explore</div>
-    <div class="landing-scroll-arrow"></div>
+  <!-- HERO: Scroll-driven mask assembly (split-screen) -->
+  <div class="hero-scroll-spacer" id="heroScrollSpacer">
+    <div class="hero-sticky">
+      <!-- Left: Title -->
+      <div class="hero-left">
+        <div class="hero-number" id="heroNumber">001 / 007</div>
+        <div class="hero-title" id="heroTitle">The Byzantine<br>General</div>
+        <div class="hero-subtitle" id="heroSubtitle">The true story behind the invention of Bitcoin</div>
+        <div class="hero-divider" id="heroDivider"></div>
+        <div class="hero-scroll-prompt" id="heroScrollPrompt">
+          Scroll to reveal <span class="arrow"></span>
+        </div>
+        <div class="hero-progress" id="heroProgressBar">
+          <span>ASSEMBLING</span>
+          <div class="hero-progress-track">
+            <div class="hero-progress-fill" id="heroProgressFill"></div>
+          </div>
+          <span class="hero-progress-pct" id="heroProgressPct">0%</span>
+        </div>
+      </div>
+      <!-- Right: Video / mask -->
+      <div class="hero-right">
+        <!-- Video: replace src with hosted video URL when ready -->
+        <!-- <video class="hero-video" id="heroVideo" src="YOUR_VIDEO_URL.mp4" muted playsinline preload="auto"></video> -->
+        <!-- Fallback: static image until video is hosted -->
+        <img class="hero-fallback-img" src="https://i.postimg.cc/KzKxwh5P/Sat-bit-dark.png" alt="Satoshi mask">
+        <div class="hero-particles" id="heroParticles"></div>
+      </div>
+    </div>
   </div>
 
   <!-- TILES: Sticky viewport -->
@@ -3064,8 +3226,72 @@
     hasEntered = true;
     // Set up the landing page (loader stays on top, will be faded separately)
     document.getElementById('landing-scroll-container').classList.add('visible');
+    initHeroScroll();
     initArtboard();
     initLandingScroll();
+  }
+
+  // ═══════════════════════════════════════
+  // SCROLL-DRIVEN HERO: Mask assembly video
+  // ═══════════════════════════════════════
+  function initHeroScroll() {
+    var spacer = document.getElementById('heroScrollSpacer');
+    var video = document.getElementById('heroVideo');
+    var progressFill = document.getElementById('heroProgressFill');
+    var progressPct = document.getElementById('heroProgressPct');
+    var scrollPrompt = document.getElementById('heroScrollPrompt');
+
+    if (!spacer) return;
+
+    // Animate text elements in
+    setTimeout(function() {
+      var els = ['heroNumber','heroTitle','heroSubtitle','heroDivider','heroScrollPrompt','heroProgressBar'];
+      els.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('visible');
+      });
+    }, 400);
+
+    // Generate floating particles in right panel
+    var pc = document.getElementById('heroParticles');
+    if (pc) {
+      for (var i = 0; i < 20; i++) {
+        var p = document.createElement('div');
+        p.className = 'hero-particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = (Math.random() * 8) + 's';
+        var size = (1 + Math.random() * 2) + 'px';
+        p.style.width = size;
+        p.style.height = size;
+        pc.appendChild(p);
+      }
+    }
+
+    // Scroll handler: map scroll position to video time
+    function onHeroScroll() {
+      var rect = spacer.getBoundingClientRect();
+      var scrolled = -rect.top;
+      var maxScroll = spacer.offsetHeight - window.innerHeight;
+      var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
+
+      // Drive video playback (if video element exists and is loaded)
+      if (video && video.duration && isFinite(video.duration)) {
+        video.currentTime = progress * video.duration;
+      }
+
+      // Update progress bar
+      if (progressFill) progressFill.style.width = (progress * 100) + '%';
+      if (progressPct) progressPct.textContent = Math.round(progress * 100) + '%';
+
+      // Fade out scroll prompt after first scroll
+      if (scrollPrompt) {
+        scrollPrompt.style.opacity = progress > 0.05 ? '0' : '';
+      }
+    }
+
+    window.addEventListener('scroll', onHeroScroll, { passive: true });
+    onHeroScroll();
   }
 
   // ═══════════════════════════════════════
