@@ -3397,11 +3397,11 @@
       var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
 
       if (framesReady) {
-        // Instant canvas draw — no seeking lag!
         var frameIdx = Math.round(progress * (TOTAL_FRAMES - 1));
         drawFrame(frameIdx);
-      } else if (video.duration && isFinite(video.duration)) {
-        // Fallback while frames are extracting
+      } else if (!extracting && video.duration && isFinite(video.duration)) {
+        // Fallback ONLY before extraction starts — never seek during extraction
+        // (seeking during extraction fires extra seeked events, corrupting frames)
         video.pause();
         video.currentTime = progress * video.duration;
       }
