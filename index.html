@@ -182,6 +182,7 @@
     height: 100vh;
     width: 100%;
     display: flex;
+    flex-direction: row-reverse;
     overflow: hidden;
     background: #000;
   }
@@ -303,7 +304,7 @@
 
   /* Right panel: video / mask */
   .hero-right {
-    flex: 1.15;
+    flex: 0.9;
     position: relative;
     display: flex;
     align-items: center;
@@ -313,9 +314,9 @@
   .hero-right::before {
     content: '';
     position: absolute;
-    left: 0; top: 0; bottom: 0;
+    right: 0; top: 0; bottom: 0;
     width: 120px;
-    background: linear-gradient(to right, #000 0%, transparent 100%);
+    background: linear-gradient(to left, #000 0%, transparent 100%);
     z-index: 2;
     pointer-events: none;
   }
@@ -323,13 +324,13 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 40% center;
+    object-position: center;
   }
   .hero-canvas {
+    position: absolute;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    display: block;
   }
   /* Fallback image when video not loaded */
   .hero-fallback-img {
@@ -3245,85 +3246,123 @@
     var scrollPrompt = document.getElementById('heroScrollPrompt');
     var rightPanel = document.querySelector('.hero-right');
 
-    if (!spacer) return;
+    if (!spacer || !video || !rightPanel) return;
 
-    // --- Canvas-based frame rendering for buttery smooth scrubbing ---
-    var canvas = null;
-    var ctx = null;
-    var frames = [];          // Array of ImageBitmap or canvas snapshots
-    var totalFrames = 60;     // Extract 60 frames from the video
+    // === CANVAS FRAME EXTRACTION FOR SMOOTH SCRUBBING ===
+    var TOTAL_FRAMES = 80;
+    var frames = [];
     var framesReady = false;
+    var extracting = false;
     var currentFrameIdx = -1;
 
-    // Create canvas to replace video element
-    if (rightPanel && video) {
-      canvas = document.createElement('canvas');
-      canvas.className = 'hero-canvas';
-      canvas.style.position = 'absolute';
-      canvas.style.inset = '0';
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
-      ctx = canvas.getContext('2d');
+    // Canvas sits ON TOP of video (z-index via CSS class)
+    // This hides the rapid seeking while frames extract
+    var canvas = document.createElement('canvas');
+    canvas.className = 'hero-canvas';
+    canvas.style.zIndex = '1'; // above video, below gradient & particles
+    var ctx = canvas.getContext('2d');
+
+    // Insert canvas into the right panel
+    var particlesEl = document.getElementById('heroParticles');
+    if (particlesEl) {
+      rightPanel.insertBefore(canvas, particlesEl);
+    } else {
+      rightPanel.appendChild(canvas);
     }
 
-    // Force video to load
-    if (video) {
-      video.preload = 'auto';
-      video.load();
-      video.pause();
+    // Load video
+    video.preload = 'auto';
+    video.load();
+    video.pause();
+
+    // Cover-fit math — match CSS object-fit: cover behavior exactly
+    var coverDraw = null;
+    function initCanvasSize() {
+      var cw = rightPanel.clientWidth;
+      var ch = rightPanel.clientHeight;
+      var dpr = window.devicePixelRatio || 1;
+      canvas.width = cw * dpr;
+      canvas.height = ch * dpr;
+      var vw = video.videoWidth || 1188;
+      var vh = video.videoHeight || 772;
+      var scale = Math.max((cw * dpr) / vw, (ch * dpr) / vh);
+      coverDraw = {
+        dw: vw * scale, dh: vh * scale,
+        dx: ((cw * dpr) - vw * scale) / 2,
+        dy: ((ch * dpr) - vh * scale) / 2,
+        cw: cw * dpr, ch: ch * dpr
+      };
     }
 
-    // Extract frames from video into memory for instant rendering
-    function extractFrames() {
-      if (!video || !video.duration || !isFinite(video.duration)) return;
+    // Draw first frame onto canvas immediately (covers the video beneath)
+    var firstFrameDrawn = false;
+    function drawFirstFrame() {
+      if (firstFrameDrawn) return;
+      if (video.readyState < 2) return;
+      initCanvasSize();
+      ctx.drawImage(video, coverDraw.dx, coverDraw.dy, coverDraw.dw, coverDraw.dh);
+      // Also save frame 0 so extraction can start from frame 1
+      var off0 = document.createElement('canvas');
+      off0.width = coverDraw.cw;
+      off0.height = coverDraw.ch;
+      off0.getContext('2d').drawImage(video, coverDraw.dx, coverDraw.dy, coverDraw.dw, coverDraw.dh);
+      frames[0] = off0;
+      firstFrameDrawn = true;
+      startExtraction();
+    }
+
+    // Extract remaining frames (1..N) — frame 0 already captured above
+    function startExtraction() {
+      if (extracting || framesReady) return;
+      if (!video.duration || !isFinite(video.duration)) return;
+      extracting = true;
+      if (!coverDraw) initCanvasSize();
+
       var duration = video.duration;
-      var step = duration / totalFrames;
-      var idx = 0;
-      // Use a hidden video for extraction
-      video.muted = true;
-      video.pause();
+      var step = duration / TOTAL_FRAMES;
+      var idx = 1; // Start from 1 — frame 0 already captured
 
-      // Set canvas to video native resolution
-      canvas.width = video.videoWidth || 1188;
-      canvas.height = video.videoHeight || 772;
-
-      function captureFrame() {
-        if (idx >= totalFrames) {
+      function captureNext() {
+        if (idx >= TOTAL_FRAMES) {
           framesReady = true;
-          // Hide original video, show canvas
           video.style.display = 'none';
-          rightPanel.insertBefore(canvas, video);
-          // Draw first frame immediately
-          drawFrame(0);
+          onHeroScroll();
           return;
         }
         video.currentTime = idx * step;
       }
 
       video.addEventListener('seeked', function onSeeked() {
-        // Capture current frame to an offscreen canvas
-        var offscreen = document.createElement('canvas');
-        offscreen.width = canvas.width;
-        offscreen.height = canvas.height;
-        var octx = offscreen.getContext('2d');
-        octx.drawImage(video, 0, 0, offscreen.width, offscreen.height);
-        frames[idx] = offscreen;
+        var off = document.createElement('canvas');
+        off.width = coverDraw.cw;
+        off.height = coverDraw.ch;
+        var offCtx = off.getContext('2d');
+        offCtx.drawImage(video, coverDraw.dx, coverDraw.dy, coverDraw.dw, coverDraw.dh);
+        frames[idx] = off;
         idx++;
-        captureFrame();
+        captureNext();
       });
 
-      captureFrame();
+      captureNext();
     }
 
     function drawFrame(frameIdx) {
-      if (!ctx || !frames[frameIdx]) return;
       frameIdx = Math.max(0, Math.min(frames.length - 1, frameIdx));
-      if (frameIdx === currentFrameIdx) return;
+      if (frameIdx === currentFrameIdx || !frames[frameIdx]) return;
       currentFrameIdx = frameIdx;
-
-      // Cover-fit: draw to fill canvas maintaining aspect ratio
-      ctx.drawImage(frames[frameIdx], 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(frames[frameIdx], 0, 0);
     }
+
+    // Trigger first frame draw + extraction
+    video.addEventListener('loadeddata', drawFirstFrame);
+    video.addEventListener('canplaythrough', drawFirstFrame);
+    if (video.readyState >= 2) drawFirstFrame();
+    // Poll fallback
+    var extractPoll = setInterval(function() {
+      if (video.readyState >= 2 && !firstFrameDrawn) drawFirstFrame();
+      if (framesReady) clearInterval(extractPoll);
+    }, 300);
+    setTimeout(function() { clearInterval(extractPoll); }, 15000);
 
     // Animate text elements in
     setTimeout(function() {
@@ -3334,7 +3373,7 @@
       });
     }, 400);
 
-    // Generate floating particles
+    // Generate floating particles in right panel
     var pc = document.getElementById('heroParticles');
     if (pc) {
       for (var i = 0; i < 20; i++) {
@@ -3350,71 +3389,29 @@
       }
     }
 
-    // --- Scroll handling with requestAnimationFrame ---
-    var lastProgress = 0;
-    var videoReady = false;
-    var rafPending = false;
-
-    function setVideoTime(progress) {
-      if (framesReady) {
-        // Instant canvas rendering - no seeking lag!
-        var frameIdx = Math.round(progress * (totalFrames - 1));
-        drawFrame(frameIdx);
-        return true;
-      }
-      // Fallback: direct video seeking before frames are extracted
-      if (video && videoReady && video.duration && isFinite(video.duration)) {
-        var targetTime = progress * video.duration;
-        if (Math.abs(video.currentTime - targetTime) > 0.05) {
-          video.currentTime = targetTime;
-        }
-        return true;
-      }
-      return false;
-    }
-
-    function updateHero() {
-      rafPending = false;
+    // === SCROLL HANDLER ===
+    function onHeroScroll() {
       var rect = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var maxScroll = spacer.offsetHeight - window.innerHeight;
       var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
-      lastProgress = progress;
 
-      // Drive video/canvas
-      setVideoTime(progress);
+      if (framesReady) {
+        // Instant canvas draw — no seeking lag!
+        var frameIdx = Math.round(progress * (TOTAL_FRAMES - 1));
+        drawFrame(frameIdx);
+      } else if (video.duration && isFinite(video.duration)) {
+        // Fallback while frames are extracting
+        video.pause();
+        video.currentTime = progress * video.duration;
+      }
 
-      // Update progress bar
       if (progressFill) progressFill.style.width = (progress * 100) + '%';
       if (progressPct) progressPct.textContent = Math.round(progress * 100) + '%';
 
-      // Fade out scroll prompt
       if (scrollPrompt) {
         scrollPrompt.style.opacity = progress > 0.05 ? '0' : '';
       }
-    }
-
-    function onHeroScroll() {
-      if (!rafPending) {
-        rafPending = true;
-        requestAnimationFrame(updateHero);
-      }
-    }
-
-    // When video metadata loads, start frame extraction
-    if (video) {
-      video.addEventListener('loadedmetadata', function() {
-        videoReady = true;
-        video.pause();
-        setVideoTime(lastProgress);
-        // Start extracting frames for smooth canvas playback
-        if (canvas) extractFrames();
-      });
-      video.addEventListener('canplaythrough', function() {
-        videoReady = true;
-        video.pause();
-        setVideoTime(lastProgress);
-      });
     }
 
     window.addEventListener('scroll', onHeroScroll, { passive: true });
