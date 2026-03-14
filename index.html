@@ -3240,6 +3240,14 @@
 
     if (!spacer) return;
 
+    // Force video to load metadata immediately
+    if (video) {
+      video.preload = 'auto';
+      video.load();
+      // Also pause to prevent any autoplay
+      video.pause();
+    }
+
     // Animate text elements in
     setTimeout(function() {
       var els = ['heroNumber','heroTitle','heroSubtitle','heroDivider','heroScrollPrompt','heroProgressBar'];
@@ -3266,16 +3274,30 @@
     }
 
     // Scroll handler: map scroll position to video time
+    var lastProgress = 0;
+    var videoReady = false;
+
+    function setVideoTime(progress) {
+      if (video && videoReady && video.duration && isFinite(video.duration)) {
+        var targetTime = progress * video.duration;
+        // Only seek if difference is meaningful (avoids jitter)
+        if (Math.abs(video.currentTime - targetTime) > 0.05) {
+          video.currentTime = targetTime;
+        }
+        return true;
+      }
+      return false;
+    }
+
     function onHeroScroll() {
       var rect = spacer.getBoundingClientRect();
       var scrolled = -rect.top;
       var maxScroll = spacer.offsetHeight - window.innerHeight;
       var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
+      lastProgress = progress;
 
-      // Drive video playback (if video element exists and is loaded)
-      if (video && video.duration && isFinite(video.duration)) {
-        video.currentTime = progress * video.duration;
-      }
+      // Drive video playback
+      setVideoTime(progress);
 
       // Update progress bar
       if (progressFill) progressFill.style.width = (progress * 100) + '%';
@@ -3285,6 +3307,21 @@
       if (scrollPrompt) {
         scrollPrompt.style.opacity = progress > 0.05 ? '0' : '';
       }
+    }
+
+    // When video metadata loads, apply current scroll position
+    if (video) {
+      video.addEventListener('loadedmetadata', function() {
+        videoReady = true;
+        video.pause();
+        setVideoTime(lastProgress);
+      });
+      // Also handle canplaythrough for extra safety
+      video.addEventListener('canplaythrough', function() {
+        videoReady = true;
+        video.pause();
+        setVideoTime(lastProgress);
+      });
     }
 
     window.addEventListener('scroll', onHeroScroll, { passive: true });
