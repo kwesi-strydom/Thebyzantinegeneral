@@ -2121,6 +2121,101 @@
     margin-top: 8px;
   }
 
+  /* Contribute Modal */
+  .contribute-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .contribute-modal-inner {
+    background: #111;
+    border: 1px solid var(--border);
+    max-width: 520px;
+    width: 100%;
+    padding: 48px 40px;
+    position: relative;
+    text-align: center;
+  }
+  .contribute-modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    font-family: var(--mono);
+  }
+  .contribute-modal-close:hover { color: var(--text); }
+  .contribute-modal h3 {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+  .contribute-modal p {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .contribute-wallet-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .contribute-wallet-addr {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    word-break: break-all;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    transition: border-color 0.3s;
+    margin-bottom: 8px;
+  }
+  .contribute-wallet-addr:hover { border-color: var(--accent); }
+  .contribute-ens {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+  .contribute-copied {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.3s;
+    margin-top: 4px;
+  }
+  .contribute-github-link {
+    display: inline-block;
+    margin-top: 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .contribute-github-link:hover { color: var(--text); border-color: var(--text); }
+
   .footer-socials {
     margin-bottom: 28px;
     display: flex;
@@ -2478,7 +2573,7 @@
       <div class="hero-left">
         <div class="hero-number" id="heroNumber">001 / 007</div>
         <div class="hero-title" id="heroTitle">The Byzantine<br>General</div>
-        <div class="hero-subtitle" id="heroSubtitle">The true story behind the invention of Bitcoin</div>
+        <div class="hero-subtitle" id="heroSubtitle">Open source research project dedicated to the origins of Bitcoin</div>
         <div class="hero-divider" id="heroDivider"></div>
         <div class="hero-scroll-prompt" id="heroScrollPrompt">
           Scroll to reveal <span class="arrow"></span>
@@ -2508,8 +2603,9 @@
           <nav class="artboard-nav">
             <a class="nav-primary" onclick="openIntro()">Introduction</a>
             <a onclick="openIntro()">Chapters</a>
-            <a onclick="openIntro()">The Research</a>
-            <a href="javascript:void(0)">Newsletter</a>
+            <a href="https://github.com/kwesi-strydom/Thebyzantinegeneral" target="_blank">Open Research</a>
+            <a href="javascript:void(0)" onclick="document.getElementById('contributeModal').style.display='flex'">Contribute</a>
+            <a href="javascript:void(0)" onclick="document.querySelector('.footer-newsletter').scrollIntoView({behavior:'smooth'})">Newsletter</a>
           </nav>
         </div>
 
@@ -2634,8 +2730,8 @@
   <!-- Landing Footer -->
   <div class="site-footer" style="border-top: none; padding-top: 20px;">
     <div class="footer-newsletter">
-      <div class="footer-newsletter-title">Get each Act delivered to your inbox</div>
-      <div class="footer-newsletter-sub">Subscribe to the newsletter and follow the investigation as it unfolds, one Act per week.</div>
+      <div class="footer-newsletter-title">Subscribe to the newsletter</div>
+      <div class="footer-newsletter-sub">Follow the investigation as it unfolds.</div>
       <form class="footer-newsletter-form" onsubmit="return handleFooterSubscribe(this)">
         <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit">Subscribe</button>
@@ -2696,7 +2792,7 @@
       <div class="intro-hero-text">
         <div class="section-label">Introduction</div>
         <h1>Deconstructing the Myth of Satoshi Nakamoto</h1>
-        <div class="subtitle">The true story behind the invention of Bitcoin</div>
+        <div class="subtitle">Open source research project dedicated to the origins of Bitcoin</div>
         <div class="prose">
           <p>Bitcoin is one of the most disruptive technologies of our time. Seventeen years after its creation, the world's first decentralized currency has fueled an economy worth trillions of dollars and challenged the very foundation of monetary authority.</p>
           <p>But Bitcoin's impact runs deeper than economics. Like artificial intelligence, it marks the beginning of a new epoch, one that could reshape society as profoundly as the Industrial Revolution once did.</p>
@@ -3097,8 +3193,8 @@
   <!-- Footer -->
   <div class="site-footer">
     <div class="footer-newsletter">
-      <div class="footer-newsletter-title">Get each Act delivered to your inbox</div>
-      <div class="footer-newsletter-sub">Subscribe to the newsletter and follow the investigation as it unfolds, one Act per week.</div>
+      <div class="footer-newsletter-title">Subscribe to the newsletter</div>
+      <div class="footer-newsletter-sub">Follow the investigation as it unfolds.</div>
       <form class="footer-newsletter-form" onsubmit="return handleFooterSubscribe(this)">
         <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit">Subscribe</button>
@@ -4352,6 +4448,20 @@
 
 
 </script>
+
+<!-- Contribute Modal -->
+<div class="contribute-modal" id="contributeModal" onclick="if(event.target===this)this.style.display='none'">
+  <div class="contribute-modal-inner">
+    <button class="contribute-modal-close" onclick="document.getElementById('contributeModal').style.display='none'">&times;</button>
+    <h3>Support the Research</h3>
+    <p>This is an open source investigation into the origins of Bitcoin. Your contributions help keep this research independent and censorship-resistant.</p>
+    <div class="contribute-ens">thebyzantinegeneral.eth</div>
+    <div class="contribute-wallet-label">Ethereum Wallet</div>
+    <div class="contribute-wallet-addr" onclick="navigator.clipboard.writeText('0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091');document.getElementById('copiedMsg').style.opacity='1';setTimeout(function(){document.getElementById('copiedMsg').style.opacity='0'},2000)">0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091</div>
+    <div class="contribute-copied" id="copiedMsg">Copied to clipboard</div>
+    <a class="contribute-github-link" href="https://github.com/kwesi-strydom/Thebyzantinegeneral" target="_blank">View Open Research on GitHub &rarr;</a>
+  </div>
+</div>
 
 </body>
 </html>
