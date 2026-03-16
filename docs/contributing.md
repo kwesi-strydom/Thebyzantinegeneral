@@ -18,7 +18,7 @@ Submit a pull request (PR) from your fork to the main repository. In your PR des
 
 ### Step 4: Review
 
-The editorial team will review your submission against the project's methodology and evidence standards. This is not about gatekeeping — it's about ensuring consistency and quality. Reviews typically focus on:
+The editorial team will review your submission against the project's methodology and evidence standards. This is not about gatekeeping - it's about ensuring consistency and quality. Reviews typically focus on:
 
 - Are the sources verifiable?
 - Is the reasoning clear and sound?
@@ -27,7 +27,7 @@ The editorial team will review your submission against the project's methodology
 
 ### Step 5: Merge and attribution
 
-Accepted contributions are merged into the main branch and the contributor is credited in the Contributors page. You choose how you want to be attributed — real name, pseudonym, GitHub handle, or wallet address.
+Accepted contributions are merged into the main branch and the contributor is credited in the Contributors page. You choose how you want to be attributed - real name, pseudonym, GitHub handle, or wallet address.
 
 ---
 
@@ -66,12 +66,12 @@ When adding new research, please use this template:
 
 You don't need to write a thesis to contribute. Here are some examples of valuable contributions:
 
-- **Timeline corrections** — A date was wrong, an event was missing, a sequence was inaccurate
-- **New source documents** — Court filings, correspondence, public records that aren't yet in the archive
-- **Translation** — Making existing research accessible in other languages
-- **Technical analysis** — Blockchain forensics, code analysis, cryptographic verification
-- **Contextual research** — Historical, legal, or technical context that illuminates existing evidence
-- **Corrections** — Errors in existing research, broken links, outdated information
+- **Timeline corrections** - A date was wrong, an event was missing, a sequence was inaccurate
+- **New source documents** - Court filings, correspondence, public records that aren't yet in the archive
+- **Translation** - Making existing research accessible in other languages
+- **Technical analysis** - Blockchain forensics, code analysis, cryptographic verification
+- **Contextual research** - Historical, legal, or technical context that illuminates existing evidence
+- **Corrections** - Errors in existing research, broken links, outdated information
 
 ---
 

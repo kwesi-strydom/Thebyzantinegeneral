@@ -6,15 +6,15 @@ Not all evidence is created equal. This project uses a classification framework 
 
 ### Evidence tiers
 
-**Documented** — Supported by primary sources that can be independently verified. This includes court filings, blockchain records, published correspondence, official records, and contemporaneous reporting from credible outlets.
+**Documented** - Supported by primary sources that can be independently verified. This includes court filings, blockchain records, published correspondence, official records, and contemporaneous reporting from credible outlets.
 
-**Corroborated** — Supported by multiple independent sources that align, but where the primary source may not be directly accessible. Witness testimony from credible individuals falls into this category when corroborated by at least one other source.
+**Corroborated** - Supported by multiple independent sources that align, but where the primary source may not be directly accessible. Witness testimony from credible individuals falls into this category when corroborated by at least one other source.
 
-**Disputed** — Claims where credible evidence exists on both sides, or where the source has been challenged on verifiable grounds. Disputed does not mean false — it means the evidence is contested and the reader should weigh it accordingly.
+**Disputed** - Claims where credible evidence exists on both sides, or where the source has been challenged on verifiable grounds. Disputed does not mean false - it means the evidence is contested and the reader should weigh it accordingly.
 
-**Unverified** — Claims that originate from a single source and have not been independently confirmed. Unverified evidence may be included in the research base but must be clearly labelled and should not be used as the sole basis for conclusions.
+**Unverified** - Claims that originate from a single source and have not been independently confirmed. Unverified evidence may be included in the research base but must be clearly labelled and should not be used as the sole basis for conclusions.
 
-**Debunked** — Claims that have been conclusively disproven by stronger evidence. Debunked material remains in the archive for completeness but is clearly marked.
+**Debunked** - Claims that have been conclusively disproven by stronger evidence. Debunked material remains in the archive for completeness but is clearly marked.
 
 ### Source requirements
 

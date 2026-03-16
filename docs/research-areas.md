@@ -6,7 +6,7 @@ The research is organised around several interconnected threads. Contributors ca
 
 ### The Satoshi Timeline
 
-Reconstructing the complete chronology of Satoshi Nakamoto's activity — from the first known communications in 2008 through the final post in December 2010. This includes analysis of posting patterns, time zones, language, coding style, and the evolution of the Bitcoin codebase.
+Reconstructing the complete chronology of Satoshi Nakamoto's activity - from the first known communications in 2008 through the final post in December 2010. This includes analysis of posting patterns, time zones, language, coding style, and the evolution of the Bitcoin codebase.
 
 **Status:** Ongoing. Core timeline established, details being refined.
 
@@ -36,7 +36,7 @@ Analysis of the genesis block keys, early Bitcoin transactions, known wallet add
 
 ### Contextual History
 
-The broader historical context of Bitcoin's creation — the cypherpunk movement, prior digital currency attempts, the 2008 financial crisis, and the political and technological environment that made Bitcoin possible.
+The broader historical context of Bitcoin's creation - the cypherpunk movement, prior digital currency attempts, the 2008 financial crisis, and the political and technological environment that made Bitcoin possible.
 
 **Status:** Established framework. Contributions welcome for deeper analysis of specific areas.
 

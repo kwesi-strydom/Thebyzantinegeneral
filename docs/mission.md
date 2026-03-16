@@ -6,13 +6,13 @@ The Byzantine General is more than a research project about Satoshi Nakamoto. It
 
 ### 1. The Investigation
 
-At its core, this is an open investigation into the origins of Bitcoin — who created it, under what circumstances, and why the identity of its creator remains one of the most consequential unsolved questions in modern technology.
+At its core, this is an open investigation into the origins of Bitcoin - who created it, under what circumstances, and why the identity of its creator remains one of the most consequential unsolved questions in modern technology.
 
 The research draws on public records, court documents, blockchain analysis, correspondence, and testimony to reconstruct a coherent timeline of events. It does not begin with a conclusion. It follows the evidence.
 
 ### 2. Unravelling a Modern Myth
 
-Satoshi Nakamoto has become a myth — a faceless figure who created a technology that reshaped finance, challenged governments, and inspired a global movement. Myths serve a purpose, but they also obscure the truth.
+Satoshi Nakamoto has become a myth - a faceless figure who created a technology that reshaped finance, challenged governments, and inspired a global movement. Myths serve a purpose, but they also obscure the truth.
 
 This project aims to move past the mythology and into the documented record. Not to diminish what Bitcoin represents, but to understand what actually happened. The truth, whatever it turns out to be, is more interesting than the legend.
 

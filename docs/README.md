@@ -8,12 +8,12 @@ This documentation serves as the front door for anyone who wants to understand t
 
 ### What you'll find here
 
-- **Mission** — Why this research exists and what it aims to achieve
-- **Methodology** — How evidence is classified and evaluated
-- **How to Contribute** — The process for submitting research via GitHub
-- **Evidence Classification** — The framework for categorizing claims
-- **Research Areas** — Active lines of investigation
-- **Contributors** — People who have contributed to the research
+- **Mission** - Why this research exists and what it aims to achieve
+- **Methodology** - How evidence is classified and evaluated
+- **How to Contribute** - The process for submitting research via GitHub
+- **Evidence Classification** - The framework for categorizing claims
+- **Research Areas** - Active lines of investigation
+- **Contributors** - People who have contributed to the research
 
 ### Quick links
 

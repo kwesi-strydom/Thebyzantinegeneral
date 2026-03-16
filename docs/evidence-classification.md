@@ -10,7 +10,7 @@ Every piece of evidence in the research is tagged with a classification tier. Th
 |------|-------|----------|---------|
 | 1 | **Documented** | Primary source, independently verifiable | Court filing, blockchain transaction, published email |
 | 2 | **Corroborated** | Multiple independent sources align | Two witnesses independently confirm the same event |
-| 3 | **Disputed** | Credible evidence exists on both sides | Craig Wright's claim to be Satoshi — supported by some witnesses, contradicted by forensic analysis |
+| 3 | **Disputed** | Credible evidence exists on both sides | Craig Wright's claim to be Satoshi - supported by some witnesses, contradicted by forensic analysis |
 | 4 | **Unverified** | Single source, not independently confirmed | An anonymous tip, a single witness statement without corroboration |
 | 5 | **Debunked** | Conclusively disproven by stronger evidence | Backdated PGP keys presented as evidence of early Bitcoin involvement |
 

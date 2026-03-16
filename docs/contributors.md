@@ -2,13 +2,13 @@
 
 ## People who have contributed to the research
 
-Every accepted contribution is credited here. Contributors choose how they want to be attributed — real name, pseudonym, GitHub handle, or wallet address.
+Every accepted contribution is credited here. Contributors choose how they want to be attributed - real name, pseudonym, GitHub handle, or wallet address.
 
 ---
 
 ### Founding Researcher
 
-**The Byzantine General** — Project creator and lead researcher. Initiated the investigation in 2018 and maintains the editorial direction.
+**The Byzantine General** - Project creator and lead researcher. Initiated the investigation in 2018 and maintains the editorial direction.
 
 ---
 
