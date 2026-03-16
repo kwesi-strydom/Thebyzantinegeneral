@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Byzantine General — Act 1 — The Quest for Digital Cash</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="shortcut icon" href="/favicon.ico">
   <style>
   @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=PT+Sans+Narrow:wght@400;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap');
 
@@ -1389,104 +1394,7 @@
     .countdown-block .cd-label { font-size: 7px; letter-spacing: 2px; }
     .countdown-divider { font-size: 20px; padding-top: 12px; }
     .site-footer { padding: 40px 20px; }
-    .footer-newsletter {
-    margin-bottom: 36px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding-bottom: 36px;
-    border-bottom: 1px solid var(--border);
-  }
-  .footer-newsletter-title {
-    font-family: var(--serif);
-    font-size: 18px;
-    color: var(--text);
-    letter-spacing: 1px;
-  }
-  .footer-newsletter-sub {
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--text-dim);
-    font-weight: 300;
-    max-width: 400px;
-    text-align: center;
-    line-height: 1.6;
-  }
-  .footer-newsletter-form {
-    display: flex;
-    gap: 0;
-    max-width: 420px;
-    width: 100%;
-  }
-  .footer-newsletter-form input[type="email"] {
-    flex: 1;
-    padding: 12px 16px;
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--text);
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    border-right: none;
-    border-radius: 0;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  .footer-newsletter-form input[type="email"]::placeholder {
-    color: var(--text-dim);
-    opacity: 0.6;
-  }
-  .footer-newsletter-form input[type="email"]:focus {
-    border-color: var(--accent);
-  }
-  .footer-newsletter-form button {
-    padding: 12px 24px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--bg);
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-  .footer-newsletter-form button:hover {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--bg);
-  }
-  .footer-newsletter-form button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  .footer-newsletter-success {
-    display: none;
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--accent);
-    letter-spacing: 1px;
-  }
-  .footer-newsletter-error {
-    display: none;
-    font-family: var(--sans);
-    font-size: 12px;
-    color: #e74c3c;
-    letter-spacing: 0.5px;
-    margin-top: 8px;
-  }
-
-  /* Support Ribbon */
-  .footer-support { text-align: center; padding: 32px 20px; margin-bottom: 28px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .footer-support-title { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 10px; letter-spacing: 0.5px; }
-  .footer-support-desc { font-family: var(--sans); font-size: 13px; color: var(--text-dim); line-height: 1.7; max-width: 480px; margin: 0 auto 20px; }
-  .footer-support-ens { font-family: var(--mono); font-size: 14px; color: var(--text); letter-spacing: 1px; margin-bottom: 8px; }
-  .footer-support-wallet { font-family: var(--mono); font-size: 11px; color: var(--accent); word-break: break-all; padding: 10px 16px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; transition: border-color 0.3s; display: inline-block; max-width: 460px; }
-  .footer-support-wallet:hover { border-color: var(--accent); }
-  .footer-support-copied { font-family: var(--mono); font-size: 10px; color: var(--accent); opacity: 0; transition: opacity 0.3s; margin-top: 6px; height: 16px; }
-
-  .footer-socials { margin-bottom: 20px; gap: 14px; }
+    .footer-socials { margin-bottom: 20px; gap: 14px; }
     .footer-newsletter { margin-bottom: 28px; padding-bottom: 28px; gap: 12px; }
     .footer-newsletter-title { font-size: 16px; }
     .footer-newsletter-sub { font-size: 12px; }
@@ -2111,6 +2019,61 @@
   }
   .footer-newsletter-success { display: none; color: var(--accent); margin-top: 10px; }
   .footer-newsletter-error { display: none; color: #e74c3c; margin-top: 10px; }
+
+  /* Support Ribbon */
+  .footer-support {
+    text-align: center;
+    padding: 32px 20px;
+    margin-bottom: 28px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .footer-support-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .footer-support-desc {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 20px;
+  }
+  .footer-support-ens {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .footer-support-wallet {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    word-break: break-all;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    transition: border-color 0.3s;
+    display: inline-block;
+    max-width: 460px;
+  }
+  .footer-support-wallet:hover { border-color: var(--accent); }
+  .footer-support-copied {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.3s;
+    margin-top: 6px;
+    height: 16px;
+  }
+
 
   /* 100-DOOR GAME STYLES */
   .door-100 {
