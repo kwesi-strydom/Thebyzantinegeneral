@@ -2121,100 +2121,59 @@
     margin-top: 8px;
   }
 
-  /* Contribute Modal */
-  .contribute-modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 10000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .contribute-modal-inner {
-    background: #111;
-    border: 1px solid var(--border);
-    max-width: 520px;
-    width: 100%;
-    padding: 48px 40px;
-    position: relative;
+  /* Support Ribbon */
+  .footer-support {
     text-align: center;
+    padding: 32px 20px;
+    margin-bottom: 28px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
-  .contribute-modal-close {
-    position: absolute;
-    top: 16px; right: 20px;
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 24px;
-    cursor: pointer;
-    font-family: var(--mono);
-  }
-  .contribute-modal-close:hover { color: var(--text); }
-  .contribute-modal h3 {
+  .footer-support-title {
     font-family: var(--serif);
-    font-size: 22px;
+    font-size: 18px;
     color: var(--text);
-    margin-bottom: 12px;
-    letter-spacing: 1px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
   }
-  .contribute-modal p {
+  .footer-support-desc {
     font-family: var(--sans);
-    font-size: 14px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin-bottom: 24px;
-  }
-  .contribute-wallet-label {
-    font-family: var(--mono);
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-dim);
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 20px;
+  }
+  .footer-support-ens {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    letter-spacing: 1px;
     margin-bottom: 8px;
   }
-  .contribute-wallet-addr {
+  .footer-support-wallet {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--accent);
     word-break: break-all;
-    padding: 12px 16px;
+    padding: 10px 16px;
     border: 1px solid var(--border);
     background: rgba(255,255,255,0.03);
     cursor: pointer;
     transition: border-color 0.3s;
-    margin-bottom: 8px;
+    display: inline-block;
+    max-width: 460px;
   }
-  .contribute-wallet-addr:hover { border-color: var(--accent); }
-  .contribute-ens {
+  .footer-support-wallet:hover { border-color: var(--accent); }
+  .footer-support-copied {
     font-family: var(--mono);
-    font-size: 14px;
-    color: var(--text);
-    letter-spacing: 1px;
-    margin-bottom: 20px;
-  }
-  .contribute-copied {
-    font-family: var(--mono);
-    font-size: 11px;
+    font-size: 10px;
     color: var(--accent);
     opacity: 0;
     transition: opacity 0.3s;
-    margin-top: 4px;
+    margin-top: 6px;
+    height: 16px;
   }
-  .contribute-github-link {
-    display: inline-block;
-    margin-top: 24px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    text-decoration: none;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 2px;
-    transition: color 0.3s, border-color 0.3s;
-  }
-  .contribute-github-link:hover { color: var(--text); border-color: var(--text); }
 
   .footer-socials {
     margin-bottom: 28px;
@@ -2603,8 +2562,8 @@
           <nav class="artboard-nav">
             <a class="nav-primary" onclick="openIntro()">Introduction</a>
             <a onclick="openIntro()">Chapters</a>
-            <a href="https://github.com/kwesi-strydom/Thebyzantinegeneral" target="_blank">Open Research</a>
-            <a href="javascript:void(0)" onclick="document.getElementById('contributeModal').style.display='flex'">Contribute</a>
+            <a href="https://github.com/kwesi-strydom/Thebyzantinegeneral" target="_blank">Contribute</a>
+            <a href="https://thebyzantinegeneral.gitbook.io" target="_blank">Documentation</a>
             <a href="javascript:void(0)" onclick="document.querySelector('.footer-newsletter').scrollIntoView({behavior:'smooth'})">Newsletter</a>
           </nav>
         </div>
@@ -2738,6 +2697,13 @@
       </form>
       <div class="footer-newsletter-success">You're in. Watch your inbox.</div>
       <div class="footer-newsletter-error">Something went wrong. Please try again.</div>
+    </div>
+    <div class="footer-support">
+      <div class="footer-support-title">Support The Byzantine General Project</div>
+      <div class="footer-support-desc">This is an open source investigation into the origins of Bitcoin. Your contributions help keep this research independent and censorship-resistant.</div>
+      <div class="footer-support-ens">thebyzantinegeneral.eth</div>
+      <div class="footer-support-wallet" onclick="navigator.clipboard.writeText('0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091');this.nextElementSibling.style.opacity='1';setTimeout(function(){document.querySelector('.footer-support-copied').style.opacity='0'},2000)">0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091</div>
+      <div class="footer-support-copied">Copied to clipboard</div>
     </div>
     <div class="footer-socials">
       <div class="footer-socials-label">Follow us on socials</div>
@@ -3201,6 +3167,13 @@
       </form>
       <div class="footer-newsletter-success">You're in. Watch your inbox.</div>
       <div class="footer-newsletter-error">Something went wrong. Please try again.</div>
+    </div>
+    <div class="footer-support">
+      <div class="footer-support-title">Support The Byzantine General Project</div>
+      <div class="footer-support-desc">This is an open source investigation into the origins of Bitcoin. Your contributions help keep this research independent and censorship-resistant.</div>
+      <div class="footer-support-ens">thebyzantinegeneral.eth</div>
+      <div class="footer-support-wallet" onclick="navigator.clipboard.writeText('0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091');this.nextElementSibling.style.opacity='1';setTimeout(function(){document.querySelectorAll('.footer-support-copied').forEach(function(e){e.style.opacity='0'})},2000)">0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091</div>
+      <div class="footer-support-copied">Copied to clipboard</div>
     </div>
     <div class="footer-socials">
       <div class="footer-socials-label">Follow us on socials</div>
@@ -4449,19 +4422,6 @@
 
 </script>
 
-<!-- Contribute Modal -->
-<div class="contribute-modal" id="contributeModal" onclick="if(event.target===this)this.style.display='none'">
-  <div class="contribute-modal-inner">
-    <button class="contribute-modal-close" onclick="document.getElementById('contributeModal').style.display='none'">&times;</button>
-    <h3>Support the Research</h3>
-    <p>This is an open source investigation into the origins of Bitcoin. Your contributions help keep this research independent and censorship-resistant.</p>
-    <div class="contribute-ens">thebyzantinegeneral.eth</div>
-    <div class="contribute-wallet-label">Ethereum Wallet</div>
-    <div class="contribute-wallet-addr" onclick="navigator.clipboard.writeText('0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091');document.getElementById('copiedMsg').style.opacity='1';setTimeout(function(){document.getElementById('copiedMsg').style.opacity='0'},2000)">0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091</div>
-    <div class="contribute-copied" id="copiedMsg">Copied to clipboard</div>
-    <a class="contribute-github-link" href="https://github.com/kwesi-strydom/Thebyzantinegeneral" target="_blank">View Open Research on GitHub &rarr;</a>
-  </div>
-</div>
 
 </body>
 </html>

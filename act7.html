@@ -1477,6 +1477,15 @@
     margin-top: 8px;
   }
 
+  /* Support Ribbon */
+  .footer-support { text-align: center; padding: 32px 20px; margin-bottom: 28px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .footer-support-title { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 10px; letter-spacing: 0.5px; }
+  .footer-support-desc { font-family: var(--sans); font-size: 13px; color: var(--text-dim); line-height: 1.7; max-width: 480px; margin: 0 auto 20px; }
+  .footer-support-ens { font-family: var(--mono); font-size: 14px; color: var(--text); letter-spacing: 1px; margin-bottom: 8px; }
+  .footer-support-wallet { font-family: var(--mono); font-size: 11px; color: var(--accent); word-break: break-all; padding: 10px 16px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; transition: border-color 0.3s; display: inline-block; max-width: 460px; }
+  .footer-support-wallet:hover { border-color: var(--accent); }
+  .footer-support-copied { font-family: var(--mono); font-size: 10px; color: var(--accent); opacity: 0; transition: opacity 0.3s; margin-top: 6px; height: 16px; }
+
   .footer-socials { margin-bottom: 20px; gap: 14px; }
     .footer-newsletter { margin-bottom: 28px; padding-bottom: 28px; gap: 12px; }
     .footer-newsletter-title { font-size: 16px; }
@@ -2655,6 +2664,13 @@
       </form>
       <div class="footer-newsletter-success">You're in. Watch your inbox.</div>
       <div class="footer-newsletter-error">Something went wrong. Please try again.</div>
+    </div>
+    <div class="footer-support">
+      <div class="footer-support-title">Support The Byzantine General Project</div>
+      <div class="footer-support-desc">This is an open source investigation into the origins of Bitcoin. Your contributions help keep this research independent and censorship-resistant.</div>
+      <div class="footer-support-ens">thebyzantinegeneral.eth</div>
+      <div class="footer-support-wallet" onclick="navigator.clipboard.writeText('0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091');this.nextElementSibling.style.opacity='1';setTimeout(function(){document.querySelector('.footer-support-copied').style.opacity='0'},2000)">0x1fC6b33A94e3e78226EC9aE3545917c9F9E9F091</div>
+      <div class="footer-support-copied">Copied to clipboard</div>
     </div>
     <div class="footer-socials">
       <div class="footer-socials-label">Follow us on socials</div>

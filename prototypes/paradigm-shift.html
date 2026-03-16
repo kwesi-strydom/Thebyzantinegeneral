@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Paradigm Shift — The Byzantine General</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface-hover: #161620;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e6e1;
+    --text-muted: #8a8880;
+    --text-dim: #5a5850;
+    --accent: #c9a96e;
+    --accent-dim: rgba(201,169,110,0.15);
+    --correct: #4ade80;
+    --correct-dim: rgba(74,222,128,0.08);
+    --wrong: #ef4444;
+    --wrong-dim: rgba(239,68,68,0.06);
+    --serif: 'Cormorant Garamond', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .header-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .header-title {
+    font-family: var(--serif);
+    font-size: 34px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .header-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* Two opposing columns */
+  .debate {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .debate-side {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.6s ease;
+  }
+
+  .debate-side.left { border-radius: 4px 0 0 4px; }
+  .debate-side.right { border-radius: 0 4px 4px 0; }
+
+  .debate-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    filter: grayscale(20%);
+    display: block;
+  }
+
+  .debate-body {
+    padding: 20px;
+  }
+
+  .debate-name {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .debate-role {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .debate-quote {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.5;
+    position: relative;
+    padding-left: 16px;
+    border-left: 2px solid var(--accent-dim);
+  }
+
+  .debate-vs {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    z-index: 2;
+  }
+
+  /* Prompt */
+  .prompt {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .prompt-question {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .prompt-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    letter-spacing: 1px;
+  }
+
+  /* Hypothesis cards */
+  .hypotheses {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .hypo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hypo-card:hover {
+    border-color: var(--accent-dim);
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+  }
+
+  .hypo-card.revealed {
+    cursor: default;
+    transform: none;
+  }
+
+  .hypo-card.revealed:hover {
+    transform: none;
+  }
+
+  .hypo-card.dead-end {
+    border-color: rgba(239,68,68,0.3);
+    background: var(--wrong-dim);
+  }
+
+  .hypo-card.breakthrough {
+    border-color: rgba(74,222,128,0.4);
+    background: var(--correct-dim);
+  }
+
+  .hypo-card.team-card {
+    grid-column: 1 / -1;
+    text-align: center;
+    border-color: var(--accent-dim);
+  }
+
+  .hypo-card.team-card:hover {
+    border-color: var(--accent);
+  }
+
+  .hypo-card.team-card.breakthrough {
+    border-color: rgba(74,222,128,0.4);
+    background: var(--correct-dim);
+  }
+
+  .hypo-number {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .hypo-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .hypo-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    letter-spacing: 0.5px;
+  }
+
+  .hypo-click-hint {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 12px;
+    opacity: 0.6;
+  }
+
+  .hypo-card.revealed .hypo-click-hint { display: none; }
+
+  /* Reveal content inside cards */
+  .hypo-reveal {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease, margin 0.3s ease, opacity 0.4s ease;
+    opacity: 0;
+    margin-top: 0;
+  }
+
+  .hypo-card.revealed .hypo-reveal {
+    max-height: 600px;
+    opacity: 1;
+    margin-top: 16px;
+  }
+
+  .hypo-reveal-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .hypo-reveal-text strong {
+    color: var(--text);
+  }
+
+  .verdict {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+  }
+
+  .verdict.dead { background: rgba(239,68,68,0.15); color: var(--wrong); }
+  .verdict.open { background: rgba(74,222,128,0.15); color: var(--correct); }
+
+  .evidence-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+  }
+
+  .evidence-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .evidence-list li::before {
+    content: '×';
+    position: absolute;
+    left: 0;
+    color: var(--wrong);
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .evidence-list.positive li::before {
+    content: '✓';
+    color: var(--correct);
+  }
+
+  /* Paradigm shift animation */
+  .paradigm-shift {
+    display: none;
+    text-align: center;
+    margin-top: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+  }
+
+  .paradigm-shift.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .shift-divider {
+    width: 80px;
+    height: 1px;
+    background: var(--accent);
+    margin: 0 auto 24px;
+  }
+
+  .shift-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .shift-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto 24px;
+  }
+
+  .shift-reframe {
+    background: var(--surface);
+    border: 1px solid var(--accent-dim);
+    border-radius: 4px;
+    padding: 24px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .shift-reframe-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .reframe-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .reframe-before {
+    color: var(--wrong);
+    font-family: var(--mono);
+    font-size: 11px;
+    min-width: 20px;
+    padding-top: 2px;
+  }
+
+  .reframe-arrow {
+    color: var(--text-dim);
+    font-size: 14px;
+    min-width: 20px;
+    text-align: center;
+    padding-top: 1px;
+  }
+
+  .reframe-after {
+    color: var(--correct);
+    flex: 1;
+  }
+
+  .reframe-label {
+    color: var(--text-dim);
+    flex: 1;
+  }
+
+  .btn-reset {
+    display: inline-block;
+    margin-top: 32px;
+    padding: 12px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-reset:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Counter */
+  .counter {
+    text-align: center;
+    margin-bottom: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  /* Debate merge animation */
+  .debate.merged .debate-side {
+    opacity: 0.5;
+    filter: grayscale(50%);
+  }
+
+  .debate.merged .debate-vs {
+    border-color: var(--correct);
+    color: var(--correct);
+    box-shadow: 0 0 20px rgba(74,222,128,0.2);
+  }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    .debate { flex-direction: column; gap: 0; }
+    .debate-side.left { border-radius: 4px 4px 0 0; }
+    .debate-side.right { border-radius: 0 0 4px 4px; }
+    .debate-vs {
+      position: relative;
+      left: auto; top: auto;
+      transform: none;
+      margin: -24px auto;
+      z-index: 2;
+    }
+    .debate-img { height: 160px; }
+    .hypotheses { grid-template-columns: 1fr; }
+    .hypo-card.team-card { grid-column: auto; }
+    .header-title { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="header-label">Interactive Challenge</div>
+    <h1 class="header-title">The Paradigm Shift</h1>
+    <p class="header-desc">Two of the most respected minds in the crypto world hold diametrically opposed views on whether Craig Wright is Satoshi Nakamoto. Can both be right? Explore the hypotheses.</p>
+  </div>
+
+  <!-- Two opposing positions -->
+  <div class="debate" id="debate">
+    <div class="debate-side left">
+      <img class="debate-img" src="https://i.postimg.cc/0j0S3zk8/Gavin-Andresen-portrait-copy.png" alt="Gavin Andresen"
+           onerror="this.style.background='linear-gradient(135deg,#111118,#1a1a24)';this.style.height='200px';">
+      <div class="debate-body">
+        <div class="debate-name">Gavin Andresen</div>
+        <div class="debate-role">Lead Bitcoin Developer</div>
+        <div class="debate-quote">"I believe Craig Steven Wright is the person who invented Bitcoin."</div>
+      </div>
+    </div>
+
+    <div class="debate-vs">VS</div>
+
+    <div class="debate-side right">
+      <img class="debate-img" src="https://i.postimg.cc/SQ3CfsQ7/Deconomy-conference.jpg" alt="Vitalik Buterin"
+           onerror="this.style.background='linear-gradient(135deg,#111118,#1a1a24)';this.style.height='200px';">
+      <div class="debate-body">
+        <div class="debate-name">Vitalik Buterin</div>
+        <div class="debate-role">Founder of Ethereum</div>
+        <div class="debate-quote">"Craig Wright is a fraud."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question -->
+  <div class="prompt">
+    <div class="prompt-question">Is there a scenario where both could be right?</div>
+    <div class="prompt-sub">Flip each card to test the hypothesis</div>
+  </div>
+
+  <div class="counter" id="counter">0 / 5 explored</div>
+
+  <!-- Hypothesis cards -->
+  <div class="hypotheses" id="hypotheses">
+
+    <div class="hypo-card" id="card-gavin-deceived" onclick="revealCard('gavin-deceived')">
+      <div class="hypo-number">Hypothesis 01</div>
+      <div class="hypo-title">Gavin was deceived</div>
+      <div class="hypo-subtitle">The private session was an elaborate trick</div>
+      <div class="hypo-click-hint">Click to explore →</div>
+      <div class="hypo-reveal">
+        <div class="verdict dead">Dead End</div>
+        <div class="hypo-reveal-text">
+          Gavin Andresen is one of the most technically sophisticated people in Bitcoin — handpicked by Satoshi himself as lead developer. He ran his own verification process during a private signing session in London.
+          <ul class="evidence-list">
+            <li><strong>Jon Matonis</strong>, director of the Bitcoin Foundation, was also in the room and was independently convinced</li>
+            <li><strong>Ian Grigg</strong>, a respected cryptographer, was present and corroborated the session</li>
+            <li>Gavin paid an enormous personal price for his claim — stripped of his Bitcoin GitHub access, ostracized by the community</li>
+          </ul>
+          Believing Gavin was simply "tricked" requires three independent, technically sophisticated witnesses to all have been fooled simultaneously. <strong>Possible, but deeply unsatisfying.</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="hypo-card" id="card-vitalik-wrong" onclick="revealCard('vitalik-wrong')">
+      <div class="hypo-number">Hypothesis 02</div>
+      <div class="hypo-title">Vitalik is wrong</div>
+      <div class="hypo-subtitle">Craig Wright really is Satoshi Nakamoto</div>
+      <div class="hypo-click-hint">Click to explore →</div>
+      <div class="hypo-reveal">
+        <div class="verdict dead">Dead End</div>
+        <div class="hypo-reveal-text">
+          The evidence against Wright acting alone as Satoshi has only grown stronger over the years:
+          <ul class="evidence-list">
+            <li>The public verification failed <strong>before</strong> Vitalik made his statement — he was reacting to evidence</li>
+            <li>Wright was found to have <strong>fabricated evidence in court</strong> during the COPA trial</li>
+            <li>His technical knowledge shows visible gaps — multiple public instances of errors on cryptographic fundamentals</li>
+            <li>His Australian time zone doesn't match Satoshi's posting patterns</li>
+            <li>Satoshi coded on Windows — Wright is not a Windows user</li>
+            <li>Years after the ATO meeting, Wright <strong>still never proved</strong> he controlled the genesis block keys</li>
+          </ul>
+          Too much stacks against Vitalik being wrong. <strong>Another dead end.</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="hypo-card" id="card-gavin-corrupt" onclick="revealCard('gavin-corrupt')">
+      <div class="hypo-number">Hypothesis 03</div>
+      <div class="hypo-title">Gavin was corrupt</div>
+      <div class="hypo-subtitle">He had a vested interest in validating Wright</div>
+      <div class="hypo-click-hint">Click to explore →</div>
+      <div class="hypo-reveal">
+        <div class="verdict dead">Dead End</div>
+        <div class="hypo-reveal-text">
+          If Gavin was corrupt, what did he gain? The answer is: nothing. He lost everything.
+          <ul class="evidence-list">
+            <li>His commit access to the <strong>Bitcoin GitHub repository was revoked</strong></li>
+            <li>He was effectively <strong>expelled from the Bitcoin community</strong> he helped build</li>
+            <li>His reputation took severe damage — years of credibility spent in a single statement</li>
+            <li>He had <strong>no financial incentive</strong> — no known business ties to Wright at the time</li>
+          </ul>
+          A corrupt actor acts for gain. Gavin gained nothing and lost nearly everything. <strong>Dead end.</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="hypo-card" id="card-proof-faked" onclick="revealCard('proof-faked')">
+      <div class="hypo-number">Hypothesis 04</div>
+      <div class="hypo-title">The proof was faked entirely</div>
+      <div class="hypo-subtitle">Nothing real happened in that private session</div>
+      <div class="hypo-click-hint">Click to explore →</div>
+      <div class="hypo-reveal">
+        <div class="verdict dead">Dead End</div>
+        <div class="hypo-reveal-text">
+          But three credible people were in that room — not just Gavin.
+          <ul class="evidence-list">
+            <li><strong>Jon Matonis</strong>, director of the Bitcoin Foundation, independently stated he was convinced</li>
+            <li><strong>Ian Grigg</strong>, a respected cryptographer in the Bitcoin community, corroborated the session</li>
+            <li>Gavin has consistently maintained — for years, at great personal cost — that what he witnessed was convincing</li>
+          </ul>
+          Dismissing the private session entirely requires believing that all three witnesses were either fooled by the same trick or colluding in a conspiracy. At best, what Wright demonstrated was <strong>partial control</strong> — enough to convince, but not enough to constitute full proof. <strong>Something real happened in that room. But what exactly?</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- The breakthrough card -->
+    <div class="hypo-card team-card" id="card-team" onclick="revealCard('team')">
+      <div class="hypo-number">Hypothesis 05</div>
+      <div class="hypo-title">Satoshi Nakamoto was a team</div>
+      <div class="hypo-subtitle">What if we're asking the wrong question?</div>
+      <div class="hypo-click-hint">Click to explore →</div>
+      <div class="hypo-reveal">
+        <div class="verdict open">Every door opens</div>
+        <div class="hypo-reveal-text">
+          If Satoshi Nakamoto was not one person but a team, then suddenly every contradiction resolves:
+          <ul class="evidence-list positive">
+            <li><strong>Gavin can be right</strong> — Wright was involved. He had access to some keys, enough to demonstrate partial control in a private session</li>
+            <li><strong>Vitalik can also be right</strong> — Wright is not <em>the</em> Satoshi, because there is no single Satoshi</li>
+            <li><strong>The partial proof makes sense</strong> — a team member wouldn't possess all the keys, only their share</li>
+            <li><strong>The technical gaps make sense</strong> — Wright's expertise was only partial because his role was only partial</li>
+            <li><strong>The time zone mismatch makes sense</strong> — other team members in different time zones posted as Satoshi</li>
+            <li><strong>The failed public proof makes sense</strong> — Wright couldn't prove full control because he never had full control</li>
+          </ul>
+          The binary question — <em>"Is Craig Wright Satoshi?"</em> — was always the wrong question. The right question is: <strong>"Was Craig Wright part of the team that created Bitcoin?"</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Paradigm shift conclusion -->
+  <div class="paradigm-shift" id="paradigmShift">
+    <div class="shift-divider"></div>
+    <div class="shift-title">The frame shifts.</div>
+    <div class="shift-text">
+      Every dead end you encountered above was caused by the same assumption: that Satoshi Nakamoto is one person. Remove that assumption, and the evidence that contradicted itself suddenly tells a coherent story.
+    </div>
+    <div class="shift-reframe">
+      <div class="shift-reframe-title">Reframing the evidence</div>
+      <div class="reframe-row">
+        <span class="reframe-before">×</span>
+        <span class="reframe-label">"He failed to prove he's Satoshi"</span>
+        <span class="reframe-arrow">→</span>
+        <span class="reframe-after">He couldn't prove sole ownership because he was never the sole owner</span>
+      </div>
+      <div class="reframe-row">
+        <span class="reframe-before">×</span>
+        <span class="reframe-label">"His technical knowledge has gaps"</span>
+        <span class="reframe-arrow">→</span>
+        <span class="reframe-after">His knowledge was partial because his role was partial</span>
+      </div>
+      <div class="reframe-row">
+        <span class="reframe-before">×</span>
+        <span class="reframe-label">"The private session was convincing"</span>
+        <span class="reframe-arrow">→</span>
+        <span class="reframe-after">He did have access to some keys — just not all of them</span>
+      </div>
+      <div class="reframe-row">
+        <span class="reframe-before">×</span>
+        <span class="reframe-label">"Gavin threw away his career for this"</span>
+        <span class="reframe-arrow">→</span>
+        <span class="reframe-after">Gavin saw something real — he just drew too broad a conclusion</span>
+      </div>
+    </div>
+    <button class="btn-reset" onclick="resetAll()">Explore Again</button>
+  </div>
+
+</div>
+
+<script>
+var revealed = {};
+var totalCards = 5;
+
+function revealCard(id) {
+  if (revealed[id]) return;
+  revealed[id] = true;
+
+  var card = document.getElementById('card-' + id);
+  card.classList.add('revealed');
+
+  if (id === 'team') {
+    card.classList.add('breakthrough');
+  } else {
+    card.classList.add('dead-end');
+  }
+
+  var count = Object.keys(revealed).length;
+  document.getElementById('counter').textContent = count + ' / ' + totalCards + ' explored';
+
+  // If team card is revealed, trigger paradigm shift
+  if (id === 'team') {
+    setTimeout(function() {
+      // Merge the debate columns visually
+      document.getElementById('debate').classList.add('merged');
+
+      // Show the paradigm shift conclusion
+      var ps = document.getElementById('paradigmShift');
+      ps.style.display = 'block';
+      // Force reflow
+      ps.offsetHeight;
+      ps.classList.add('visible');
+      setTimeout(function() {
+        ps.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }, 800);
+  }
+}
+
+function resetAll() {
+  revealed = {};
+
+  // Reset cards
+  var cards = document.querySelectorAll('.hypo-card');
+  cards.forEach(function(card) {
+    card.classList.remove('revealed', 'dead-end', 'breakthrough');
+  });
+
+  // Reset debate
+  document.getElementById('debate').classList.remove('merged');
+
+  // Reset paradigm shift
+  var ps = document.getElementById('paradigmShift');
+  ps.classList.remove('visible');
+  setTimeout(function() { ps.style.display = 'none'; }, 600);
+
+  // Reset counter
+  document.getElementById('counter').textContent = '0 / ' + totalCards + ' explored';
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

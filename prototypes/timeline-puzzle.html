@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline Puzzle — The Byzantine General</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e6e1;
+    --text-muted: #8a8880;
+    --text-dim: #5a5850;
+    --accent: #c9a96e;
+    --accent-dim: rgba(201,169,110,0.3);
+    --correct: #4ade80;
+    --wrong: #ef4444;
+    --serif: 'Cormorant Garamond', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  .puzzle-header {
+    text-align: center;
+    margin-bottom: 40px;
+    max-width: 600px;
+  }
+
+  .puzzle-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .puzzle-title {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .puzzle-desc {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* Timeline track */
+  .timeline-track {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 48px;
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 24px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-line::before,
+  .timeline-line::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-dim);
+  }
+
+  .timeline-line::before { top: 0; }
+  .timeline-line::after { bottom: 0; }
+
+  /* Drop zones */
+  .drop-zone {
+    position: relative;
+    margin-left: 50px;
+    margin-bottom: 8px;
+    min-height: 100px;
+    border: 2px dashed var(--border);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.01);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 8px;
+  }
+
+  .drop-zone::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--text-dim);
+    background: var(--bg);
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+
+  .drop-zone.drag-over {
+    border-color: var(--accent);
+    background: rgba(201,169,110,0.05);
+  }
+
+  .drop-zone.correct {
+    border-color: var(--correct);
+    border-style: solid;
+    background: rgba(74,222,128,0.03);
+  }
+
+  .drop-zone.correct::before {
+    border-color: var(--correct);
+    background: var(--correct);
+    box-shadow: 0 0 12px rgba(74,222,128,0.4);
+  }
+
+  .drop-zone.wrong {
+    border-color: var(--wrong);
+    border-style: solid;
+    background: rgba(239,68,68,0.03);
+    animation: shake 0.4s ease;
+  }
+
+  .drop-zone.wrong::before {
+    border-color: var(--wrong);
+    background: var(--wrong);
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  .drop-zone-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .drop-zone.filled .drop-zone-label { display: none; }
+
+  /* Time gap indicators between slots */
+  .time-gap {
+    position: relative;
+    margin-left: 50px;
+    margin-bottom: 8px;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.6s ease, opacity 0.6s ease;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .time-gap.visible {
+    height: 48px;
+    opacity: 1;
+  }
+
+  .time-gap-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+
+  .time-gap-line {
+    width: 40px;
+    height: 1px;
+    background: var(--accent-dim);
+  }
+
+  .time-gap-icon {
+    font-size: 14px;
+  }
+
+  /* Event cards */
+  .card-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    max-width: 800px;
+    margin-bottom: 40px;
+  }
+
+  .event-card {
+    width: 180px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: grab;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .event-card:active { cursor: grabbing; }
+
+  .event-card:hover {
+    border-color: var(--accent-dim);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .event-card.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+
+  .event-card.placed {
+    width: 100%;
+    cursor: default;
+  }
+
+  .event-card .card-image-wrap {
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    background: #16161e;
+  }
+
+  .event-card .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(30%);
+  }
+
+  .event-card .card-image-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--accent-dim);
+    background: linear-gradient(135deg, #111118, #16161e);
+  }
+
+  .event-card.placed .card-image-wrap {
+    width: 140px;
+    min-width: 140px;
+    height: auto;
+    min-height: 100px;
+  }
+
+  .event-card .card-body {
+    padding: 12px;
+  }
+
+  .event-card .card-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+    display: none;
+  }
+
+  .event-card.placed .card-date {
+    display: block;
+  }
+
+  /* Show date on pool cards too — but dimmer */
+  .card-pool .event-card .card-date {
+    display: block;
+    color: var(--text-dim);
+    font-size: 10px;
+  }
+
+  .event-card .card-headline {
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+
+  .event-card .card-hint {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .event-card .card-text {
+    display: none;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+
+  .event-card.placed .card-text { display: block; }
+  .event-card.placed .card-hint { display: none; }
+
+  /* Placed card layout in drop zone */
+  .drop-zone .event-card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  /* Results */
+  .results {
+    text-align: center;
+    max-width: 600px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+    margin-bottom: 40px;
+  }
+
+  .results.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .results-score {
+    font-family: var(--mono);
+    font-size: 48px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .results-text {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .results-insight {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.02);
+    text-align: left;
+  }
+
+  .results-insight .proximity-highlight {
+    display: inline-block;
+    padding: 2px 8px;
+    margin: 2px 0;
+    background: rgba(201,169,110,0.12);
+    border-radius: 3px;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-reset {
+    margin-top: 24px;
+    padding: 12px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-reset:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-check {
+    display: none;
+    margin: 0 auto 40px;
+    padding: 14px 40px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-check:hover { background: var(--text); }
+  .btn-check.visible { display: block; }
+
+  /* Progress */
+  .progress-bar {
+    width: 100%;
+    max-width: 800px;
+    height: 2px;
+    background: var(--border);
+    margin-bottom: 32px;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .puzzle-title { font-size: 24px; }
+    .event-card { width: 150px; }
+    .drop-zone { margin-left: 40px; }
+    .time-gap { margin-left: 40px; }
+    .event-card.placed .card-image-wrap { width: 100px; min-width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="puzzle-header">
+  <div class="puzzle-label">Interactive Challenge</div>
+  <h1 class="puzzle-title">Reconstruct the Timeline</h1>
+  <p class="puzzle-desc">Four critical events shaped the Satoshi mystery between 2010 and 2014. Drag each event card into the correct chronological position. Pay attention to how close some of these events really are.</p>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="timeline-track" id="timelineTrack">
+  <div class="timeline-line"></div>
+
+  <div class="drop-zone" id="slot-0" data-order="0"
+       ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+    <span class="drop-zone-label">Drop first event</span>
+  </div>
+
+  <div class="time-gap" id="gap-0-1">
+    <div class="time-gap-inner">
+      <div class="time-gap-line"></div>
+      <span class="time-gap-icon">&#8595;</span>
+      <span>2 months later</span>
+      <span class="time-gap-icon">&#8595;</span>
+      <div class="time-gap-line"></div>
+    </div>
+  </div>
+
+  <div class="drop-zone" id="slot-1" data-order="1"
+       ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+    <span class="drop-zone-label">Drop second event</span>
+  </div>
+
+  <div class="time-gap" id="gap-1-2">
+    <div class="time-gap-inner">
+      <div class="time-gap-line"></div>
+      <span class="time-gap-icon">&#8595;</span>
+      <span>~ 3 years later</span>
+      <span class="time-gap-icon">&#8595;</span>
+      <div class="time-gap-line"></div>
+    </div>
+  </div>
+
+  <div class="drop-zone" id="slot-2" data-order="2"
+       ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+    <span class="drop-zone-label">Drop third event</span>
+  </div>
+
+  <div class="time-gap" id="gap-2-3">
+    <div class="time-gap-inner">
+      <div class="time-gap-line"></div>
+      <span class="time-gap-icon">&#8595;</span>
+      <span>7 days later</span>
+      <span class="time-gap-icon">&#8595;</span>
+      <div class="time-gap-line"></div>
+    </div>
+  </div>
+
+  <div class="drop-zone" id="slot-3" data-order="3"
+       ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+    <span class="drop-zone-label">Drop fourth event</span>
+  </div>
+</div>
+
+<button class="btn-check" id="btnCheck" onclick="checkAnswers()">Verify Timeline</button>
+
+<div class="card-pool" id="cardPool"></div>
+
+<div class="results" id="results">
+  <div class="results-score" id="resultsScore"></div>
+  <div class="results-text" id="resultsText"></div>
+  <div class="results-insight" id="resultsInsight"></div>
+  <button class="btn-reset" onclick="resetPuzzle()">Try Again</button>
+</div>
+
+<script>
+var events = [
+  {
+    id: 'satoshi-last',
+    headline: "Satoshi's Last Public Communication",
+    hint: 'The creator vanishes',
+    date: 'December 12, 2010',
+    text: "After concerns about WikiLeaks accepting Bitcoin, Satoshi Nakamoto posts a final message on the Bitcoin forum and disappears from public life forever.",
+    image: 'https://i.postimg.cc/4NsrWNZk/7-D84-E738-9-DF0-479-B-8068-74-D266-FAC901.jpg',
+    fallbackIcon: 'S',
+    correctOrder: 0
+  },
+  {
+    id: 'wnk-registered',
+    headline: "Dave Kleiman Incorporates W&K Info Defense",
+    hint: 'A company is formed in Florida',
+    date: 'February 2011',
+    text: "Just two months after Satoshi vanishes, Dave Kleiman incorporates W&K Info Defense Research LLC in Florida — a company that would later become central to the largest Bitcoin lawsuit in history.",
+    image: 'https://i.postimg.cc/KzHHGqSk/Dave-Childhood.webp',
+    fallbackIcon: 'K',
+    correctOrder: 1
+  },
+  {
+    id: 'wright-email',
+    headline: "Craig Wright Emails Louis Kleiman",
+    hint: "A message to Dave's father",
+    date: 'February 11, 2014',
+    text: "Craig Wright contacts Dave Kleiman's father and writes: 'Your son Dave and I are two of the three key people behind Bitcoin.' This is sent just seven days before his ATO hearing.",
+    image: 'https://i.postimg.cc/zfRhLfG3/52-C0150-A-804-F-4118-BE23-213-D13214-CAD.jpg',
+    fallbackIcon: 'W',
+    correctOrder: 2
+  },
+  {
+    id: 'ato-hearing',
+    headline: "ATO Investigates Craig Wright",
+    hint: 'The tax office asks questions',
+    date: 'February 18, 2014',
+    text: "Just seven days after contacting Kleiman's father, Craig Wright sits before the Australian Tax Office claiming he has been mining Bitcoin since 2009 and owns hundreds of thousands of BTC.",
+    image: 'https://i.postimg.cc/gcHvZXNw/Whats-App-Image-2025-04-11-at-12-45-06.jpg',
+    fallbackIcon: 'A',
+    correctOrder: 3
+  }
+];
+
+var placed = {};
+var checked = false;
+
+function shuffleArray(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+
+function createCard(ev) {
+  var card = document.createElement('div');
+  card.className = 'event-card';
+  card.id = 'card-' + ev.id;
+  card.draggable = true;
+  card.setAttribute('data-id', ev.id);
+
+  // Build image with fallback
+  var imgWrap = '<div class="card-image-wrap">';
+  imgWrap += '<img class="card-image" src="' + ev.image + '" alt="' + ev.headline + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">';
+  imgWrap += '<div class="card-image-fallback" style="display:none">' + ev.fallbackIcon + '</div>';
+  imgWrap += '</div>';
+
+  card.innerHTML =
+    imgWrap +
+    '<div class="card-body">' +
+      '<div class="card-date">' + ev.date + '</div>' +
+      '<div class="card-headline">' + ev.headline + '</div>' +
+      '<div class="card-hint">' + ev.hint + '</div>' +
+      '<div class="card-text">' + ev.text + '</div>' +
+    '</div>';
+
+  card.addEventListener('dragstart', function(e) {
+    e.dataTransfer.setData('text/plain', ev.id);
+    card.classList.add('dragging');
+  });
+
+  card.addEventListener('dragend', function() {
+    card.classList.remove('dragging');
+  });
+
+  // Touch support
+  card.addEventListener('touchstart', function(e) {
+    card.classList.add('dragging');
+    window._touchCard = ev.id;
+  }, { passive: true });
+
+  card.addEventListener('touchend', function(e) {
+    card.classList.remove('dragging');
+    var touch = e.changedTouches[0];
+    var el = document.elementFromPoint(touch.clientX, touch.clientY);
+    var zone = el ? el.closest('.drop-zone') : null;
+    if (zone && !zone.classList.contains('filled')) {
+      placeCard(zone, ev.id);
+    }
+    window._touchCard = null;
+  });
+
+  return card;
+}
+
+function placeCard(zone, eventId) {
+  var ev = events.find(function(e) { return e.id === eventId; });
+  if (!ev) return;
+
+  // Remove from pool
+  var poolCard = document.getElementById('card-' + eventId);
+  if (poolCard && poolCard.parentElement.id === 'cardPool') {
+    poolCard.remove();
+  }
+
+  // If zone already has a card, return it to pool
+  var slotIdx = zone.getAttribute('data-order');
+  if (placed[slotIdx]) {
+    returnToPool(placed[slotIdx]);
+  }
+
+  // Create placed version
+  var card = createCard(ev);
+  card.classList.add('placed');
+  card.draggable = false;
+
+  // Add remove button
+  var removeBtn = document.createElement('span');
+  removeBtn.innerHTML = '&times;';
+  removeBtn.style.cssText = 'position:absolute;top:8px;right:12px;cursor:pointer;color:var(--text-dim);font-size:18px;z-index:2;';
+  removeBtn.onclick = function() {
+    zone.classList.remove('filled');
+    zone.querySelector('.event-card').remove();
+    zone.querySelector('.drop-zone-label').style.display = '';
+    delete placed[slotIdx];
+    returnToPool(eventId);
+    updateProgress();
+    document.getElementById('btnCheck').className = 'btn-check' + (Object.keys(placed).length === 4 ? ' visible' : '');
+  };
+  card.style.position = 'relative';
+  card.appendChild(removeBtn);
+
+  zone.appendChild(card);
+  zone.classList.add('filled');
+  placed[slotIdx] = eventId;
+
+  updateProgress();
+
+  if (Object.keys(placed).length === 4) {
+    document.getElementById('btnCheck').className = 'btn-check visible';
+  }
+}
+
+function returnToPool(eventId) {
+  var ev = events.find(function(e) { return e.id === eventId; });
+  if (!ev) return;
+  var pool = document.getElementById('cardPool');
+  pool.appendChild(createCard(ev));
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  var zone = e.currentTarget;
+  if (!zone.classList.contains('filled')) {
+    zone.classList.add('drag-over');
+  }
+}
+
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  var zone = e.currentTarget;
+  zone.classList.remove('drag-over');
+  var eventId = e.dataTransfer.getData('text/plain');
+  if (eventId && !zone.classList.contains('filled')) {
+    placeCard(zone, eventId);
+  }
+}
+
+function updateProgress() {
+  var count = Object.keys(placed).length;
+  document.getElementById('progressFill').style.width = (count / 4 * 100) + '%';
+}
+
+function showTimeGaps() {
+  // Reveal the time-gap indicators with staggered animation
+  var gaps = ['gap-0-1', 'gap-1-2', 'gap-2-3'];
+  gaps.forEach(function(id, i) {
+    setTimeout(function() {
+      document.getElementById(id).classList.add('visible');
+    }, 300 + i * 250);
+  });
+}
+
+function hideTimeGaps() {
+  var gaps = ['gap-0-1', 'gap-1-2', 'gap-2-3'];
+  gaps.forEach(function(id) {
+    document.getElementById(id).classList.remove('visible');
+  });
+}
+
+function checkAnswers() {
+  if (checked) return;
+  checked = true;
+
+  var score = 0;
+  for (var slot in placed) {
+    var eventId = placed[slot];
+    var ev = events.find(function(e) { return e.id === eventId; });
+    var zone = document.getElementById('slot-' + slot);
+
+    if (ev.correctOrder === parseInt(slot)) {
+      zone.classList.add('correct');
+      score++;
+    } else {
+      zone.classList.add('wrong');
+      setTimeout((function(z) {
+        return function() { z.classList.remove('wrong'); };
+      })(zone), 800);
+    }
+  }
+
+  // Show time gaps when all correct
+  if (score === 4) {
+    showTimeGaps();
+  }
+
+  document.getElementById('btnCheck').style.display = 'none';
+
+  var results = document.getElementById('results');
+  document.getElementById('resultsScore').textContent = score + '/4';
+
+  if (score === 4) {
+    document.getElementById('resultsText').textContent = 'Perfect. You see the pattern.';
+    document.getElementById('resultsInsight').innerHTML =
+      'Look at the proximity of these events.' +
+      '<br><br>Satoshi vanishes on <strong>December 12, 2010</strong>. Just <span class="proximity-highlight">2 months later</span>, Dave Kleiman incorporates W&K Info Defense in Florida — the company that would become ground zero of the largest Bitcoin lawsuit in history.' +
+      '<br><br>Then a three-year gap. And suddenly, within <span class="proximity-highlight">7 days</span>, two explosive events unfold: Craig Wright emails Dave Kleiman\'s father on <strong>February 11, 2014</strong>, claiming to be one of the creators of Bitcoin — and on <strong>February 18</strong>, he sits before the Australian Tax Office making the same claims.' +
+      '<br><br>The timing is not a coincidence. Wright appears to be constructing a narrative — first establishing a connection to the deceased Kleiman (who can no longer dispute it), then presenting that narrative to tax authorities. The timeline reveals the strategy.';
+  } else {
+    document.getElementById('resultsText').textContent = 'Not quite — but the truth is in the sequence.';
+    document.getElementById('resultsInsight').innerHTML =
+      'The correct order matters because it reveals intent. Satoshi vanishes in <strong>late 2010</strong>. Dave Kleiman registers W&K just <strong>two months later</strong>. Then in February 2014, within the span of a single week, Craig Wright contacts Kleiman\'s father <em>and</em> faces the Australian Tax Office — suggesting a coordinated narrative, not a spontaneous revelation.' +
+      '<br><br>Try again to see how the pieces fit together.';
+  }
+
+  setTimeout(function() {
+    results.classList.add('visible');
+    results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 600);
+}
+
+function resetPuzzle() {
+  checked = false;
+  placed = {};
+
+  // Clear zones
+  for (var i = 0; i < 4; i++) {
+    var zone = document.getElementById('slot-' + i);
+    zone.classList.remove('filled', 'correct', 'wrong');
+    var card = zone.querySelector('.event-card');
+    if (card) card.remove();
+    zone.querySelector('.drop-zone-label').style.display = '';
+  }
+
+  // Hide time gaps
+  hideTimeGaps();
+
+  // Reset UI
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('btnCheck').className = 'btn-check';
+  document.getElementById('btnCheck').style.display = '';
+  document.getElementById('progressFill').style.width = '0%';
+
+  // Rebuild pool
+  var pool = document.getElementById('cardPool');
+  pool.innerHTML = '';
+  var shuffled = shuffleArray(events.slice());
+  shuffled.forEach(function(ev) {
+    pool.appendChild(createCard(ev));
+  });
+}
+
+// Init
+resetPuzzle();
+</script>
+
+</body>
+</html>

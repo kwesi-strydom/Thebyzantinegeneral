@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encryption Challenge — The Byzantine General</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e6e1;
+    --text-muted: #8a8880;
+    --text-dim: #5a5850;
+    --accent: #c9a96e;
+    --accent-dim: rgba(201,169,110,0.3);
+    --serif: 'Cormorant Garamond', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    overflow-x: hidden;
+  }
+
+  .challenge-header {
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 640px;
+  }
+
+  .challenge-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .challenge-title {
+    font-family: var(--serif);
+    font-size: 34px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  .challenge-desc {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* Key visualization */
+  .key-display {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  .key-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .key-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    word-break: break-all;
+    padding: 16px 24px;
+    border: 1px solid var(--border);
+    background: rgba(201,169,110,0.03);
+    line-height: 1.8;
+  }
+
+  .key-bits {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* The question */
+  .question-section {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .question-text {
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--text);
+    margin-bottom: 32px;
+    line-height: 1.4;
+  }
+
+  /* Slider */
+  .slider-container {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .slider-track {
+    position: relative;
+    width: 100%;
+    height: 56px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .slider-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(201,169,110,0.1) 0%, rgba(201,169,110,0.25) 100%);
+    transition: width 0.1s ease;
+    pointer-events: none;
+  }
+
+  .slider-fill-accent {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(201,169,110,0.5);
+    pointer-events: none;
+  }
+
+  .slider-handle {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 3px;
+    cursor: grab;
+    z-index: 3;
+    transition: left 0.1s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  .slider-handle:active { cursor: grabbing; }
+
+  .slider-handle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 16px;
+    background: var(--bg);
+    border-radius: 1px;
+  }
+
+  /* Tick marks */
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    max-width: 720px;
+    width: 100%;
+  }
+
+  .slider-tick {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-align: center;
+    flex: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .slider-tick:hover { color: var(--text-muted); }
+
+  /* Current value display */
+  .value-display {
+    text-align: center;
+    margin: 32px 0;
+    min-height: 120px;
+  }
+
+  .value-number {
+    font-family: var(--mono);
+    font-size: 52px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+    transition: color 0.3s;
+  }
+
+  .value-unit {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .value-context {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+    min-height: 40px;
+    transition: opacity 0.3s;
+  }
+
+  /* Comparison bars */
+  .comparison-section {
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 40px;
+  }
+
+  .comparison-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .comparison-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+
+  .comparison-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    width: 140px;
+    text-align: right;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .comparison-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .comparison-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease, background 0.3s;
+    min-width: 2px;
+  }
+
+  .comparison-value {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    width: 80px;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  /* Lock button */
+  .btn-lock {
+    display: block;
+    margin: 0 auto 40px;
+    padding: 14px 48px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-lock:hover { background: var(--text); }
+
+  /* Reveal section */
+  .reveal-section {
+    width: 100%;
+    max-width: 720px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+    pointer-events: none;
+  }
+
+  .reveal-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .reveal-verdict {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .reveal-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .reveal-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .reveal-subtitle {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  .reveal-explanation {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    padding: 28px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    margin-bottom: 24px;
+  }
+
+  .reveal-explanation strong { color: var(--text); }
+
+  .reveal-math {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    text-align: center;
+    padding: 20px;
+    border: 1px solid var(--accent-dim);
+    background: rgba(201,169,110,0.03);
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+    line-height: 2;
+  }
+
+  .reveal-connection {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    padding: 24px;
+    border-left: 3px solid var(--accent);
+    background: rgba(201,169,110,0.02);
+  }
+
+  .reveal-connection strong { color: var(--text); }
+
+  .btn-reset {
+    display: block;
+    margin: 32px auto 0;
+    padding: 12px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .challenge-title { font-size: 26px; }
+    .value-number { font-size: 36px; }
+    .key-value { font-size: 10px; }
+    .comparison-name { width: 100px; font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="challenge-header">
+  <div class="challenge-label">Encryption Challenge</div>
+  <h1 class="challenge-title">How Long to Break a Bitcoin Private Key?</h1>
+  <p class="challenge-desc">Bitcoin uses 256-bit elliptic curve cryptography to secure every wallet. Below is an example private key. Use the slider to guess how long the world's most powerful supercomputer would need to brute-force it.</p>
+</div>
+
+<div class="key-display">
+  <div class="key-label">Example Bitcoin Private Key</div>
+  <div class="key-value">5Kb8kLf9zgWQnogidDA76MzPL6TsZZY36hWXMssSzNydYXYB9KF</div>
+  <div class="key-bits">256 bits &middot; 2<sup>256</sup> possible combinations</div>
+</div>
+
+<div class="question-section">
+  <div class="question-text">How long would it take the fastest supercomputer on Earth to crack this key?</div>
+</div>
+
+<div class="slider-container">
+  <div class="slider-track" id="sliderTrack">
+    <div class="slider-fill" id="sliderFill"></div>
+    <div class="slider-fill-accent" id="sliderAccent"></div>
+    <div class="slider-handle" id="sliderHandle"></div>
+  </div>
+</div>
+
+<div class="slider-ticks">
+  <div class="slider-tick" onclick="setSlider(0)">1 sec</div>
+  <div class="slider-tick" onclick="setSlider(0.15)">1 hour</div>
+  <div class="slider-tick" onclick="setSlider(0.28)">1 year</div>
+  <div class="slider-tick" onclick="setSlider(0.42)">1,000 yr</div>
+  <div class="slider-tick" onclick="setSlider(0.56)">1M yr</div>
+  <div class="slider-tick" onclick="setSlider(0.70)">1B yr</div>
+  <div class="slider-tick" onclick="setSlider(0.85)">Age of Universe</div>
+  <div class="slider-tick" onclick="setSlider(1.0)">???</div>
+</div>
+
+<div class="value-display">
+  <div class="value-number" id="valueNumber">0</div>
+  <div class="value-unit" id="valueUnit">seconds</div>
+  <div class="value-context" id="valueContext">Drag the slider to begin.</div>
+</div>
+
+<div class="comparison-section">
+  <div class="comparison-label">Scale Comparison</div>
+
+  <div class="comparison-bar">
+    <div class="comparison-name">Human lifespan</div>
+    <div class="comparison-track"><div class="comparison-fill" id="barLife" style="width:0%;background:var(--text-dim)"></div></div>
+    <div class="comparison-value">80 years</div>
+  </div>
+
+  <div class="comparison-bar">
+    <div class="comparison-name">Age of Earth</div>
+    <div class="comparison-track"><div class="comparison-fill" id="barEarth" style="width:0%;background:#4a7c59"></div></div>
+    <div class="comparison-value">4.5B years</div>
+  </div>
+
+  <div class="comparison-bar">
+    <div class="comparison-name">Age of Universe</div>
+    <div class="comparison-track"><div class="comparison-fill" id="barUniverse" style="width:0%;background:#5b7fa5"></div></div>
+    <div class="comparison-value">13.8B years</div>
+  </div>
+
+  <div class="comparison-bar">
+    <div class="comparison-name">Your guess</div>
+    <div class="comparison-track"><div class="comparison-fill" id="barGuess" style="width:0%;background:var(--accent)"></div></div>
+    <div class="comparison-value" id="barGuessVal">—</div>
+  </div>
+
+  <div class="comparison-bar">
+    <div class="comparison-name" style="color:var(--accent)">Actual answer</div>
+    <div class="comparison-track"><div class="comparison-fill" id="barActual" style="width:0%;background:transparent"></div></div>
+    <div class="comparison-value" id="barActualVal" style="color:var(--accent)">?</div>
+  </div>
+</div>
+
+<button class="btn-lock" id="btnLock" onclick="lockAnswer()">Lock In My Answer</button>
+
+<div class="reveal-section" id="revealSection">
+  <div class="reveal-verdict">
+    <div class="reveal-icon" id="revealIcon"></div>
+    <div class="reveal-title" id="revealTitle"></div>
+    <div class="reveal-subtitle" id="revealSubtitle"></div>
+  </div>
+
+  <div class="reveal-math" id="revealMath"></div>
+
+  <div class="reveal-explanation" id="revealExplanation"></div>
+
+  <div class="reveal-connection">
+    <strong>Why this matters for the Satoshi mystery:</strong> Cryptographic signing with a private key doesn't prove identity — it proves control. But control of the genesis block keys would be, by orders of magnitude, the most compelling evidence of an association with Satoshi Nakamoto. No amount of computing power — not every computer on Earth running until the heat death of the universe — could forge those keys. That's why if someone were to sign a message with the genesis block's private keys, every hypothesis door swings wide open.
+  </div>
+
+  <button class="btn-reset" onclick="resetChallenge()">Try Again</button>
+</div>
+
+<script>
+// The actual answer: ~3.67 × 10^60 years
+// (2^256 / 10^18 keys per second / seconds per year)
+// Frontier supercomputer: ~10^18 operations/sec (optimistic)
+
+var ACTUAL_LOG_YEARS = 60.56; // log10 of ~3.67e60 years
+
+// Slider maps 0..1 to log10(seconds) from 0 to 70 (1 second to 10^70 seconds)
+var LOG_SEC_MIN = 0;
+var LOG_SEC_MAX = 70;
+
+var sliderVal = 0;
+var locked = false;
+
+var track = document.getElementById('sliderTrack');
+var handle = document.getElementById('sliderHandle');
+var fill = document.getElementById('sliderFill');
+var accent = document.getElementById('sliderAccent');
+
+function logSecToYears(logSec) {
+  // 1 year ≈ 3.156e7 seconds, log10 ≈ 7.499
+  return logSec - 7.499;
+}
+
+function formatValue(logSec) {
+  if (logSec < 0.01) return { num: '0', unit: 'seconds', ctx: 'Drag the slider to begin.' };
+
+  var logYears = logSecToYears(logSec);
+
+  if (logSec < 1) return { num: '<1', unit: 'second', ctx: 'Faster than a blink.' };
+  if (logSec < 2) return { num: Math.round(Math.pow(10, logSec)).toLocaleString(), unit: 'seconds', ctx: 'About as long as brewing coffee.' };
+  if (logSec < 3.56) return { num: Math.round(Math.pow(10, logSec) / 60).toLocaleString(), unit: 'minutes', ctx: 'Shorter than a lunch break.' };
+  if (logSec < 4.56) return { num: Math.round(Math.pow(10, logSec) / 3600).toLocaleString(), unit: 'hours', ctx: 'Less than a day.' };
+  if (logSec < 5.94) return { num: Math.round(Math.pow(10, logSec) / 86400).toLocaleString(), unit: 'days', ctx: 'Still within a human attention span.' };
+
+  // Switch to years
+  if (logYears < 0) return { num: '<1', unit: 'year', ctx: 'Not even a full orbit around the Sun.' };
+  if (logYears < 2) return { num: Math.round(Math.pow(10, logYears)).toLocaleString(), unit: 'years', ctx: 'Within a human lifetime.' };
+  if (logYears < 3) return { num: Math.round(Math.pow(10, logYears)).toLocaleString(), unit: 'years', ctx: 'Longer than recorded civilization.' };
+  if (logYears < 6) {
+    var v = Math.pow(10, logYears);
+    return { num: (v/1e3).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','), unit: 'thousand years', ctx: 'Longer than all of human history.' };
+  }
+  if (logYears < 9) {
+    return { num: '10^' + logYears.toFixed(0), unit: 'years', ctx: 'Getting closer... but still nowhere near.' };
+  }
+  if (logYears < 10.14) {
+    return { num: (Math.pow(10, logYears)/1e9).toFixed(1), unit: 'billion years', ctx: 'Approaching the age of the universe (13.8 billion years).' };
+  }
+  if (logYears < 12) {
+    return { num: '10^' + logYears.toFixed(0), unit: 'years', ctx: 'Past the age of the universe. But still not enough.' };
+  }
+  if (logYears < 20) {
+    return { num: '10^' + logYears.toFixed(0), unit: 'years', ctx: 'Trillions of times older than the universe. Keep going.' };
+  }
+  if (logYears < 40) {
+    return { num: '10^' + logYears.toFixed(0), unit: 'years', ctx: 'More time than atoms in the Earth. Still not enough.' };
+  }
+  if (logYears < 55) {
+    return { num: '10^' + logYears.toFixed(0), unit: 'years', ctx: 'Approaching the number of atoms in the observable universe (~10^80). You\'re getting warm.' };
+  }
+  if (logYears < 60) {
+    return { num: '10^' + logYears.toFixed(0), unit: 'years', ctx: 'So close. The answer is almost incomprehensibly large.' };
+  }
+  if (logYears >= 60 && logYears < 62) {
+    return { num: '~10^' + logYears.toFixed(0), unit: 'years', ctx: 'You found it. This is the scale of Bitcoin\'s encryption.' };
+  }
+  return { num: '10^' + logYears.toFixed(0), unit: 'years', ctx: 'Beyond the answer now — even this is an understatement of security.' };
+}
+
+function updateDisplay() {
+  var logSec = LOG_SEC_MIN + sliderVal * (LOG_SEC_MAX - LOG_SEC_MIN);
+  var pct = sliderVal * 100;
+
+  fill.style.width = pct + '%';
+  handle.style.left = pct + '%';
+  accent.style.left = pct + '%';
+
+  var f = formatValue(logSec);
+  document.getElementById('valueNumber').textContent = f.num;
+  document.getElementById('valueUnit').textContent = f.unit;
+  document.getElementById('valueContext').textContent = f.ctx;
+
+  // Color shift as you get higher
+  var hue = sliderVal < 0.5 ? 0 : (sliderVal - 0.5) * 80;
+  var numEl = document.getElementById('valueNumber');
+  if (sliderVal > 0.85) {
+    numEl.style.color = '#c9a96e';
+  } else if (sliderVal > 0.6) {
+    numEl.style.color = '#e8a84c';
+  } else {
+    numEl.style.color = '#e8e6e1';
+  }
+
+  // Update comparison bars — LINEAR scale so visual ratios are truthful
+  // Earth:Universe ≈ 1:3, human lifespan ≈ invisible
+  var logYears = logSecToYears(logSec);
+  var univYears = 13.8e9;
+  var earthYears = 4.5e9;
+  var lifeYears = 80;
+
+  // Universe = 100% of bar width; everything else proportional
+  var lifePct = (lifeYears / univYears) * 100;    // ~0.0000006% — invisible
+  var earthPct = (earthYears / univYears) * 100;   // ~32.6%
+
+  document.getElementById('barLife').style.width = Math.max(0.3, lifePct) + '%';
+  document.getElementById('barEarth').style.width = earthPct + '%';
+  document.getElementById('barUniverse').style.width = '100%';
+
+  if (logYears > 0) {
+    var guessYears = Math.pow(10, logYears);
+    var guessPct = (guessYears / univYears) * 100;
+    if (guessPct > 100) guessPct = 100;
+    document.getElementById('barGuess').style.width = Math.max(0.3, guessPct) + '%';
+    if (logYears < 3) document.getElementById('barGuessVal').textContent = Math.round(guessYears) + ' yr';
+    else document.getElementById('barGuessVal').textContent = '10^' + logYears.toFixed(0) + ' yr';
+  } else {
+    document.getElementById('barGuess').style.width = '0.3%';
+    document.getElementById('barGuessVal').textContent = '<1 yr';
+  }
+}
+
+function setSlider(val) {
+  if (locked) return;
+  sliderVal = Math.max(0, Math.min(1, val));
+  updateDisplay();
+}
+
+// Drag handling
+var dragging = false;
+
+function getSliderVal(e) {
+  var rect = track.getBoundingClientRect();
+  var x = (e.clientX || e.touches[0].clientX) - rect.left;
+  return Math.max(0, Math.min(1, x / rect.width));
+}
+
+track.addEventListener('mousedown', function(e) {
+  if (locked) return;
+  dragging = true;
+  sliderVal = getSliderVal(e);
+  updateDisplay();
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (!dragging || locked) return;
+  sliderVal = getSliderVal(e);
+  updateDisplay();
+});
+
+document.addEventListener('mouseup', function() { dragging = false; });
+
+track.addEventListener('touchstart', function(e) {
+  if (locked) return;
+  dragging = true;
+  sliderVal = getSliderVal(e);
+  updateDisplay();
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+  if (!dragging || locked) return;
+  sliderVal = getSliderVal(e);
+  updateDisplay();
+}, { passive: true });
+
+document.addEventListener('touchend', function() { dragging = false; });
+
+function lockAnswer() {
+  if (locked) return;
+  locked = true;
+
+  document.getElementById('btnLock').style.display = 'none';
+
+  // Show actual answer bar
+  document.getElementById('barActual').style.width = (ACTUAL_LOG_YEARS / 62 * 100) + '%';
+  document.getElementById('barActual').style.background = 'var(--accent)';
+  document.getElementById('barActualVal').textContent = '~10^60 yr';
+
+  var logSec = LOG_SEC_MIN + sliderVal * (LOG_SEC_MAX - LOG_SEC_MIN);
+  var guessLogYears = logSecToYears(logSec);
+  var diff = Math.abs(guessLogYears - ACTUAL_LOG_YEARS);
+
+  var reveal = document.getElementById('revealSection');
+  var icon = document.getElementById('revealIcon');
+  var title = document.getElementById('revealTitle');
+  var subtitle = document.getElementById('revealSubtitle');
+
+  if (diff < 3) {
+    icon.textContent = '\u2713';
+    icon.style.color = '#4ade80';
+    title.textContent = 'Remarkably close.';
+    subtitle.textContent = 'You understand the scale of cryptographic security.';
+  } else if (guessLogYears < ACTUAL_LOG_YEARS) {
+    icon.textContent = '\u2191';
+    icon.style.color = '#c9a96e';
+    title.textContent = 'Not even close.';
+    subtitle.textContent = 'The real answer is incomprehensibly larger.';
+  } else {
+    icon.textContent = '\u2193';
+    icon.style.color = '#5b7fa5';
+    title.textContent = 'Too high — but the real answer is still staggering.';
+    subtitle.textContent = 'Even your overestimate captures how absurd this number is.';
+  }
+
+  document.getElementById('revealMath').innerHTML =
+    '2<sup>256</sup> possible keys = 1.16 \u00d7 10<sup>77</sup> combinations<br>' +
+    'Frontier supercomputer: ~10<sup>18</sup> guesses/second<br>' +
+    'Time required: ~3.67 \u00d7 10<sup>60</sup> years<br>' +
+    '<br>' +
+    'That is 2.66 \u00d7 10<sup>50</sup> times the age of the universe.';
+
+  document.getElementById('revealExplanation').innerHTML =
+    'To brute-force a 256-bit private key, you would need to try <strong>2<sup>256</sup></strong> possible combinations. ' +
+    'That number is so large that even if you used <strong>every atom in the observable universe</strong> (~10<sup>80</sup>) as a tiny computer, ' +
+    'each checking a <strong>trillion keys per second</strong>, running for <strong>a trillion times the age of the universe</strong> — ' +
+    'you would still have barely scratched the surface.<br><br>' +
+    'Bitcoin\'s encryption isn\'t just strong. It is, for all practical purposes, <strong>physically impossible to break</strong>. ' +
+    'Not with current technology, not with foreseeable technology, not with any technology that obeys the laws of thermodynamics.';
+
+  setTimeout(function() {
+    reveal.classList.add('visible');
+    reveal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 400);
+}
+
+function resetChallenge() {
+  locked = false;
+  sliderVal = 0;
+  updateDisplay();
+  document.getElementById('btnLock').style.display = '';
+  document.getElementById('revealSection').classList.remove('visible');
+  document.getElementById('barActual').style.width = '0%';
+  document.getElementById('barActual').style.background = 'transparent';
+  document.getElementById('barActualVal').textContent = '?';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init
+updateDisplay();
+</script>
+
+</body>
+</html>
