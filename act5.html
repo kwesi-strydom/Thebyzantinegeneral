@@ -2381,14 +2381,18 @@
 
 </head>
 <body>
-<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="3.5"/><line x1="8" y1="0.5" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15.5"/><line x1="0.5" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15.5" y2="8"/><line x1="2.7" y1="2.7" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="13.3" y2="13.3"/><line x1="2.7" y1="13.3" x2="4.1" y2="11.9"/><line x1="11.9" y1="4.1" x2="13.3" y2="2.7"/></svg></button>
 
 <div id="act5-page">
   <!-- Navigation Header -->
   <nav class="page-nav" id="act5Nav">
-    <button class="page-nav-btn" onclick="backToAct4()">← Act 4</button>
+    <div class="page-nav-left">
+      <button class="page-nav-btn" onclick="backToAct4()">← Act 4</button>
+    </div>
     <span class="page-nav-logo" onclick="window.location.href='index.html'">The Byzantine General</span>
-    <button class="page-nav-btn primary" onclick="window.location.href='act6.html'">Act 6 →</button>
+    <div class="page-nav-right">
+      <button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode" style="background:none;border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-dim);transition:all 0.3s ease;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="3.5"/><line x1="8" y1="0.5" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15.5"/><line x1="0.5" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15.5" y2="8"/><line x1="2.7" y1="2.7" x2="4.1" y2="4.1"/><line x1="11.9" y1="11.9" x2="13.3" y2="13.3"/><line x1="2.7" y1="13.3" x2="4.1" y2="11.9"/><line x1="11.9" y1="4.1" x2="13.3" y2="2.7"/></svg></button>
+      <button class="page-nav-btn primary" onclick="window.location.href='act6.html'">Act 6 →</button>
+    </div>
   </nav>
 
   <!-- ══════ KNIGHTLAB TIMELINE 5 (full-width) ══════ -->
