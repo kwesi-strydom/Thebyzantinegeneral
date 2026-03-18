@@ -3821,16 +3821,7 @@
     if (btn) btn.textContent = card.classList.contains('expanded') ? 'Read less' : 'Read more';
   }
 
-  // Restore saved theme preference on load
-  (function restoreTheme() {
-    try {
-      if (localStorage.getItem('byz-theme') === 'light') {
-        document.body.classList.add('light-mode');
-        const btn = document.getElementById('themeToggle');
-        if (btn) btn.innerHTML = moonSVG;
-      }
-    } catch(e) {}
-  })();
+  // Theme starts dark by default - toggle works per session only
 
   // Initialize loader on page load
   window.addEventListener('DOMContentLoaded', initLoader);

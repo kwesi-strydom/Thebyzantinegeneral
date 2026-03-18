@@ -70,10 +70,12 @@
   body.light-mode .video-caption {
     background: linear-gradient(transparent, rgba(0,0,0,0.5));
   }
+  body.light-mode .hero-sticky { background: var(--bg); }
+  body.light-mode #flashSequence { background: var(--bg); }
   body.light-mode .artboard-nav a:hover {
-    border-color: rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.04);
-    color: #ededed;
+    border-color: rgba(0,0,0,0.15);
+    background: rgba(0,0,0,0.04);
+    color: var(--text);
   }
   body.light-mode .expand-card:hover {
     box-shadow: 0 0 20px rgba(185,148,62,0.1);
@@ -122,35 +124,6 @@
     filter: grayscale(10%) contrast(1.05) brightness(0.9);
   }
 
-  /* Force entire landing/loader/hero to stay dark in light mode */
-  body.light-mode #loader,
-  body.light-mode .landing-hero,
-  body.light-mode .hero-sticky,
-  body.light-mode #flashSequence,
-  body.light-mode .hero-mask-container,
-  body.light-mode .landing-tiles-spacer,
-  body.light-mode .landing-tiles-viewport,
-  body.light-mode #artboard-section,
-  body.light-mode .artboard-header,
-  body.light-mode .artboard-canvas-container,
-  body.light-mode .artboard-canvas,
-  body.light-mode .loader-overlay,
-  body.light-mode .gate-section {
-    --bg: #0a0a0a;
-    --bg-card: #111111;
-    --bg-surface: #0f0f0f;
-    --text: #ededed;
-    --text-dim: #9a9a9a;
-    --text-muted: #5a5a5a;
-    --accent: #c9a96e;
-    --accent-dim: #8a7448;
-    --border: #1a1a1a;
-    --border-dim: #222222;
-    --border-strong: #333333;
-    --overlay-bg: rgba(10,10,10,0.88);
-    background: #0a0a0a;
-    color: #ededed;
-  }
 
   /* Theme toggle button */
   #themeToggle {
@@ -4376,16 +4349,7 @@
     if (btn) btn.textContent = card.classList.contains('expanded') ? 'Read less' : 'Read more';
   }
 
-  // Restore saved theme preference on load
-  (function restoreTheme() {
-    try {
-      if (localStorage.getItem('byz-theme') === 'light') {
-        document.body.classList.add('light-mode');
-        const btn = document.getElementById('themeToggle');
-        if (btn) btn.innerHTML = moonSVG;
-      }
-    } catch(e) {}
-  })();
+  // Theme starts dark by default - toggle works per session only
 
   // Initialize loader on page load
   window.addEventListener('DOMContentLoaded', initLoader);
