@@ -604,6 +604,13 @@
     user-select: none;
     overflow: visible;
   }
+  /* On mobile, allow native vertical scrolling to pass through for smoother UX */
+  @media (max-width: 768px) {
+    .artboard-canvas {
+      touch-action: pan-y;
+      will-change: auto;
+    }
+  }
   .artboard-canvas.dragging { cursor: grabbing; }
 
   /* Each column is a vertical strip of tiles, absolute positioned for infinite tiling */
@@ -616,6 +623,7 @@
     width: 320px;
     will-change: transform, opacity;
     opacity: 0;
+    contain: layout style;
     /* JS sets custom transition per column for staggered rain effect */
   }
 
@@ -658,6 +666,24 @@
     opacity: 0;
   }
   .mosaic-tile:hover { z-index: 10; }
+
+  /* Mobile: simplify filters and disable hover transitions for performance */
+  @media (max-width: 768px) {
+    .mosaic-tile img {
+      filter: grayscale(100%) brightness(0.5);
+      transition: none;
+    }
+    .mosaic-tile::after {
+      transition: none;
+    }
+    .artboard-canvas:hover .mosaic-tile img,
+    .artboard-canvas .mosaic-tile:hover img {
+      filter: grayscale(100%) brightness(0.5);
+    }
+    .mosaic-column {
+      will-change: auto;
+    }
+  }
 
   /* Tile overlays removed, tiles are purely visual */
 
@@ -1443,6 +1469,20 @@
   .prose p { margin-bottom: 20px; }
   .prose strong { color: var(--text); font-weight: 500; }
   .prose em { color: var(--accent); font-style: italic; }
+  .prose a,
+  .detail-card-title a,
+  .doc-item a[target="_blank"] {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-dim);
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  .prose a:hover,
+  .detail-card-title a:hover,
+  .doc-item a[target="_blank"]:hover {
+    color: var(--text);
+    border-color: var(--text);
+  }
 
   /* Two-column: image + text */
   .editorial-row {
@@ -3632,6 +3672,7 @@
   let animFrame = null;
 
   let columns = [];
+  const isMobile = window.innerWidth <= 768;
 
   // Infinite tiling data
   let columnTileData = []; // per original column: { originalHeight, speed }
@@ -3646,14 +3687,17 @@
     originalColumnCount = columns.length;
     totalOriginalWidth = originalColumnCount * colWidth;
 
-    // For each original column: measure height, clone tiles vertically (5x)
+    // On mobile, reduce vertical cloning from 5x to 3x for better performance
+    const verticalClones = isMobile ? 3 : 5;
+
+    // For each original column: measure height, clone tiles vertically
     columns.forEach((col, ci) => {
       const originalHTML = col.el.innerHTML;
       const colHeight = col.el.scrollHeight;
       columnTileData[ci] = { originalHeight: colHeight, speed: col.speed, html: originalHTML };
 
-      // Clone tiles to make each column 5x taller for seamless vertical wrapping
-      for (let r = 1; r < 5; r++) {
+      // Clone tiles to make each column taller for seamless vertical wrapping
+      for (let r = 1; r < verticalClones; r++) {
         col.el.insertAdjacentHTML('beforeend', originalHTML);
       }
     });
@@ -3699,14 +3743,17 @@
       // Center: shift so some columns appear to the left of viewport
       wrappedX = wrappedX - colWidth * 4;
 
-      poolCol.el.style.left = wrappedX + 'px';
-
       // Vertical parallax with wrapping
       const py = canvasPos.y * data.speed;
+      let translateY = 0;
       if (data.originalHeight > 0) {
         const wrapped = ((py % data.originalHeight) + data.originalHeight) % data.originalHeight;
-        poolCol.el.style.transform = `translateY(${wrapped - data.originalHeight}px)`;
+        translateY = wrapped - data.originalHeight;
       }
+
+      // Use translate3d for GPU-composited positioning (avoids layout thrashing from style.left)
+      poolCol.el.style.transform = `translate3d(${wrappedX}px, ${translateY}px, 0)`;
+      poolCol.el.style.left = '0';
     });
   }
 
@@ -3715,8 +3762,9 @@
     canvasPos.y += (canvasTarget.y - canvasPos.y) * 0.12;
 
     if (!isDragging) {
-      // Gentle auto-drift for ambient motion
-      canvasTarget.x += velocity.x + 0.15;
+      // Gentle auto-drift for ambient motion (slower on mobile to reduce GPU work)
+      const driftSpeed = isMobile ? 0.08 : 0.15;
+      canvasTarget.x += velocity.x + driftSpeed;
       canvasTarget.y += velocity.y;
       velocity.x *= 0.92;
       velocity.y *= 0.92;
@@ -3751,19 +3799,25 @@
 
     // Drag handling on the entire artboard container
     let pointerDownTarget = null;
+    let touchDirectionLocked = false; // mobile: once we determine scroll vs drag, lock it
+
     artboardContainer.addEventListener('pointerdown', (e) => {
       if (e.target.closest('.scrollbar-thumb')) return;
       if (e.target.closest('.artboard-intro-panel')) return;
       if (e.target.closest('.artboard-header')) return;
       isDragging = true;
       hasDragged = false;
+      touchDirectionLocked = false;
       pointerDownTarget = e.target;
       dragStart = { x: e.clientX, y: e.clientY };
       lastMouse = { x: e.clientX, y: e.clientY };
       velocity = { x: 0, y: 0 };
       artboardCanvas.classList.add('dragging');
-      artboardContainer.setPointerCapture(e.pointerId);
-      e.preventDefault();
+      // On mobile, don't capture pointer or preventDefault — let native vertical scroll work
+      if (!isMobile) {
+        artboardContainer.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      }
     });
 
     artboardContainer.addEventListener('pointermove', (e) => {
@@ -3776,11 +3830,29 @@
       const totalDrag = Math.abs(e.clientX - dragStart.x) + Math.abs(e.clientY - dragStart.y);
       if (totalDrag > 5) hasDragged = true;
 
-      canvasTarget.x += dx;
-      canvasTarget.y += dy;
+      // On mobile, determine dominant drag direction — only move tiles horizontally
+      if (isMobile && !touchDirectionLocked && totalDrag > 10) {
+        const absDx = Math.abs(e.clientX - dragStart.x);
+        const absDy = Math.abs(e.clientY - dragStart.y);
+        touchDirectionLocked = true;
+        if (absDy > absDx) {
+          // Vertical swipe: let native scroll handle it, stop our drag
+          isDragging = false;
+          artboardCanvas.classList.remove('dragging');
+          return;
+        }
+      }
+
+      if (isMobile) {
+        // On mobile, only move tiles horizontally for smoother experience
+        canvasTarget.x += dx;
+      } else {
+        canvasTarget.x += dx;
+        canvasTarget.y += dy;
+      }
       clampCanvas();
 
-      velocity = { x: dx, y: dy };
+      velocity = { x: dx, y: isMobile ? 0 : dy };
       lastMouse = { x: e.clientX, y: e.clientY };
     });
 
