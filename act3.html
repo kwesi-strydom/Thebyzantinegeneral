@@ -2383,19 +2383,24 @@
   .statement a[target="_blank"],
   .prose a,
   .detail-card-title a,
-  .doc-item a[target="_blank"] {
+  .doc-item a[target="_blank"],
+  .img-caption a,
+  .photo-detail a {
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-dim);
     transition: color 0.3s ease, border-color 0.3s ease;
   }
+  .prose a strong { color: inherit; }
   .beat-section a[target="_blank"]:hover,
   .editorial-row a[target="_blank"]:hover,
   .editorial-full a[target="_blank"]:hover,
   .statement a[target="_blank"]:hover,
   .prose a:hover,
   .detail-card-title a:hover,
-  .doc-item a[target="_blank"]:hover {
+  .doc-item a[target="_blank"]:hover,
+  .img-caption a:hover,
+  .photo-detail a:hover {
     color: var(--text);
     border-color: var(--text);
   }
@@ -2457,7 +2462,7 @@
         <div class="prose">
           <p>To vet Wright, Gavin first exchanged emails with him. The content and writing style convinced Gavin that Wright's knowledge aligned perfectly with that of Satoshi. Gavin agreed to meet him in person.</p>
           <p>They gathered in a London hotel with a brand-new, untampered laptop. In Gavin's presence, Craig Wright used the private key associated with Bitcoin Genesis block to sign a message. Gavin also tested Wright's technical understanding of Bitcoin and insights from the community's early days. To him, the alignment across technical expertise, timeline, writing style, and more importantly, control of cryptographic keys left no doubt: Craig Wright was Satoshi Nakamoto.</p>
-          <p>A detailed account of this session and the conditions in which it happened remains available on <a href="https://web.archive.org/web/20250824133528/https://gavinandresen.ninja/satoshi" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: underline;">Gavin's blog</a>. He has never retracted it.</p>
+          <p>A detailed account of this session and the conditions in which it happened remains available on <a href="https://web.archive.org/web/20250824133528/https://gavinandresen.ninja/satoshi" target="_blank" rel="noopener">Gavin's blog</a>. He has never retracted it.</p>
         </div>
       </div>
       <div class="editorial-image no-frame">

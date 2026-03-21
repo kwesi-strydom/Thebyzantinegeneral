@@ -2383,19 +2383,24 @@
   .statement a[target="_blank"],
   .prose a,
   .detail-card-title a,
-  .doc-item a[target="_blank"] {
+  .doc-item a[target="_blank"],
+  .img-caption a,
+  .photo-detail a {
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-dim);
     transition: color 0.3s ease, border-color 0.3s ease;
   }
+  .prose a strong { color: inherit; }
   .beat-section a[target="_blank"]:hover,
   .editorial-row a[target="_blank"]:hover,
   .editorial-full a[target="_blank"]:hover,
   .statement a[target="_blank"]:hover,
   .prose a:hover,
   .detail-card-title a:hover,
-  .doc-item a[target="_blank"]:hover {
+  .doc-item a[target="_blank"]:hover,
+  .img-caption a:hover,
+  .photo-detail a:hover {
     color: var(--text);
     border-color: var(--text);
   }
@@ -2474,13 +2479,13 @@
     <div class="editorial-row reverse">
       <div class="editorial-image no-frame">
         <img loading="lazy" src="https://i.postimg.cc/7YD7hsLP/91-E612-F9-F26-A-46-DB-8905-90-AB984-EE488.jpg" alt="3D map of Satoshi-related YouTube content">
-        <div class="img-caption"><a href="https://lustrous-paletas-82011f.netlify.app/" target="_blank" style="color: var(--accent); text-decoration: underline;">3D visualization map of Satoshi-related YouTube discourse</a></div>
+        <div class="img-caption"><a href="https://lustrous-paletas-82011f.netlify.app/" target="_blank">3D visualization map of Satoshi-related YouTube discourse</a></div>
       </div>
       <div class="editorial-text">
         <div class="section-label">The Map of Narrative Blindness</div>
         <h2>A cultural blind spot</h2>
         <div class="prose">
-          <p>To visualize how the team hypothesis is ignored in public discourse, we developed a <a href="https://lustrous-paletas-82011f.netlify.app/" target="_blank" style="color: var(--accent); text-decoration: underline;">3D map of Satoshi-related content</a>, built from transcripts of the 20 most-watched YouTube videos on the topic.</p>
+          <p>To visualize how the team hypothesis is ignored in public discourse, we developed a <a href="https://lustrous-paletas-82011f.netlify.app/" target="_blank">3D map of Satoshi-related content</a>, built from transcripts of the 20 most-watched YouTube videos on the topic.</p>
           <p>The map allows users to filter for mentions of "Gavin Andresen" or the idea of a "Satoshi team." When toggled, a striking pattern emerges: only a handful of videos reference Gavin's key meeting with Craig Wright, and almost none mention the team hypothesis at all.</p>
           <p>This omission reflects a broader paradigm blindness, an active cultural reluctance to consider that Satoshi might have been a collective, not an individual.</p>
         </div>

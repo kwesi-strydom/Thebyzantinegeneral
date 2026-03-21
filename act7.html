@@ -2324,19 +2324,24 @@
   .statement a[target="_blank"],
   .prose a,
   .detail-card-title a,
-  .doc-item a[target="_blank"] {
+  .doc-item a[target="_blank"],
+  .img-caption a,
+  .photo-detail a {
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-dim);
     transition: color 0.3s ease, border-color 0.3s ease;
   }
+  .prose a strong { color: inherit; }
   .beat-section a[target="_blank"]:hover,
   .editorial-row a[target="_blank"]:hover,
   .editorial-full a[target="_blank"]:hover,
   .statement a[target="_blank"]:hover,
   .prose a:hover,
   .detail-card-title a:hover,
-  .doc-item a[target="_blank"]:hover {
+  .doc-item a[target="_blank"]:hover,
+  .img-caption a:hover,
+  .photo-detail a:hover {
     color: var(--text);
     border-color: var(--text);
   }
@@ -2608,7 +2613,7 @@
       <div class="quiz-options" id="engagementOptions">
         <div class="quiz-option" data-index="0" onclick="selectEngagementOption(this)">
           <div class="quiz-radio"></div>
-          <div>What was the outcome of the Bitcoin Block Size War?</div>
+          <div>What was the outcome of the Bitcoin Blocksize War?</div>
         </div>
         <div class="quiz-option" data-index="1" onclick="selectEngagementOption(this)">
           <div class="quiz-radio"></div>

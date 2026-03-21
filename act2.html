@@ -2383,19 +2383,24 @@
   .statement a[target="_blank"],
   .prose a,
   .detail-card-title a,
-  .doc-item a[target="_blank"] {
+  .doc-item a[target="_blank"],
+  .img-caption a,
+  .photo-detail a {
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-dim);
     transition: color 0.3s ease, border-color 0.3s ease;
   }
+  .prose a strong { color: inherit; }
   .beat-section a[target="_blank"]:hover,
   .editorial-row a[target="_blank"]:hover,
   .editorial-full a[target="_blank"]:hover,
   .statement a[target="_blank"]:hover,
   .prose a:hover,
   .detail-card-title a:hover,
-  .doc-item a[target="_blank"]:hover {
+  .doc-item a[target="_blank"]:hover,
+  .img-caption a:hover,
+  .photo-detail a:hover {
     color: var(--text);
     border-color: var(--text);
   }
@@ -2691,7 +2696,7 @@
     <!-- ══════ QUIZ GATE ══════ -->
     <div class="quiz-gate" id="quizGate">
       <div class="quiz-label">Before you continue</div>
-      <div class="quiz-question">Why did the debate over Satoshi's identity become so politically charged during the Block Size War?</div>
+      <div class="quiz-question">Why did the debate over Satoshi's identity become so politically charged during the Blocksize War?</div>
       <div class="quiz-options" id="quizOptions">
         <div class="quiz-option" data-index="0" onclick="selectQuizOption(this)">
           <div class="quiz-radio"></div>
@@ -2721,7 +2726,7 @@
       var STORAGE_KEY = 'byz_act2_complete';
       var CORRECT = 1;
       var ALL_CORRECT = false;
-      var HINT = "Think about why Satoshi's vision mattered so much during this conflict. Re-read the section on the Block Size War.";
+      var HINT = "Think about why Satoshi's vision mattered so much during this conflict. Re-read the section on the Blocksize War.";
       var selected = -1;
 
       // Check if already completed

@@ -2383,19 +2383,24 @@
   .statement a[target="_blank"],
   .prose a,
   .detail-card-title a,
-  .doc-item a[target="_blank"] {
+  .doc-item a[target="_blank"],
+  .img-caption a,
+  .photo-detail a {
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent-dim);
     transition: color 0.3s ease, border-color 0.3s ease;
   }
+  .prose a strong { color: inherit; }
   .beat-section a[target="_blank"]:hover,
   .editorial-row a[target="_blank"]:hover,
   .editorial-full a[target="_blank"]:hover,
   .statement a[target="_blank"]:hover,
   .prose a:hover,
   .detail-card-title a:hover,
-  .doc-item a[target="_blank"]:hover {
+  .doc-item a[target="_blank"]:hover,
+  .img-caption a:hover,
+  .photo-detail a:hover {
     color: var(--text);
     border-color: var(--text);
   }
@@ -2592,7 +2597,7 @@
         <div class="section-label">The Disappearance</div>
         <h2>WikiLeaks kicked the hornet's nest, then Satoshi vanished.</h2>
         <div class="prose">
-          <p>Satoshi's exit was shrouded in controversy. In early December 2010, WikiLeaks began accepting Bitcoin donations after having its bank accounts frozen by the FBI. Satoshi publicly warned that WikiLeaks had "kicked the hornet's nest." <a href="https://bitcointalk.org/index.php?topic=5299346.0" target="_blank">His final public message</a> came on December 12, 2010. On April 26th, 2011, Satoshi sent his <a href="https://riski.wiki/wiki/User:Gavinandresen/Blog/2022-04-26_Eleven_years_ago_today%E2%80%A6" target="_blank" style="color: var(--accent); text-decoration: underline;">last private email</a> to Gavin Andresen, saying: "I wish you wouldn't keep talking about me as a mysterious shadowy figure." Gavin replied that he had been invited to speak to the CIA about Bitcoin. After that exchange, Satoshi vanished entirely.</p>
+          <p>Satoshi's exit was shrouded in controversy. In early December 2010, WikiLeaks began accepting Bitcoin donations after having its bank accounts frozen by the FBI. Satoshi publicly warned that WikiLeaks had "kicked the hornet's nest." <a href="https://bitcointalk.org/index.php?topic=5299346.0" target="_blank">His final public message</a> came on December 12, 2010. On April 26th, 2011, Satoshi sent his <a href="https://riski.wiki/wiki/User:Gavinandresen/Blog/2022-04-26_Eleven_years_ago_today%E2%80%A6" target="_blank">last private email</a> to Gavin Andresen, saying: "I wish you wouldn't keep talking about me as a mysterious shadowy figure." Gavin replied that he had been invited to speak to the CIA about Bitcoin. After that exchange, Satoshi vanished entirely.</p>
         </div>
       </div>
       <div class="editorial-image no-frame">
