@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoomable Timeline — The Byzantine General</title>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="shortcut icon" href="../favicon.ico">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a22;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e6e1;
+    --text-muted: #8a8880;
+    --text-dim: #5a5850;
+    --accent: #c9a96e;
+    --accent-dim: rgba(201,169,110,0.15);
+    --serif: 'Cormorant Garamond', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --kleiman: #60a5fa;
+    --satoshi: #c9a96e;
+    --wright: #ef4444;
+    --context: #8a8880;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── Header ── */
+  .tl-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tl-logo { font-family: var(--mono); font-size: 10px; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; }
+  .tl-title-bar { font-family: var(--serif); font-size: 18px; color: var(--text); }
+  .tl-back { color: var(--text-muted); text-decoration: none; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; }
+  .tl-back:hover { color: var(--accent); }
+
+  /* ── Filter bar ── */
+  .filter-bar {
+    position: fixed; top: 48px; left: 0; right: 0; z-index: 99;
+    background: rgba(10,10,15,0.90);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 24px;
+    display: flex; gap: 8px; align-items: center; justify-content: center;
+  }
+  .filter-btn {
+    padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-muted); font-family: var(--mono);
+    font-size: 10px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent-dim); border-color: rgba(201,169,110,0.3); color: var(--accent); }
+  .filter-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+  /* ── Zoom controls ── */
+  .zoom-controls {
+    position: fixed; bottom: 24px; right: 24px; z-index: 100;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .zoom-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-muted); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .zoom-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── Minimap ── */
+  .minimap {
+    position: fixed; bottom: 24px; left: 24px; right: 100px; z-index: 99;
+    height: 40px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  .minimap-viewport {
+    position: absolute; top: 0; height: 100%;
+    background: rgba(201,169,110,0.12); border: 1px solid rgba(201,169,110,0.3);
+    border-radius: 4px; cursor: grab;
+    min-width: 20px;
+  }
+  .minimap-dot {
+    position: absolute; top: 50%; width: 3px; height: 3px;
+    border-radius: 50%; transform: translateY(-50%);
+  }
+
+  /* ── Canvas area ── */
+  .timeline-viewport {
+    position: fixed; top: 88px; left: 0; right: 0; bottom: 76px;
+    overflow: hidden; cursor: grab;
+  }
+  .timeline-viewport.grabbing { cursor: grabbing; }
+
+  .timeline-world {
+    position: absolute; top: 0; left: 0;
+    height: 100%;
+    will-change: transform;
+  }
+
+  /* ── Timeline axis ── */
+  .timeline-axis {
+    position: absolute; left: 0; right: 0;
+    top: 50%; height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 2%, rgba(255,255,255,0.06) 98%, transparent 100%);
+    transform: translateY(-1px);
+  }
+
+  /* ── Year ticks ── */
+  .year-tick {
+    position: absolute; top: 50%;
+  }
+  .year-tick .tick-line {
+    width: 1px; background: rgba(255,255,255,0.06);
+    position: absolute; left: 0;
+  }
+  .year-tick .tick-label {
+    font-family: var(--mono); color: var(--text-dim);
+    text-align: center; white-space: nowrap;
+    letter-spacing: 1px; position: absolute; left: 50%;
+    transform: translateX(-50%);
+  }
+  .year-tick.decade .tick-line { background: rgba(201,169,110,0.2); }
+  .year-tick.decade .tick-label { color: rgba(201,169,110,0.5); }
+
+  /* ── Era labels ── */
+  .era-label {
+    position: absolute;
+    font-family: var(--serif); color: rgba(201,169,110,0.15);
+    white-space: nowrap; letter-spacing: 3px; text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  /* ── Event nodes — always visible ── */
+  .event-node {
+    position: absolute;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+  .event-node.filtered-out { opacity: 0; pointer-events: none; }
+
+  /* Thumbnail circle — always shown */
+  .node-thumb {
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid;
+    position: absolute;
+    left: 50%; top: 50%;
+    background: var(--surface);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    z-index: 5;
+  }
+  .node-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .node-thumb.kleiman { border-color: var(--kleiman); }
+  .node-thumb.satoshi { border-color: var(--satoshi); }
+  .node-thumb.wright { border-color: var(--wright); }
+  .node-thumb.context { border-color: var(--context); }
+
+  .event-node:hover .node-thumb {
+    box-shadow: 0 0 20px rgba(201,169,110,0.4);
+    z-index: 15;
+  }
+
+  /* Stem connecting thumb to axis */
+  .node-stem {
+    position: absolute; left: 50%; width: 1px;
+    background: var(--border);
+    transform: translateX(-50%);
+    transition: background 0.2s;
+  }
+  .event-node:hover .node-stem { background: rgba(201,169,110,0.3); }
+
+  /* Year label below/above thumb */
+  .node-year {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); color: var(--text-dim);
+    white-space: nowrap; letter-spacing: 1px;
+    transition: opacity 0.2s;
+  }
+
+  /* Headline — appears at medium zoom */
+  .node-headline {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-family: var(--serif); color: var(--text);
+    text-align: center; line-height: 1.3;
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .node-headline.visible { opacity: 1; }
+
+  /* Expanded card — appears at high zoom */
+  .node-card {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s, box-shadow 0.2s;
+  }
+  .node-card.visible { opacity: 1; pointer-events: auto; }
+  .node-card:hover {
+    border-color: rgba(201,169,110,0.3);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.6);
+  }
+  .card-img-wrap {
+    width: 100%; overflow: hidden; position: relative;
+  }
+  .card-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness(0.75);
+  }
+  .card-group-pill {
+    position: absolute; top: 6px; right: 6px;
+    font-family: var(--mono); font-size: 8px; letter-spacing: 1px;
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .card-group-pill.kleiman { background: rgba(96,165,250,0.25); color: var(--kleiman); }
+  .card-group-pill.satoshi { background: rgba(201,169,110,0.25); color: var(--satoshi); }
+  .card-group-pill.wright { background: rgba(239,68,68,0.25); color: var(--wright); }
+  .card-group-pill.context { background: rgba(138,136,128,0.25); color: var(--context); }
+
+  .card-body { padding: 10px 12px; }
+  .card-title {
+    font-family: var(--serif); font-size: 14px; line-height: 1.3;
+    color: var(--text); margin-bottom: 4px;
+  }
+  .card-year-label {
+    font-family: var(--mono); font-size: 9px; color: var(--accent);
+    letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .card-text {
+    font-size: 11px; line-height: 1.5; color: var(--text-muted);
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.92);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .lightbox.open { opacity: 1; pointer-events: auto; }
+  .lb-content {
+    max-width: 600px; width: 90%;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+  .lb-img { width: 100%; max-height: 300px; object-fit: cover; }
+  .lb-body { padding: 20px; }
+  .lb-year { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 2px; }
+  .lb-group { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; margin-left: 12px; }
+  .lb-headline { font-family: var(--serif); font-size: 22px; margin: 8px 0; }
+  .lb-text { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+  .lb-close {
+    position: absolute; top: 20px; right: 20px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-muted); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Zoom hint ── */
+  .zoom-hint {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-family: var(--mono); font-size: 12px; color: var(--text-dim);
+    letter-spacing: 2px; text-transform: uppercase;
+    opacity: 0.6; pointer-events: none;
+    animation: fadeHint 4s ease-out forwards;
+  }
+  @keyframes fadeHint {
+    0% { opacity: 0.6; }
+    70% { opacity: 0.6; }
+    100% { opacity: 0; display: none; }
+  }
+
+  /* ── Zoom level indicator ── */
+  .zoom-level {
+    position: fixed; top: 96px; right: 24px; z-index: 98;
+    font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="tl-header">
+  <a class="tl-back" href="../index.html">← BACK</a>
+  <span class="tl-title-bar">The Satoshi Timeline</span>
+  <span class="tl-logo">The Byzantine General</span>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">ALL</button>
+  <button class="filter-btn" data-filter="Dave Kleiman"><span class="filter-dot" style="background:var(--kleiman)"></span>KLEIMAN</button>
+  <button class="filter-btn" data-filter="Satoshi / Bitcoin"><span class="filter-dot" style="background:var(--satoshi)"></span>SATOSHI</button>
+  <button class="filter-btn" data-filter="Craig Wright"><span class="filter-dot" style="background:var(--wright)"></span>WRIGHT</button>
+  <button class="filter-btn" data-filter="Context"><span class="filter-dot" style="background:var(--context)"></span>CONTEXT</button>
+</div>
+
+<div class="zoom-level" id="zoomLevel">1.0×</div>
+
+<div class="timeline-viewport" id="viewport">
+  <div class="timeline-world" id="world">
+    <div class="timeline-axis"></div>
+  </div>
+</div>
+
+<div class="minimap" id="minimap">
+  <div class="minimap-viewport" id="minimapViewport"></div>
+</div>
+
+<div class="zoom-controls">
+  <button class="zoom-btn" id="zoomIn" title="Zoom in">+</button>
+  <button class="zoom-btn" id="zoomOut" title="Zoom out">−</button>
+  <button class="zoom-btn" id="zoomReset" title="Reset zoom" style="font-size:12px;">⟲</button>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <div class="lb-content">
+    <img class="lb-img" id="lbImg">
+    <div class="lb-body">
+      <span class="lb-year" id="lbYear"></span>
+      <span class="lb-group" id="lbGroup"></span>
+      <h2 class="lb-headline" id="lbHeadline"></h2>
+      <p class="lb-text" id="lbText"></p>
+    </div>
+  </div>
+</div>
+
+<div class="zoom-hint" id="zoomHint">SCROLL TO ZOOM · DRAG TO PAN</div>
+
+<script>
+// ── Event data ──
+const events = [
+  { year: 1967, month: 0, headline: "Dave Kleiman Born", text: "Dave Kleiman is born and adopted by a Jewish family in Florida.", image: "https://i.postimg.cc/KzHHGqSk/Dave-Childhood.webp", group: "Dave Kleiman" },
+  { year: 1989, month: 0, headline: "US Army Soldier Of The Year", text: "Receives the Army Achievement Medal for \"outstanding results\".", image: "https://i.postimg.cc/XJYDfMcD/DaveArmy.jpg", group: "Dave Kleiman" },
+  { year: 1995, month: 0, headline: "Motorcycle Accident", text: "A motorcycle accident leaves Dave paralyzed. This tragedy marks the beginning of his dedication to cybersecurity.", image: "https://i.postimg.cc/Jnxzr7Jn/wheelchair.jpg", group: "Dave Kleiman" },
+  { year: 2000, month: 0, headline: "A Decade in Cybersecurity", text: "Kleiman develops encryption systems used by NASA, the DoD, and major U.S. agencies.", image: "https://i.postimg.cc/d1CnmqZ6/NASA-med.jpg", group: "Dave Kleiman" },
+  { year: 2003, month: 0, headline: "Cryptographic Circles", text: "Posts on Metzdowd cryptography mailing list shortly after Adam Back.", image: "https://i.postimg.cc/QN4Vkps6/756-F49-F2-00-A8-4-EAE-B23-F-A2-AD880-CCA4-B.jpg", group: "Dave Kleiman" },
+  { year: 2003, month: 6, headline: "Cybersecurity Books", text: "Authors a series of cybersecurity books. First known formal collaboration with Craig Wright.", image: "https://i.postimg.cc/FzRzXKbg/9-C9-F12-E0-CBF2-40-B6-8-A1-A-98-F07315-B842-4-5005-c.jpg", group: "Dave Kleiman" },
+  { year: 2008, month: 10, headline: "Bitcoin Whitepaper", text: "Satoshi posts Bitcoin whitepaper to cryptography mailing list on October 31st.", image: "https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2009, month: 1, headline: "Bitcoin v0.1 Released", text: "First version of Bitcoin software released on January 8th.", image: "https://i.postimg.cc/qvrWZBTH/9-C1-E5-F58-C488-424-E-8-FC5-44-AE8-B4-D9-CC3.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2010, month: 11, headline: "Dave Hospitalized", text: "From the end of 2010, Dave spends most of his time in a military hospital.", image: "https://i.postimg.cc/zX4B48yK/hospital.jpg", group: "Dave Kleiman" },
+  { year: 2010, month: 12, headline: "WikiLeaks & Bitcoin", text: "Satoshi warns WikiLeaks has \u2018kicked the hornet\u2019s nest\u2019; urges community not to draw attention.", image: "https://i.postimg.cc/4NsrWNZk/7-D84-E738-9-DF0-479-B-8068-74-D266-FAC901.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2010, month: 12, headline: "Satoshi\u2019s Last Post", text: "Final known public forum message from Satoshi, one day after the WikiLeaks involvement.", image: "https://i.postimg.cc/4NsrWNZk/7-D84-E738-9-DF0-479-B-8068-74-D266-FAC901.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2011, month: 0, headline: "W&K Info Defense", text: "Kleiman registers W&K Info Defense in Florida to develop software and file crypto-related IP.", image: "https://i.postimg.cc/fRz6DgJC/Blockchain-Technology.jpg", group: "Dave Kleiman" },
+  { year: 2011, month: 4, headline: "Gavin Andresen Email", text: "Satoshi tells Gavin: \u2018I wish you wouldn\u2019t keep talking about me as a mysterious shadowy figure.\u2019", image: "https://i.postimg.cc/fTs3zFnj/Gavin-CIA.jpg", group: "Context" },
+  { year: 2013, month: 3, headline: "Dorian Nakamoto Named", text: "Newsweek incorrectly identifies Dorian Nakamoto as Satoshi; media frenzy ensues.", image: "https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2013, month: 3, headline: "Andreas Fundraises for Dorian", text: "Antonopoulos apologizes and fundraises $17k for the wrongly identified Dorian Nakamoto.", image: "https://i.postimg.cc/6Qs6cjV1/dorian-Andreas.jpg", group: "Context" },
+  { year: 2013, month: 4, headline: "Dave Kleiman Dies", text: "Dave dies from a combination of bacterial infection and overdose, found alone at home.", image: "https://i.postimg.cc/Qt71MTmb/military-cemetery.jpg", group: "Dave Kleiman" },
+  { year: 2014, month: 2, headline: "Wright Contacts Kleiman Family", text: "\u2018Your son and I were two of the three key people behind Bitcoin.\u2019", image: "https://i.postimg.cc/zfRhLfG3/52-C0150-A-804-F-4118-BE23-213-D13214-CAD.jpg", group: "Dave Kleiman" },
+  { year: 2014, month: 3, headline: "Wright Emails Louis Kleiman", text: "Wright contacts Dave\u2019s father just days before his ATO hearing.", image: "https://i.postimg.cc/zfRhLfG3/52-C0150-A-804-F-4118-BE23-213-D13214-CAD.jpg", group: "Dave Kleiman" },
+  { year: 2014, month: 4, headline: "ATO Investigates Wright", text: "Craig Wright reports during an ATO hearing that he has been mining Bitcoin since 2009.", image: "https://i.postimg.cc/gcHvZXNw/Whats-App-Image-2025-04-11-at-12-45-06.jpg", group: "Craig Wright" },
+  { year: 2015, month: 5, headline: "Ross Ulbricht Sentenced", text: "Ross Ulbricht receives a life sentence. Bitcoin\u2019s association with dark markets intensifies.", image: "https://i.postimg.cc/fTHMGgwb/Ross-Jail.jpg", group: "Craig Wright" },
+  { year: 2015, month: 12, headline: "Wright Identified as Satoshi", text: "Gizmodo and Wired publish leaked documents. Wright flees Australia.", image: "https://i.postimg.cc/zXwGxK9N/Craig-Wright-Gizmodo.jpg", group: "Craig Wright" },
+  { year: 2015, month: 12, headline: "AFP Raids Wright\u2019s Home", text: "Australian Federal Police raid Craig Wright\u2019s home and office.", image: "https://i.postimg.cc/m2fKDvwD/Craig-Wright-Police-Raid.jpg", group: "Craig Wright" },
+  { year: 2016, month: 3, headline: "Wright & Calvin Ayre", text: "Wright negotiates a deal with Calvin Ayre to commercialize Bitcoin-related IP.", image: "https://i.postimg.cc/gkz1VpDs/18-F534-CD-F4-AB-4-C9-D-B778-DEBCE6845122.jpg", group: "Craig Wright" },
+  { year: 2016, month: 4, headline: "Gavin Verifies Wright", text: "Gavin privately witnesses Craig Wright signing with early Bitcoin keys.", image: "https://i.postimg.cc/15YfGzVM/Gavin-Andresen.jpg", group: "Craig Wright" },
+  { year: 2016, month: 4, headline: "Private Verification Session", text: "Craig signs Bitcoin block keys in private with Gavin Andresen at a London hotel.", image: "https://i.postimg.cc/15YfGzVM/Gavin-Andresen.jpg", group: "Craig Wright" },
+  { year: 2016, month: 5, headline: "Consensus Conference", text: "Gavin declares Craig is Satoshi. Vitalik denounces him using signaling theory.", image: "https://i.postimg.cc/bYmJPvg8/A416-ADEA-BA50-4-F0-A-A2-A7-E2-BB4-F4-E4-FD9.jpg", group: "Craig Wright" },
+  { year: 2016, month: 5, headline: "BBC Public Appearance", text: "Craig Wright refuses to use private keys publicly. The proof falls flat.", image: "https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2016, month: 5, headline: "TulipBoy Tweets", text: "Wright\u2019s assistant tweets that the name Satoshi came from \u2018The House of Morgan.\u2019", image: "https://i.postimg.cc/bYmJPvg8/A416-ADEA-BA50-4-F0-A-A2-A7-E2-BB4-F4-E4-FD9.jpg", group: "Craig Wright" },
+  { year: 2018, month: 4, headline: "Vitalik: \u2018Craig is a Fraud\u2019", text: "At the Deconomy conference in Seoul, Vitalik publicly calls Craig Wright a fraud.", image: "https://i.postimg.cc/SQ3CfsQ7/Deconomy-conference.jpg", group: "Craig Wright" },
+  { year: 2018, month: 11, headline: "Bitcoin Wars: BSV Launched", text: "Craig Wright launches Bitcoin SV, backed by Calvin Ayre, splitting from Bitcoin Cash.", image: "https://i.postimg.cc/t4t6bN32/Craig-BSV.jpg", group: "Craig Wright" },
+  { year: 2019, month: 4, headline: "Binance Delists BSV", text: "Binance delists Bitcoin SV. CEO CZ publicly calls Craig Wright a fraud.", image: "https://i.postimg.cc/BvmmCKvQ/image.jpg", group: "Craig Wright" },
+  { year: 2020, month: 4, headline: "Wright Libel Lawsuits", text: "Craig Wright launches libel lawsuits against Vitalik Buterin and other critics.", image: "https://i.postimg.cc/t4yDQ5Z4/vitalik-Craig.jpg", group: "Craig Wright" },
+  { year: 2021, month: 12, headline: "Kleiman Estate Wins $100M", text: "Florida jury awards $100M to Dave\u2019s estate for Bitcoin IP co-development.", image: "https://i.postimg.cc/wMm8St4m/court.jpg", group: "Dave Kleiman" },
+  { year: 2023, month: 10, headline: "Hodlonaut Wins", text: "Hodlonaut wins a defamation lawsuit against Craig Wright in Norway.", image: "https://i.postimg.cc/hGtrht0F/Hodlonaut-law-suit.jpg", group: "Craig Wright" },
+  { year: 2024, month: 3, headline: "Wright Is Not Satoshi", text: "The UK High Court concludes Craig Wright is not Satoshi Nakamoto. Wright forged documents on a grand scale.", image: "https://i.postimg.cc/rsny2nsv/Craig-Wright-Copa.jpg", group: "Craig Wright" },
+];
+
+// ── Configuration ──
+const START_YEAR = 1965;
+const END_YEAR = 2026;
+const TOTAL_YEARS = END_YEAR - START_YEAR;
+const BASE_PX_PER_YEAR = 80;
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 25;
+
+// Thumbnail sizing — these scale with zoom
+const THUMB_MIN = 20;   // px diameter at zoom 1x
+const THUMB_MAX = 70;   // px diameter cap
+const HEADLINE_ZOOM = 2;   // zoom level headlines appear
+const CARD_ZOOM = 5;        // zoom level full cards appear
+
+// ── State ──
+let zoom = 1;
+let panX = 0;
+const vp = document.getElementById('viewport');
+const world = document.getElementById('world');
+let vpW, vpH;
+let isDragging = false;
+let dragStartX, dragStartPanX;
+let activeFilter = 'all';
+let animFrame = null;
+
+// ── Helpers ──
+function gc(g) {
+  if (g.includes('Kleiman')) return 'kleiman';
+  if (g.includes('Satoshi')) return 'satoshi';
+  if (g.includes('Wright')) return 'wright';
+  return 'context';
+}
+
+function yearToX(year, month) {
+  return ((year - START_YEAR) + (month || 0) / 12) * BASE_PX_PER_YEAR;
+}
+
+// ── Build year ticks ──
+const tickEls = [];
+function buildTicks() {
+  for (let y = START_YEAR; y <= END_YEAR; y++) {
+    const el = document.createElement('div');
+    const decade = y % 10 === 0;
+    el.className = 'year-tick' + (decade ? ' decade' : '');
+    el.dataset.year = y;
+    el.innerHTML = `<div class="tick-line"></div><div class="tick-label">${y}</div>`;
+    world.appendChild(el);
+    tickEls.push({ el, year: y, decade });
+  }
+}
+
+// Era labels
+function buildEras() {
+  const eras = [
+    { start: 1967, label: 'EARLY YEARS' },
+    { start: 2008, label: 'BITCOIN ERA' },
+    { start: 2013, label: 'IDENTITY CRISIS' },
+    { start: 2018, label: 'LEGAL BATTLES' },
+  ];
+  eras.forEach(era => {
+    const el = document.createElement('div');
+    el.className = 'era-label';
+    el.textContent = era.label;
+    el.dataset.startYear = era.start;
+    world.appendChild(el);
+  });
+}
+
+// ── Build event nodes ──
+const nodes = [];
+
+function buildNodes() {
+  // Assign above/below to spread events visually
+  // Sort by time, alternate, but try to avoid overlapping same-year events
+  events.forEach((evt, i) => {
+    const x = yearToX(evt.year, evt.month);
+    const above = i % 2 === 0;
+    const group = gc(evt.group);
+
+    const node = document.createElement('div');
+    node.className = 'event-node';
+    node.dataset.index = i;
+    node.dataset.group = evt.group;
+
+    // Thumbnail
+    const thumb = document.createElement('div');
+    thumb.className = 'node-thumb ' + group;
+    thumb.innerHTML = `<img src="${evt.image}" alt="${evt.headline}" loading="lazy">`;
+    node.appendChild(thumb);
+
+    // Stem
+    const stem = document.createElement('div');
+    stem.className = 'node-stem';
+    node.appendChild(stem);
+
+    // Year label
+    const yearLabel = document.createElement('div');
+    yearLabel.className = 'node-year';
+    yearLabel.textContent = evt.year;
+    node.appendChild(yearLabel);
+
+    // Headline
+    const headline = document.createElement('div');
+    headline.className = 'node-headline';
+    headline.textContent = evt.headline;
+    node.appendChild(headline);
+
+    // Full card
+    const card = document.createElement('div');
+    card.className = 'node-card';
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${evt.image}" alt="${evt.headline}" loading="lazy">
+        <span class="card-group-pill ${group}">${evt.group.toUpperCase()}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-year-label">${evt.year}</div>
+        <div class="card-title">${evt.headline}</div>
+        <div class="card-text">${evt.text}</div>
+      </div>
+    `;
+    node.appendChild(card);
+
+    // Click → lightbox
+    node.addEventListener('click', (e) => {
+      if (e.target.closest('.node-card')) {
+        openLightbox(i);
+      } else {
+        openLightbox(i);
+      }
+    });
+
+    world.appendChild(node);
+    nodes.push({ el: node, evt, x, above, thumb, stem, yearLabel, headline, card, group });
+  });
+}
+
+// ── Lightbox ──
+function openLightbox(idx) {
+  const evt = events[idx];
+  document.getElementById('lbImg').src = evt.image;
+  document.getElementById('lbYear').textContent = evt.year;
+  document.getElementById('lbGroup').textContent = evt.group;
+  document.getElementById('lbGroup').className = 'lb-group';
+  document.getElementById('lbHeadline').textContent = evt.headline;
+  document.getElementById('lbText').textContent = evt.text;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target === e.currentTarget) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ── Rendering ──
+function render() {
+  const totalW = TOTAL_YEARS * BASE_PX_PER_YEAR * zoom;
+  world.style.width = totalW + 'px';
+
+  // Clamp pan
+  panX = Math.max(-(totalW - vpW), Math.min(0, panX));
+  world.style.transform = `translateX(${panX}px)`;
+
+  // Visible range in world coordinates
+  const vLeft = -panX;
+  const vRight = -panX + vpW;
+  const buffer = 300;
+
+  // ── Year ticks ──
+  tickEls.forEach(t => {
+    const x = yearToX(t.year, 0) * zoom;
+    // Visibility by zoom level
+    let show = false;
+    if (zoom < 1.2) show = t.year % 10 === 0;
+    else if (zoom < 3) show = t.year % 5 === 0;
+    else if (zoom < 8) show = t.year % 2 === 0;
+    else show = true;
+
+    if (!show || x < vLeft - 100 || x > vRight + 100) {
+      t.el.style.display = 'none';
+      return;
+    }
+    t.el.style.display = '';
+    t.el.style.left = x + 'px';
+
+    const tickH = t.decade ? 24 : 14;
+    const fontSize = t.decade ? Math.min(13, 10 + zoom * 0.5) : Math.min(11, 9 + zoom * 0.3);
+    t.el.querySelector('.tick-line').style.height = tickH + 'px';
+    t.el.querySelector('.tick-line').style.top = -tickH / 2 + 'px';
+    t.el.querySelector('.tick-label').style.top = (tickH / 2 + 6) + 'px';
+    t.el.querySelector('.tick-label').style.fontSize = fontSize + 'px';
+  });
+
+  // ── Era labels ──
+  document.querySelectorAll('.era-label').forEach(el => {
+    const sy = parseInt(el.dataset.startYear);
+    const x = yearToX(sy, 0) * zoom;
+    el.style.left = x + 'px';
+    el.style.top = 'calc(50% + ' + (40 + zoom * 2) + 'px)';
+    el.style.fontSize = Math.min(16, 11 + zoom * 0.8) + 'px';
+  });
+
+  // ── Event nodes ──
+  const thumbSize = Math.min(THUMB_MAX, THUMB_MIN + (zoom - 1) * 8);
+  const showHeadlines = zoom >= HEADLINE_ZOOM;
+  const showCards = zoom >= CARD_ZOOM;
+
+  nodes.forEach((n, i) => {
+    const wx = n.x * zoom;
+    const filtered = activeFilter !== 'all' && n.evt.group !== activeFilter;
+    n.el.classList.toggle('filtered-out', filtered);
+
+    if (filtered || wx < vLeft - buffer || wx > vRight + buffer) {
+      n.el.style.display = 'none';
+      return;
+    }
+    n.el.style.display = '';
+
+    // Position on axis
+    n.el.style.left = wx + 'px';
+    n.el.style.top = '50%';
+
+    // Thumbnail — always visible, grows with zoom
+    const sz = thumbSize;
+    const stemH = 30 + zoom * 6;
+    const offset = stemH + sz / 2 + 4;
+
+    if (n.above) {
+      n.thumb.style.transform = `translate(-50%, ${-(offset)}px)`;
+      n.stem.style.top = 'auto';
+      n.stem.style.bottom = '0';
+      n.stem.style.height = (stemH) + 'px';
+      n.yearLabel.style.top = 'auto';
+      n.yearLabel.style.bottom = -(16 + zoom) + 'px';
+      n.yearLabel.style.fontSize = Math.min(11, 8 + zoom * 0.4) + 'px';
+      n.headline.style.top = 'auto';
+      n.headline.style.bottom = (offset + sz / 2 + 8) + 'px';
+      n.card.style.top = 'auto';
+      n.card.style.bottom = (offset + sz / 2 + 8) + 'px';
+    } else {
+      n.thumb.style.transform = `translate(-50%, ${offset - sz}px)`;
+      n.stem.style.bottom = 'auto';
+      n.stem.style.top = '0';
+      n.stem.style.height = stemH + 'px';
+      n.yearLabel.style.bottom = 'auto';
+      n.yearLabel.style.top = -(16 + zoom) + 'px';
+      n.yearLabel.style.fontSize = Math.min(11, 8 + zoom * 0.4) + 'px';
+      n.headline.style.bottom = 'auto';
+      n.headline.style.top = (offset + sz / 2 + 8) + 'px';
+      n.card.style.bottom = 'auto';
+      n.card.style.top = (offset + sz / 2 + 8) + 'px';
+    }
+
+    n.thumb.style.width = sz + 'px';
+    n.thumb.style.height = sz + 'px';
+
+    // Headline
+    if (showHeadlines && !showCards) {
+      n.headline.classList.add('visible');
+      n.headline.style.width = Math.min(200, 100 + zoom * 15) + 'px';
+      n.headline.style.fontSize = Math.min(14, 10 + zoom * 0.5) + 'px';
+    } else {
+      n.headline.classList.remove('visible');
+    }
+
+    // Card
+    if (showCards) {
+      n.card.classList.add('visible');
+      const cardW = Math.min(260, 140 + zoom * 10);
+      const imgH = Math.min(140, 60 + zoom * 8);
+      n.card.style.width = cardW + 'px';
+      n.card.querySelector('.card-img-wrap').style.height = imgH + 'px';
+    } else {
+      n.card.classList.remove('visible');
+    }
+  });
+
+  // Minimap
+  updateMinimap();
+  document.getElementById('zoomLevel').textContent = zoom.toFixed(1) + '×';
+}
+
+// ── Minimap ──
+function updateMinimap() {
+  const mm = document.getElementById('minimap');
+  const mmW = mm.offsetWidth;
+  const totalW = TOTAL_YEARS * BASE_PX_PER_YEAR * zoom;
+  const frac = vpW / totalW;
+  const left = (-panX) / totalW;
+  const mmVp = document.getElementById('minimapViewport');
+  mmVp.style.left = (left * mmW) + 'px';
+  mmVp.style.width = Math.max(20, frac * mmW) + 'px';
+}
+
+function buildMinimapDots() {
+  const mm = document.getElementById('minimap');
+  const mmW = mm.offsetWidth;
+  const totalPx = TOTAL_YEARS * BASE_PX_PER_YEAR;
+  events.forEach(evt => {
+    const dot = document.createElement('div');
+    dot.className = 'minimap-dot';
+    dot.style.left = ((yearToX(evt.year, evt.month) / totalPx) * mmW) + 'px';
+    dot.style.background = `var(--${gc(evt.group)})`;
+    mm.appendChild(dot);
+  });
+}
+
+// ── Pan & Zoom input ──
+function onWheel(e) {
+  e.preventDefault();
+  const rect = vp.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const worldX = (mouseX - panX) / zoom;
+
+  if (e.ctrlKey || e.metaKey || Math.abs(e.deltaY) > Math.abs(e.deltaX) * 0.5) {
+    const factor = e.deltaY < 0 ? 1.1 : 0.91;
+    zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * factor));
+    panX = mouseX - worldX * zoom;
+  } else {
+    panX -= e.deltaX;
+  }
+  scheduleRender();
+}
+
+function scheduleRender() {
+  if (!animFrame) {
+    animFrame = requestAnimationFrame(() => {
+      render();
+      animFrame = null;
+    });
+  }
+}
+
+function onMouseDown(e) {
+  if (e.target.closest('.node-card') || e.target.closest('.zoom-btn') || e.target.closest('.filter-btn') || e.target.closest('.lightbox')) return;
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartPanX = panX;
+  vp.classList.add('grabbing');
+  e.preventDefault();
+}
+function onMouseMove(e) {
+  if (!isDragging) return;
+  panX = dragStartPanX + (e.clientX - dragStartX);
+  scheduleRender();
+}
+function onMouseUp() {
+  isDragging = false;
+  vp.classList.remove('grabbing');
+}
+
+// Touch
+let touchStartX, touchStartPanX, lastTouchDist;
+function onTouchStart(e) {
+  if (e.touches.length === 1) {
+    touchStartX = e.touches[0].clientX;
+    touchStartPanX = panX;
+  } else if (e.touches.length === 2) {
+    lastTouchDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+  }
+}
+function onTouchMove(e) {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    panX = touchStartPanX + (e.touches[0].clientX - touchStartX);
+    scheduleRender();
+  } else if (e.touches.length === 2) {
+    const dist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    const rect = vp.getBoundingClientRect();
+    const mx = midX - rect.left;
+    const wx = (mx - panX) / zoom;
+    zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * (dist / lastTouchDist)));
+    panX = mx - wx * zoom;
+    lastTouchDist = dist;
+    scheduleRender();
+  }
+}
+
+// Zoom buttons
+document.getElementById('zoomIn').addEventListener('click', () => {
+  const cx = vpW / 2;
+  const wx = (cx - panX) / zoom;
+  zoom = Math.min(MAX_ZOOM, zoom * 1.5);
+  panX = cx - wx * zoom;
+  render();
+});
+document.getElementById('zoomOut').addEventListener('click', () => {
+  const cx = vpW / 2;
+  const wx = (cx - panX) / zoom;
+  zoom = Math.max(MIN_ZOOM, zoom / 1.5);
+  panX = cx - wx * zoom;
+  render();
+});
+document.getElementById('zoomReset').addEventListener('click', () => {
+  zoom = 1;
+  panX = vpW / 2 - yearToX(2005, 0) * zoom;
+  render();
+});
+
+// Minimap drag
+let mmDrag = false;
+document.getElementById('minimapViewport').addEventListener('mousedown', e => { e.stopPropagation(); mmDrag = true; });
+document.addEventListener('mousemove', e => {
+  if (!mmDrag) return;
+  const mm = document.getElementById('minimap');
+  const rect = mm.getBoundingClientRect();
+  const frac = (e.clientX - rect.left) / rect.width;
+  const totalW = TOTAL_YEARS * BASE_PX_PER_YEAR * zoom;
+  panX = -(frac * totalW - vpW / 2);
+  scheduleRender();
+});
+document.addEventListener('mouseup', () => { mmDrag = false; });
+
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+// ── Init ──
+function init() {
+  const rect = vp.getBoundingClientRect();
+  vpW = rect.width;
+  vpH = rect.height;
+
+  buildTicks();
+  buildEras();
+  buildNodes();
+  buildMinimapDots();
+
+  // Start centered roughly mid-story
+  panX = vpW / 2 - yearToX(2005, 0) * zoom;
+
+  vp.addEventListener('wheel', onWheel, { passive: false });
+  vp.addEventListener('mousedown', onMouseDown);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  vp.addEventListener('touchstart', onTouchStart, { passive: false });
+  vp.addEventListener('touchmove', onTouchMove, { passive: false });
+
+  render();
+}
+
+window.addEventListener('resize', () => {
+  const rect = vp.getBoundingClientRect();
+  vpW = rect.width;
+  vpH = rect.height;
+  render();
+});
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Timeline — The Byzantine General</title>
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="shortcut icon" href="../favicon.ico">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a22;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e6e1;
+    --text-muted: #8a8880;
+    --text-dim: #5a5850;
+    --accent: #c9a96e;
+    --accent-dim: rgba(201,169,110,0.15);
+    --serif: 'Cormorant Garamond', serif;
+    --sans: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --kleiman: #60a5fa;
+    --satoshi: #c9a96e;
+    --wright: #ef4444;
+    --context: #8a8880;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  .tl-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tl-logo { font-family: var(--mono); font-size: 10px; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; }
+  .tl-title-bar { font-family: var(--serif); font-size: 18px; color: var(--text); }
+  .tl-back { color: var(--text-muted); text-decoration: none; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; }
+  .tl-back:hover { color: var(--accent); }
+
+  /* ── Filter bar ── */
+  .filter-bar {
+    position: fixed; top: 52px; left: 0; right: 0; z-index: 99;
+    background: rgba(10,10,15,0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex; gap: 8px; align-items: center; justify-content: center;
+  }
+  .filter-btn {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-muted); font-family: var(--mono);
+    font-size: 10px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent-dim); border-color: rgba(201,169,110,0.3); color: var(--accent); }
+  .filter-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+  /* ── Year markers ── */
+  .year-marker {
+    position: relative; padding: 48px 0 24px;
+    display: flex; align-items: center; gap: 16px;
+    max-width: 1000px; margin: 0 auto;
+  }
+  .year-marker::before {
+    content: ''; position: absolute; left: 30px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .year-text {
+    font-family: var(--serif); font-size: 48px; color: rgba(201,169,110,0.12);
+    min-width: 120px; text-align: right; padding-right: 24px; position: relative; z-index: 1;
+  }
+  .year-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── Timeline container ── */
+  .timeline-container {
+    padding-top: 110px; padding-bottom: 80px;
+    position: relative;
+  }
+
+  /* Vertical spine */
+  .timeline-spine {
+    position: absolute; left: calc(50% - 1px); top: 110px; bottom: 80px;
+    width: 2px; background: linear-gradient(180deg, transparent, var(--border) 2%, var(--border) 98%, transparent);
+  }
+
+  /* ── Event cards ── */
+  .event-row {
+    position: relative; max-width: 1100px; margin: 0 auto;
+    padding: 0 24px; display: flex; align-items: flex-start;
+    margin-bottom: 16px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .event-row.visible { opacity: 1; transform: translateY(0); }
+  .event-row.hidden { display: none; }
+
+  /* Alternating sides */
+  .event-row.left { flex-direction: row; }
+  .event-row.right { flex-direction: row-reverse; }
+
+  .event-spacer { flex: 1; }
+
+  /* Dot on spine */
+  .event-dot-wrap {
+    width: 48px; display: flex; align-items: flex-start;
+    justify-content: center; padding-top: 20px; flex-shrink: 0; position: relative; z-index: 2;
+  }
+  .event-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--border); background: var(--bg);
+    transition: all 0.3s; cursor: pointer;
+  }
+  .event-dot.kleiman { border-color: var(--kleiman); }
+  .event-dot.satoshi { border-color: var(--satoshi); }
+  .event-dot.wright { border-color: var(--wright); }
+  .event-dot.context { border-color: var(--context); }
+
+  /* Card */
+  .event-card {
+    flex: 1; max-width: 460px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; cursor: pointer; transition: all 0.3s;
+  }
+  .event-card:hover {
+    border-color: rgba(201,169,110,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .event-card.expanded { max-width: 460px; }
+
+  .card-image-wrap {
+    position: relative; width: 100%; height: 160px; overflow: hidden;
+  }
+  .card-image {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(40%) brightness(0.7);
+    transition: filter 0.4s;
+  }
+  .event-card:hover .card-image { filter: grayscale(0%) brightness(0.85); }
+
+  .card-image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(10,10,15,0.9) 100%);
+  }
+  .card-year-badge {
+    position: absolute; top: 12px; right: 12px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    color: var(--accent); background: rgba(10,10,15,0.8);
+    padding: 3px 10px; border-radius: 3px;
+  }
+  .card-group-badge {
+    position: absolute; top: 12px; left: 12px;
+    font-family: var(--mono); font-size: 9px; letter-spacing: 1px;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 3px;
+  }
+  .card-group-badge.kleiman { color: var(--kleiman); background: rgba(96,165,250,0.12); }
+  .card-group-badge.satoshi { color: var(--satoshi); background: var(--accent-dim); }
+  .card-group-badge.wright { color: var(--wright); background: rgba(239,68,68,0.12); }
+  .card-group-badge.context { color: var(--context); background: rgba(138,136,128,0.12); }
+
+  .card-content { padding: 16px 20px; }
+  .card-headline {
+    font-family: var(--serif); font-size: 18px; font-weight: 400;
+    color: var(--text); line-height: 1.4; margin-bottom: 8px;
+  }
+  .card-text {
+    font-size: 13px; color: var(--text-muted); line-height: 1.6;
+    max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s;
+    opacity: 0;
+  }
+  .event-card.expanded .card-text { max-height: 200px; opacity: 1; }
+  .card-expand-hint {
+    font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+    letter-spacing: 1px; margin-top: 4px; transition: opacity 0.3s;
+  }
+  .event-card.expanded .card-expand-hint { opacity: 0; }
+
+  /* ── Era dividers ── */
+  .era-divider {
+    max-width: 1100px; margin: 48px auto 32px; padding: 0 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .era-divider.hidden { display: none; }
+  .era-line { flex: 1; height: 1px; background: var(--border); }
+  .era-label {
+    font-family: var(--serif); font-size: 14px; font-style: italic;
+    color: var(--text-dim); white-space: nowrap;
+  }
+  .era-year {
+    font-family: var(--mono); font-size: 36px; color: rgba(201,169,110,0.1);
+    min-width: 80px;
+  }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 8px 24px; display: flex; justify-content: center; gap: 32px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--text-dim);
+  }
+  .stat-item span { color: var(--accent); margin-right: 4px; }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(10,10,15,0.95); backdrop-filter: blur(20px);
+    display: none; align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-inner {
+    max-width: 700px; width: 100%;
+  }
+  .lightbox-close {
+    position: absolute; top: 24px; right: 24px;
+    background: none; border: none; color: var(--text-muted);
+    font-size: 24px; cursor: pointer;
+  }
+  .lightbox-image {
+    width: 100%; max-height: 400px; object-fit: cover;
+    border-radius: 6px; margin-bottom: 24px;
+  }
+  .lightbox-headline {
+    font-family: var(--serif); font-size: 28px; color: var(--text);
+    margin-bottom: 8px; line-height: 1.3;
+  }
+  .lightbox-meta {
+    font-family: var(--mono); font-size: 11px; color: var(--text-muted);
+    letter-spacing: 1px; margin-bottom: 16px;
+    display: flex; gap: 12px;
+  }
+  .lightbox-text {
+    font-size: 15px; color: var(--text-muted); line-height: 1.8;
+  }
+
+  /* ── Progress indicator ── */
+  .scroll-progress {
+    position: fixed; top: 52px; left: 0; height: 2px;
+    background: var(--accent); z-index: 101; transition: width 0.1s;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .event-row.left, .event-row.right { flex-direction: column; align-items: flex-start; }
+    .event-spacer { display: none; }
+    .event-dot-wrap { width: 32px; position: absolute; left: 0; }
+    .event-card { max-width: 100%; margin-left: 40px; }
+    .era-year { font-size: 24px; }
+    .timeline-spine { left: 15px; }
+    .card-image-wrap { height: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="tl-header">
+  <div>
+    <span class="tl-logo">The Byzantine General</span>
+  </div>
+  <div class="tl-title-bar">Master Timeline</div>
+  <a href="../index.html" class="tl-back">← Back to site</a>
+</div>
+
+<!-- Scroll progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Filter bar -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All Events</button>
+  <button class="filter-btn" data-filter="Dave Kleiman"><span class="filter-dot" style="background:var(--kleiman)"></span>Kleiman</button>
+  <button class="filter-btn" data-filter="Satoshi / Bitcoin"><span class="filter-dot" style="background:var(--satoshi)"></span>Satoshi</button>
+  <button class="filter-btn" data-filter="Craig Wright"><span class="filter-dot" style="background:var(--wright)"></span>Wright</button>
+  <button class="filter-btn" data-filter="Context"><span class="filter-dot" style="background:var(--context)"></span>Context</button>
+</div>
+
+<!-- Timeline -->
+<div class="timeline-container" id="timelineContainer">
+  <div class="timeline-spine"></div>
+  <!-- Events injected by JS -->
+</div>
+
+<!-- Stats bar -->
+<div class="stats-bar">
+  <div class="stat-item"><span id="eventCount">35</span> events</div>
+  <div class="stat-item"><span>1967</span> — <span>2024</span></div>
+  <div class="stat-item"><span id="visibleCount">35</span> visible</div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <div class="lightbox-inner">
+    <img class="lightbox-image" id="lbImage" src="" alt="">
+    <div class="lightbox-meta">
+      <span id="lbYear"></span>
+      <span id="lbGroup"></span>
+    </div>
+    <h2 class="lightbox-headline" id="lbHeadline"></h2>
+    <p class="lightbox-text" id="lbText"></p>
+  </div>
+</div>
+
+<script>
+const events = [
+  { year: 1967, month: 0, headline: "Dave Kleiman is born and adopted in Florida", text: "Dave Kleiman is born and adopted by a Jewish family in Florida.", image: "https://i.postimg.cc/KzHHGqSk/Dave-Childhood.webp", group: "Dave Kleiman" },
+  { year: 1989, month: 0, headline: "Named US Army Soldier Of The Year", text: "Receives the Army Achievement Medal for \"outstanding results\".", image: "https://i.postimg.cc/XJYDfMcD/DaveArmy.jpg", group: "Dave Kleiman" },
+  { year: 1995, month: 0, headline: "A motorcycle accident leaves him paralyzed", text: "This tragedy marks the beginning of his dedication to cybersecurity.", image: "https://i.postimg.cc/Jnxzr7Jn/wheelchair.jpg", group: "Dave Kleiman" },
+  { year: 2000, month: 0, headline: "A Decade in Cybersecurity & Cryptography", text: "Kleiman develops encryption systems used by NASA, the DoD, and major U.S. agencies.", image: "https://i.postimg.cc/d1CnmqZ6/NASA-med.jpg", group: "Dave Kleiman" },
+  { year: 2003, month: 0, headline: "Active in cryptographic circles before Bitcoin emerges", text: "Posts on Metzdowd cryptography mailing list shortly after Adam Back.", image: "https://i.postimg.cc/QN4Vkps6/756-F49-F2-00-A8-4-EAE-B23-F-A2-AD880-CCA4-B.jpg", group: "Dave Kleiman" },
+  { year: 2003, month: 0, headline: "Authors a series of cybersecurity books", text: "First known formal collaboration with Craig Wright.", image: "https://i.postimg.cc/FzRzXKbg/9-C9-F12-E0-CBF2-40-B6-8-A1-A-98-F07315-B842-4-5005-c.jpg", group: "Dave Kleiman" },
+  { year: 2008, month: 10, headline: "Whitepaper Released", text: "Satoshi posts Bitcoin whitepaper to cryptography mailing list on October 31st.", image: "https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2009, month: 1, headline: "Bitcoin v0.1 Released", text: "First version of Bitcoin software released on January 8th.", image: "https://i.postimg.cc/qvrWZBTH/9-C1-E5-F58-C488-424-E-8-FC5-44-AE8-B4-D9-CC3.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2010, month: 12, headline: "Hospitalized as health deteriorates", text: "From the end of 2010, Dave spends most of his time in a military hospital.", image: "https://i.postimg.cc/zX4B48yK/hospital.jpg", group: "Dave Kleiman" },
+  { year: 2010, month: 12, headline: "WikiLeaks Accepts Bitcoin", text: "Satoshi warns WikiLeaks has 'kicked the hornet\u2019s nest'; urges community not to draw attention.", image: "https://i.postimg.cc/4NsrWNZk/7-D84-E738-9-DF0-479-B-8068-74-D266-FAC901.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2010, month: 12, headline: "Satoshi\u2019s Last Forum Post", text: "Final known public forum message from Satoshi, one day after the WikiLeaks involvement.", image: "https://i.postimg.cc/4NsrWNZk/7-D84-E738-9-DF0-479-B-8068-74-D266-FAC901.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2011, month: 0, headline: "Registers W&K Info Defense in Florida", text: "W&K's main function is to develop software and file crypto-related intellectual property.", image: "https://i.postimg.cc/fRz6DgJC/Blockchain-Technology.jpg", group: "Dave Kleiman" },
+  { year: 2011, month: 4, headline: "Gavin Andresen Email", text: "Satoshi tells Gavin: \u2018I wish you wouldn\u2019t keep talking about me as a mysterious shadowy figure.\u2019", image: "https://i.postimg.cc/fTs3zFnj/Gavin-CIA.jpg", group: "Context" },
+  { year: 2013, month: 3, headline: "Dorian Nakamoto Named", text: "Newsweek incorrectly identifies Dorian Nakamoto as Satoshi; media frenzy ensues.", image: "https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2013, month: 3, headline: "Andreas Fundraises for Dorian", text: "Antonopoulos apologizes and fundraises $17k for the wrongly identified Dorian Nakamoto.", image: "https://i.postimg.cc/6Qs6cjV1/dorian-Andreas.jpg", group: "Context" },
+  { year: 2013, month: 4, headline: "Dave Kleiman passes away", text: "Dave dies from a combination of bacterial infection and overdose, found alone at home.", image: "https://i.postimg.cc/Qt71MTmb/military-cemetery.jpg", group: "Dave Kleiman" },
+  { year: 2014, month: 2, headline: "Craig Wright tells Dave\u2019s family he co-created Bitcoin", text: "\u2018Your son and I were two of the three key people behind Bitcoin.\u2019", image: "https://i.postimg.cc/zfRhLfG3/52-C0150-A-804-F-4118-BE23-213-D13214-CAD.jpg", group: "Dave Kleiman" },
+  { year: 2014, month: 2, headline: "Craig Wright Emails Louis Kleiman", text: "Wright contacts Dave\u2019s father just days before his ATO hearing, revealing awareness of imminent scrutiny.", image: "https://i.postimg.cc/zfRhLfG3/52-C0150-A-804-F-4118-BE23-213-D13214-CAD.jpg", group: "Dave Kleiman" },
+  { year: 2014, month: 2, headline: "The ATO Investigates Craig Wright", text: "Craig Wright reports during an ATO hearing that he has been mining Bitcoin since 2009.", image: "https://i.postimg.cc/gcHvZXNw/Whats-App-Image-2025-04-11-at-12-45-06.jpg", group: "Craig Wright" },
+  { year: 2015, month: 5, headline: "Silk Road Founder Sentenced to Life", text: "Ross Ulbricht receives a life sentence. Bitcoin\u2019s association with dark markets intensifies.", image: "https://i.postimg.cc/fTHMGgwb/Ross-Jail.jpg", group: "Craig Wright" },
+  { year: 2015, month: 12, headline: "Emails Leaked; Wright Identified as Satoshi", text: "Gizmodo and Wired publish leaked documents alleging Craig Wright is Satoshi. Wright flees Australia.", image: "https://i.postimg.cc/zXwGxK9N/Craig-Wright-Gizmodo.jpg", group: "Craig Wright" },
+  { year: 2015, month: 12, headline: "AFP Raids Wright\u2019s Home", text: "Australian Federal Police raid Craig Wright\u2019s home and office in connection to a tax investigation.", image: "https://i.postimg.cc/m2fKDvwD/Craig-Wright-Police-Raid.jpg", group: "Craig Wright" },
+  { year: 2016, month: 3, headline: "Craig Wright Links Up With Calvin Ayre", text: "Wright negotiates a deal with Calvin Ayre to commercialize Bitcoin-related IP and escape legal pressure.", image: "https://i.postimg.cc/gkz1VpDs/18-F534-CD-F4-AB-4-C9-D-B778-DEBCE6845122.jpg", group: "Craig Wright" },
+  { year: 2016, month: 4, headline: "Gavin Andresen Verifies Craig Wright", text: "Gavin privately witnesses Craig Wright signing with early Bitcoin keys. He confirms publicly: \u2018I believe Craig Wright is Satoshi Nakamoto.\u2019", image: "https://i.postimg.cc/15YfGzVM/Gavin-Andresen.jpg", group: "Craig Wright" },
+  { year: 2016, month: 4, headline: "Private Verification Session", text: "Craig signs Bitcoin block keys in private with Gavin Andresen at a London hotel.", image: "https://i.postimg.cc/15YfGzVM/Gavin-Andresen.jpg", group: "Craig Wright" },
+  { year: 2016, month: 5, headline: "Consensus Conference", text: "Gavin declares Craig is Satoshi at the conference. Vitalik denounces him using signaling theory.", image: "https://i.postimg.cc/T133m8RZ/Screenshot-2025-04-06-https://i.postimg.cc/bYmJPvg8/A416-ADEA-BA50-4-F0-A-A2-A7-E2-BB4-F4-E4-FD9.jpg", group: "Craig Wright" },
+  { year: 2016, month: 5, headline: "BBC Public Appearance", text: "Craig Wright refuses to use private keys publicly. The proof falls flat. Community backlash follows.", image: "https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg", group: "Satoshi / Bitcoin" },
+  { year: 2016, month: 5, headline: "Uyen\u2019s TulipBoy Tweets", text: "Wright\u2019s assistant tweets that the name Satoshi came from a character in \u2018The House of Morgan.\u2019", image: "https://i.postimg.cc/bYmJPvg8/A416-ADEA-BA50-4-F0-A-A2-A7-E2-BB4-F4-E4-FD9.jpg", group: "Craig Wright" },
+  { year: 2018, month: 4, headline: "Vitalik Calls Craig Wright a Fraud", text: "At the Deconomy conference in Seoul, Vitalik Buterin publicly calls Craig Wright a fraud.", image: "https://i.postimg.cc/SQ3CfsQ7/Deconomy-conference.jpg", group: "Craig Wright" },
+  { year: 2018, month: 11, headline: "Bitcoin Wars: Launch of BSV", text: "Craig Wright launches Bitcoin Satoshi Vision (BSV), backed by Calvin Ayre, splitting from Bitcoin Cash.", image: "https://i.postimg.cc/t4t6bN32/Craig-BSV.jpg", group: "Craig Wright" },
+  { year: 2019, month: 4, headline: "Binance Delists BSV", text: "Binance delists Bitcoin SV. CEO CZ publicly calls Craig Wright a fraud.", image: "https://i.postimg.cc/BvmmCKvQ/image.jpg", group: "Craig Wright" },
+  { year: 2020, month: 4, headline: "Craig Wright Libel Lawsuits", text: "Craig Wright launches a series of libel lawsuits against Vitalik Buterin and other critics.", image: "https://i.postimg.cc/t4yDQ5Z4/vitalik-Craig.jpg", group: "Craig Wright" },
+  { year: 2021, month: 12, headline: "Kleiman Estate Wins $100M", text: "Florida jury awards $100M to Dave\u2019s estate for Bitcoin IP co-development.", image: "https://i.postimg.cc/wMm8St4m/court.jpg", group: "Dave Kleiman" },
+  { year: 2023, month: 10, headline: "Hodlonaut Wins Defamation Case", text: "Hodlonaut wins a defamation lawsuit against Craig Wright in Norway.", image: "https://i.postimg.cc/hGtrht0F/Hodlonaut-law-suit.jpg", group: "Craig Wright" },
+  { year: 2024, month: 3, headline: "UK Court Rules Wright Is Not Satoshi", text: "The UK High Court concludes Craig Wright is not Satoshi Nakamoto, finding that Wright forged documents on a grand scale.", image: "https://i.postimg.cc/rsny2nsv/Craig-Wright-Copa.jpg", group: "Craig Wright" },
+];
+
+const groupClass = g => {
+  if (g.includes('Kleiman')) return 'kleiman';
+  if (g.includes('Satoshi')) return 'satoshi';
+  if (g.includes('Wright')) return 'wright';
+  return 'context';
+};
+
+const container = document.getElementById('timelineContainer');
+let lastYear = null;
+let side = 0;
+
+// Build timeline
+events.forEach((evt, i) => {
+  // Era divider for new year groups
+  if (evt.year !== lastYear) {
+    const era = document.createElement('div');
+    era.className = 'era-divider';
+    era.dataset.years = evt.year;
+    era.innerHTML = `
+      <span class="era-year">${evt.year}</span>
+      <div class="era-line"></div>
+    `;
+    container.appendChild(era);
+    lastYear = evt.year;
+  }
+
+  const gc = groupClass(evt.group);
+  const direction = side % 2 === 0 ? 'left' : 'right';
+  side++;
+
+  const row = document.createElement('div');
+  row.className = `event-row ${direction}`;
+  row.dataset.group = evt.group;
+  row.dataset.index = i;
+
+  row.innerHTML = `
+    <div class="event-card" onclick="toggleCard(this, ${i})">
+      <div class="card-image-wrap">
+        <img class="card-image" src="${evt.image}" alt="${evt.headline}" loading="lazy">
+        <div class="card-image-overlay"></div>
+        <span class="card-year-badge">${evt.year}${evt.month ? '.' + String(evt.month).padStart(2,'0') : ''}</span>
+        <span class="card-group-badge ${gc}">${evt.group}</span>
+      </div>
+      <div class="card-content">
+        <h3 class="card-headline">${evt.headline}</h3>
+        <div class="card-expand-hint">Click to expand</div>
+        <p class="card-text">${evt.text}</p>
+      </div>
+    </div>
+    <div class="event-dot-wrap">
+      <div class="event-dot ${gc}" onclick="openLightbox(${i})"></div>
+    </div>
+    <div class="event-spacer"></div>
+  `;
+
+  container.appendChild(row);
+});
+
+// Toggle card expand
+function toggleCard(card, idx) {
+  card.classList.toggle('expanded');
+}
+
+// Lightbox
+function openLightbox(idx) {
+  const evt = events[idx];
+  document.getElementById('lbImage').src = evt.image;
+  document.getElementById('lbHeadline').textContent = evt.headline;
+  document.getElementById('lbYear').textContent = evt.year;
+  document.getElementById('lbGroup').textContent = evt.group;
+  document.getElementById('lbText').textContent = evt.text;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    let visible = 0;
+    document.querySelectorAll('.event-row').forEach(row => {
+      const show = filter === 'all' || row.dataset.group === filter;
+      row.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    // Also show/hide era dividers
+    document.querySelectorAll('.era-divider').forEach(era => {
+      if (filter === 'all') { era.classList.remove('hidden'); return; }
+      const year = era.dataset.years;
+      const hasVisible = Array.from(document.querySelectorAll(`.event-row[data-group="${filter}"]`))
+        .some(r => !r.classList.contains('hidden') && events[r.dataset.index].year == year);
+      era.classList.toggle('hidden', !hasVisible);
+    });
+    document.getElementById('visibleCount').textContent = visible;
+  });
+});
+
+// Scroll-triggered fade-in
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.event-row').forEach(row => observer.observe(row));
+
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+  document.getElementById('scrollProgress').style.width = (scrolled * 100) + '%';
+});
+</script>
+</body>
+</html>
