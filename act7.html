@@ -3766,225 +3766,229 @@
 </script>
 
 <script>
+<script>
 /**
  * Link Preview Hover Cards — The Byzantine General
  *
  * Drop this script into any act page to enable hover previews
  * on external hyperlinks. Desktop only (no hover on mobile).
  *
+ * Usage: <script src="link-previews.js" defer></script>
  */
 
 (function() {
   'use strict';
 
-  // ── Preview data: URL → { title, description, source, image } ──
-  // image is optional — falls back to a favicon/domain icon
+  // ── Preview data: URL → { title, description, source } ──
   const previews = {
 
     // ═══ ACT 1 ═══
     "https://bitcoinmagazine.com/culture/bitcoin-adam-back-and-digital-cash": {
       title: "The Cypherpunk Movement & Digital Cash",
       description: "How Adam Back, David Chaum, and a generation of cryptographers laid the groundwork for Bitcoin through decades of experimentation with digital money.",
-      source: "Bitcoin Magazine",
-      image: "https://i.postimg.cc/QN4Vkps6/756-F49-F2-00-A8-4-EAE-B23-F-A2-AD880-CCA4-B.jpg"
+      source: "Bitcoin Magazine"
     },
     "https://www.bitstamp.net/learn/crypto-101/what-is-the-byzantine-generals-problem/": {
       title: "The Byzantine Generals Problem",
-      description: "A foundational computer science problem about achieving consensus among distributed parties who cannot trust each other \u2014 the core challenge Bitcoin solves.",
-      source: "Bitstamp",
-      image: "https://i.postimg.cc/fRz6DgJC/Blockchain-Technology.jpg"
+      description: "A foundational computer science problem about achieving consensus among distributed parties who cannot trust each other — the core challenge Bitcoin solves.",
+      source: "Bitstamp"
     },
     "http://www.weidai.com/bmoney.txt": {
-      title: "B-Money: Wei Dai\u2019s Original Proposal",
-      description: "The 1998 proposal for an anonymous, distributed electronic cash system. One of Bitcoin\u2019s direct precursors, cited in the whitepaper.",
-      source: "Wei Dai",
-      image: "https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg"
+      title: "B-Money: Wei Dai's Original Proposal",
+      description: "The 1998 proposal for an anonymous, distributed electronic cash system. One of Bitcoin's direct precursors, cited in the whitepaper.",
+      source: "Wei Dai"
     },
     "https://cypherpunks.venona.com/date/1997/03/msg00774.html": {
-      title: "Adam Back\u2019s HashCash Proposal",
-      description: "The 1997 cypherpunk mailing list post introducing HashCash, a proof-of-work system that became the basis for Bitcoin\u2019s mining mechanism.",
-      source: "Cypherpunks Mailing List",
-      image: "https://i.postimg.cc/QN4Vkps6/756-F49-F2-00-A8-4-EAE-B23-F-A2-AD880-CCA4-B.jpg"
+      title: "Adam Back's HashCash Proposal",
+      description: "The 1997 cypherpunk mailing list post introducing HashCash, a proof-of-work system that became the basis for Bitcoin's mining mechanism.",
+      source: "Cypherpunks Mailing List"
     },
     "https://www.investing.com/news/cryptocurrency-news/satoshi-nakamoto-bitcoin-whitepaper-turns-16-on-this-date-details-3694895": {
       title: "Bitcoin Whitepaper Turns 16",
-      description: "On October 31, 2008, Satoshi Nakamoto published \u2018Bitcoin: A Peer-to-Peer Electronic Cash System\u2019 to the cryptography mailing list.",
-      source: "Investing.com",
-      image: "https://i.postimg.cc/1XLJFB9Z/Bitcoin-Whitepaper.jpg"
+      description: "On October 31, 2008, Satoshi Nakamoto published 'Bitcoin: A Peer-to-Peer Electronic Cash System' to the cryptography mailing list.",
+      source: "Investing.com"
     },
     "https://satoshi.nakamotoinstitute.org/emails/cryptography/16/": {
-      title: "Satoshi\u2019s Email: The Genesis Block",
-      description: "Satoshi\u2019s correspondence on the cryptography mailing list around the time the first Bitcoin block was mined on January 3, 2009.",
-      source: "Nakamoto Institute",
-      image: "https://i.postimg.cc/qvrWZBTH/9-C1-E5-F58-C488-424-E-8-FC5-44-AE8-B4-D9-CC3.jpg"
+      title: "Satoshi's Email: The Genesis Block",
+      description: "Satoshi's correspondence on the cryptography mailing list around the time the first Bitcoin block was mined on January 3, 2009.",
+      source: "Nakamoto Institute"
     },
     "https://www.reuters.com/article/technology/fbi-shuts-alleged-online-drug-marketplace-silk-road-idUSBRE9910TR/": {
       title: "FBI Shuts Down Silk Road",
       description: "The FBI seizes the Silk Road online marketplace and arrests its founder Ross Ulbricht, bringing Bitcoin into mainstream awareness through its association with illicit trade.",
-      source: "Reuters",
-      image: "https://i.postimg.cc/fTHMGgwb/Ross-Jail.jpg"
+      source: "Reuters"
     },
     "https://www.theguardian.com/technology/2014/mar/07/satoshi-nakamoto-denies-inventing-bitcoin": {
-      title: "Dorian Nakamoto Denies Being Bitcoin\u2019s Creator",
-      description: "After Newsweek identified Dorian Satoshi Nakamoto as Bitcoin\u2019s creator, the 64-year-old California man firmly denied any involvement.",
-      source: "The Guardian",
-      image: "https://i.postimg.cc/9FyQ7fp6/Satoshi-Nakamoto-surround-016.jpg"
+      title: "Dorian Nakamoto Denies Being Bitcoin's Creator",
+      description: "After Newsweek identified Dorian Satoshi Nakamoto as Bitcoin's creator, the 64-year-old California man firmly denied any involvement.",
+      source: "The Guardian"
     },
     "https://www.bbc.com/news/technology-36168863": {
       title: "Craig Wright Claims to Be Bitcoin Creator",
       description: "Australian entrepreneur Craig Wright publicly claims to be Satoshi Nakamoto in a BBC interview, but fails to provide conclusive cryptographic proof.",
-      source: "BBC News",
-      image: "https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg"
+      source: "BBC News"
+    },
+    "https://bitcointalk.org/index.php?topic=5299346.0": {
+      title: "Satoshi Nakamoto's Final Public Post",
+      description: "The last message posted by Satoshi on BitcoinTalk, dated December 12, 2010 — after which Bitcoin's creator vanished from public forums forever.",
+      source: "BitcoinTalk"
+    },
+    "https://riski.wiki/wiki/User:Gavinandresen/Blog/2022-04-26_Eleven_years_ago_today%E2%80%A6": {
+      title: "Satoshi's Last Private Email",
+      description: "Gavin Andresen recounts the final email exchange with Satoshi on April 26, 2011: 'I wish you wouldn't keep talking about me as a mysterious shadowy figure.'",
+      source: "Riski Wiki / Gavin Andresen"
     },
 
     // ═══ ACT 2 ═══
     "https://bitcoinmagazine.com/industry-events/vitalik-buterin-and-joseph-poon-call-out-craig-wright-deconomy-2018": {
       title: "Vitalik Buterin Calls Craig Wright a Fraud",
-      description: "At the Deconomy 2018 conference in Seoul, Ethereum founder Vitalik Buterin publicly challenges Craig Wright\u2019s Satoshi claim using signaling theory.",
-      source: "Bitcoin Magazine",
-      image: "https://i.postimg.cc/SQ3CfsQ7/Deconomy-conference.jpg"
+      description: "At the Deconomy 2018 conference in Seoul, Ethereum founder Vitalik Buterin publicly challenges Craig Wright's Satoshi claim using signaling theory.",
+      source: "Bitcoin Magazine"
     },
     "https://www.coindesk.com/markets/2019/04/15/binance-delists-bitcoin-sv-ceo-calls-craig-wright-a-fraud": {
       title: "Binance Delists Bitcoin SV",
       description: "Binance CEO Changpeng Zhao removes Bitcoin SV from the exchange and publicly calls Craig Wright a fraud, triggering other exchanges to follow.",
-      source: "CoinDesk",
-      image: "https://i.postimg.cc/BvmmCKvQ/image.jpg"
+      source: "CoinDesk"
     },
     "https://decrypt.co/25906/craig-wright-abandons-libel-lawsuit-against-vitalik-buterin": {
       title: "Wright Abandons Libel Lawsuit Against Buterin",
       description: "Craig Wright drops his libel case against Vitalik Buterin after pursuing legal action against multiple critics who questioned his Satoshi claim.",
-      source: "Decrypt",
-      image: "https://i.postimg.cc/t4yDQ5Z4/vitalik-Craig.jpg"
+      source: "Decrypt"
     },
     "https://bitcoinmagazine.com/legal/hodlonaut-wins-defamation-case-against-craig-wright": {
       title: "Hodlonaut Wins Defamation Case",
       description: "A Norwegian court rules in favor of pseudonymous Bitcoiner Hodlonaut, finding that calling Craig Wright a fraud was justified and protected speech.",
-      source: "Bitcoin Magazine",
-      image: "https://i.postimg.cc/hGtrht0F/Hodlonaut-law-suit.jpg"
+      source: "Bitcoin Magazine"
     },
     "https://www.theguardian.com/technology/2024/mar/14/australian-craig-wright-not-bitcoin-creator-satoshi-nakamoto-high-court-rules": {
       title: "UK High Court: Wright Is Not Satoshi",
       description: "The UK High Court concludes that Craig Wright is not Satoshi Nakamoto, finding he forged documents on a grand scale to support his claim.",
-      source: "The Guardian",
-      image: "https://i.postimg.cc/rsny2nsv/Craig-Wright-Copa.jpg"
+      source: "The Guardian"
+    },
+    "https://coingeek.com/hash-war-continues-craig-wright-takes-care-business/": {
+      title: "Bitcoin Satoshi Vision (BSV) — The Hash War",
+      description: "Craig Wright launches Bitcoin SV in November 2018, forking from Bitcoin Cash and claiming to restore Satoshi's original protocol. The ensuing 'hash war' divides the community.",
+      source: "CoinGeek"
     },
 
     // ═══ ACT 3 ═══
     "https://gizmodo.com/gavin-andresen-i-was-not-hacked-and-i-believe-craig-w-1774226431": {
-      title: "Gavin Andresen: \u2018I Believe Craig Wright Is Satoshi\u2019",
-      description: "After a private signing session in London, Bitcoin\u2019s lead developer Gavin Andresen publicly vouches for Craig Wright, a declaration that would cost him his reputation.",
-      source: "Gizmodo",
-      image: "https://i.postimg.cc/15YfGzVM/Gavin-Andresen.jpg"
+      title: "Gavin Andresen: 'I Believe Craig Wright Is Satoshi'",
+      description: "After a private signing session in London, Bitcoin's lead developer Gavin Andresen publicly vouches for Craig Wright, a declaration that would cost him his reputation.",
+      source: "Gizmodo"
     },
     "https://web.archive.org/web/20250824133528/https://gavinandresen.ninja/satoshi": {
-      title: "Gavin\u2019s Blog: \u2018Satoshi\u2019",
-      description: "Gavin Andresen\u2019s personal blog post recounting his experience verifying Craig Wright\u2019s identity claim and the aftermath.",
-      source: "gavinandresen.ninja (archived)",
-      image: "https://i.postimg.cc/15YfGzVM/Gavin-Andresen.jpg"
+      title: "Gavin's Blog: 'Satoshi'",
+      description: "Gavin Andresen's personal blog post recounting his experience verifying Craig Wright's identity claim and the aftermath.",
+      source: "gavinandresen.ninja (archived)"
     },
     "https://www.youtube.com/watch?v=2qLI3VIHuKU": {
       title: "The 2016 BBC Proof Session",
       description: "The BBC interview where Craig Wright attempts to publicly prove he is Satoshi Nakamoto but fails to provide a convincing cryptographic demonstration.",
-      source: "YouTube / BBC",
-      image: "https://i.postimg.cc/PqJH2fWr/Craig-BBC.jpg"
+      source: "YouTube / BBC"
     },
 
     // ═══ ACT 4 ═══
     "https://www.theguardian.com/technology/2015/may/29/silk-road-ross-ulbricht-sentenced": {
       title: "Ross Ulbricht Sentenced to Life in Prison",
       description: "Silk Road founder Ross Ulbricht receives a life sentence without parole, the harshest punishment for a non-violent cyber crime at the time.",
-      source: "The Guardian",
-      image: "https://i.postimg.cc/fTHMGgwb/Ross-Jail.jpg"
+      source: "The Guardian"
     },
     "https://www.justice.gov/usao-sdny/pr/liberty-reserve-founder-arthur-budovsky-sentenced-manhattan-federal-court-20-years": {
       title: "Liberty Reserve Founder Sentenced to 20 Years",
       description: "Arthur Budovsky, founder of the Liberty Reserve digital currency platform, sentenced for laundering over $6 billion through 55 million transactions.",
-      source: "U.S. Department of Justice",
-      image: "https://i.postimg.cc/fRz6DgJC/Blockchain-Technology.jpg"
+      source: "U.S. Department of Justice"
+    },
+    "https://embed.documentcloud.org/documents/2644012-20140218-Transcript-Redacted/?embed=1": {
+      title: "ATO Transcript — Craig Wright Investigation",
+      description: "Redacted transcript from the Australian Tax Office's 2014 investigation into Craig Wright's R&D tax rebate claims linked to Bitcoin and cryptocurrency IP.",
+      source: "DocumentCloud"
+    },
+    "https://gizmodo.com/reports-police-raid-home-of-possible-bitcoin-creator-c-1747025289": {
+      title: "AFP Raids Craig Wright's Home and Offices",
+      description: "Hours after Gizmodo and Wired identify Craig Wright as a possible Bitcoin creator, Australian Federal Police raid his Sydney home and offices.",
+      source: "Gizmodo"
+    },
+    "https://www.wired.com/2015/12/bitcoins-creator-satoshi-nakamoto-is-probably-this-unknown-australian-genius/": {
+      title: "Wired: Bitcoin's Creator Is This Australian Genius",
+      description: "Wired's December 2015 investigation publishing leaked documents that point to Craig Wright as the likely creator of Bitcoin.",
+      source: "Wired"
+    },
+    "https://www.lrb.co.uk/the-paper/v38/n13/andrew-o-hagan/the-satoshi-affair": {
+      title: "The Satoshi Affair — Andrew O'Hagan",
+      description: "A long-form account by Andrew O'Hagan of his time embedded with Craig Wright, Calvin Ayre, and the team attempting to prove Wright is Satoshi Nakamoto.",
+      source: "London Review of Books"
     },
 
     // ═══ ACT 5 ═══
     "https://lustrous-paletas-82011f.netlify.app/": {
       title: "3D Map of Satoshi-Related YouTube Content",
-      description: "An interactive 3D visualization mapping the landscape of YouTube videos discussing Satoshi Nakamoto\u2019s identity, showing clusters of theories and discourse.",
-      source: "The Byzantine General",
-      image: "https://i.postimg.cc/fRz6DgJC/Blockchain-Technology.jpg"
+      description: "An interactive 3D visualization mapping the landscape of YouTube videos discussing Satoshi Nakamoto's identity, showing clusters of theories and discourse.",
+      source: "The Byzantine General"
     },
     "https://www.courtlistener.com/docket/6309656/1/20/kleiman-v-wright/": {
-      title: "Kleiman v. Wright \u2014 Court Filing",
+      title: "Kleiman v. Wright — Court Filing",
       description: "Court documents from the Kleiman estate lawsuit against Craig Wright, including the claim that Dave Kleiman co-created Bitcoin.",
-      source: "CourtListener",
-      image: "https://i.postimg.cc/wMm8St4m/court.jpg"
+      source: "CourtListener"
     },
 
     // ═══ ACT 6 ═══
     "https://crypto.marketswiki.com/index.php?title=David_Kleiman": {
-      title: "David Kleiman \u2014 Profile",
-      description: "Biographical profile of Dave Kleiman, covering his military service, cybersecurity career, and alleged involvement in Bitcoin\u2019s creation.",
-      source: "MarketWiki",
-      image: "https://i.postimg.cc/KzHHGqSk/Dave-Childhood.webp"
+      title: "David Kleiman — Profile",
+      description: "Biographical profile of Dave Kleiman, covering his military service, cybersecurity career, and alleged involvement in Bitcoin's creation.",
+      source: "MarketWiki"
     },
     "https://davekleiman.com/": {
-      title: "Dave Kleiman Memorial Site",
-      description: "A memorial website dedicated to Dave Kleiman, documenting his life, career in computer forensics, and the motorcycle accident that left him paralyzed.",
-      source: "davekleiman.com",
-      image: "https://i.postimg.cc/Jnxzr7Jn/wheelchair.jpg"
+      title: "Dave Kleiman (1967–2013)",
+      description: "In 1995, a devastating motorcycle accident left Dave Kleiman paralyzed and confined to a wheelchair. Rather than retreat, he dedicated himself to cybersecurity and encryption.",
+      source: "davekleiman.com"
     },
     "http://archive.vn/Gtpvb": {
-      title: "Kleiman\u2019s Work for NASA & DoD",
-      description: "Archived evidence of Dave Kleiman\u2019s development of cryptographic tools for NASA and the Department of Defense during the early 2000s.",
-      source: "Archive.today",
-      image: "https://i.postimg.cc/d1CnmqZ6/NASA-med.jpg"
+      title: "Kleiman's Work for NASA & DoD",
+      description: "Archived evidence of Dave Kleiman's development of cryptographic tools for NASA and the Department of Defense during the early 2000s.",
+      source: "Archive.today"
     },
     "https://coingeek.com/dave-kleiman-likely-too-sick-to-be-satoshi-nakamoto-medical-expert-tells-kleiman-vs-wright-jury/": {
-      title: "Medical Expert: Kleiman Too Sick to Be Satoshi",
-      description: "During the Kleiman v. Wright trial, a medical expert testifies that Dave Kleiman\u2019s declining health made it unlikely he could have been actively involved in Bitcoin\u2019s development.",
-      source: "CoinGeek",
-      image: "https://i.postimg.cc/zX4B48yK/hospital.jpg"
+      title: "Dave Kleiman's Hospitalization and Declining Health",
+      description: "In late 2010, Dave Kleiman was admitted to a VA hospital for life-threatening infections caused by prolonged immobility. His health continued to deteriorate until his death in 2013.",
+      source: "CoinGeek"
     },
     "https://www.govinfo.gov/app/details/USCOURTS-flsd-9_18-cv-80176/context": {
-      title: "W&K Info Defense Research LLC \u2014 Court Records",
+      title: "W&K Info Defense Research LLC — Court Records",
       description: "Official U.S. court records for the case involving W&K Info Defense Research, the Florida company registered by Dave Kleiman for crypto-related IP.",
-      source: "GovInfo",
-      image: "https://i.postimg.cc/wMm8St4m/court.jpg"
+      source: "GovInfo"
     },
     "https://modernconsensus.com/cryptocurrencies/bitcoin/exclusive-cocaine-booze-benzos-and-bullets-the-strange-death-of-the-man-craig-wright-says-helped-him-create-bitcoin/": {
       title: "The Strange Death of Dave Kleiman",
-      description: "An investigation into the circumstances of Dave Kleiman\u2019s death in April 2013 \u2014 found alone at home from a combination of bacterial infection and overdose.",
-      source: "Modern Consensus",
-      image: "https://i.postimg.cc/Qt71MTmb/military-cemetery.jpg"
+      description: "An investigation into the circumstances of Dave Kleiman's death in April 2013 — found alone at home from a combination of bacterial infection and overdose.",
+      source: "Modern Consensus"
     },
     "https://www.aljazeera.com/economy/2021/12/6/self-described-bitcoin-inventor-ordered-to-pay-100m-in-damages": {
       title: "Kleiman Estate Awarded $100 Million",
       description: "A Florida jury orders Craig Wright to pay $100 million in damages to the Kleiman estate for misappropriating intellectual property related to Bitcoin.",
-      source: "Al Jazeera",
-      image: "https://i.postimg.cc/wMm8St4m/court.jpg"
+      source: "Al Jazeera"
     },
 
     // ═══ ACT 7 ═══
     "https://mathshistory.st-andrews.ac.uk/Biographies/Rees_David/": {
-      title: "David Rees \u2014 Mathematician Biography",
+      title: "David Rees — Mathematician Biography",
       description: "The biography of David Rees, the mathematician whose name appears in connection with the broader Satoshi investigation narrative.",
-      source: "St Andrews University",
-      image: "https://i.postimg.cc/fRz6DgJC/Blockchain-Technology.jpg"
+      source: "St Andrews University"
     },
     "https://coingeek.com/coingeek-conversations/ian-grigg-how-i-learnt-the-full-story-of-satoshi-nakamoto-coingeek-conversations/": {
       title: "Ian Grigg: The Full Story of Satoshi Nakamoto",
       description: "Cryptographer Ian Grigg discusses his relationship with Craig Wright and how he came to understand the creation story of Bitcoin in this CoinGeek podcast.",
-      source: "CoinGeek Conversations",
-      image: "https://i.postimg.cc/pT8XZXtn/24941-D08-DE74-4-BDD-95-B6-CF24-D1-DCE225.jpg"
+      source: "CoinGeek Conversations"
     },
     "https://web.archive.org/web/20160508181815/https://twitter.com/dr_craig_wright": {
-      title: "Craig Wright\u2019s Archived Twitter Profile",
-      description: "A 2016 snapshot of Craig Wright\u2019s Twitter account captured before key posts were deleted, preserved by the Wayback Machine.",
-      source: "Web Archive / Twitter",
-      image: "https://i.postimg.cc/zXwGxK9N/Craig-Wright-Gizmodo.jpg"
+      title: "Craig Wright's Archived Twitter Profile",
+      description: "A 2016 snapshot of Craig Wright's Twitter account captured before key posts were deleted, preserved by the Wayback Machine.",
+      source: "Web Archive / Twitter"
     },
     "https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResultDetail?inquirytype=EntityName&directionType=Initial&searchNameOrder=WKINFODEFENSERESEARCH%20L110000199040&aggregateId=flal-l11000019904-dce79b55-176a-4442-93a7-3c8896316aa2&searchTerm=W%26K%20Info%20&listNameOrder=WKINFODEFENSERESEARCH%20L110000199040": {
-      title: "W&K Info Defense Research \u2014 Florida Filing",
+      title: "W&K Info Defense Research — Florida Filing",
       description: "Official Florida Division of Corporations filing for W&K Info Defense Research LLC, the company registered by Dave Kleiman in 2011.",
-      source: "Sunbiz.org",
-      image: "https://i.postimg.cc/fRz6DgJC/Blockchain-Technology.jpg"
+      source: "Sunbiz.org"
     }
   };
 
@@ -4013,7 +4017,6 @@
     tooltip.id = 'link-preview-tooltip';
     tooltip.innerHTML = `
       <div class="lp-inner">
-        <img class="lp-image" src="" alt="">
         <div class="lp-content">
           <div class="lp-title"></div>
           <div class="lp-desc"></div>
@@ -4051,33 +4054,22 @@
         display: flex;
         flex-direction: column;
       }
-      .lp-image {
-        width: 100%;
-        height: 120px;
-        object-fit: cover;
-        display: block;
-        filter: brightness(0.8);
-      }
-      .lp-image[src=""], .lp-image:not([src]) {
-        display: none;
-      }
       .lp-content {
-        padding: 12px 14px;
+        padding: 14px 16px;
       }
       .lp-title {
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 600;
         color: #e8e6e1;
         line-height: 1.35;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 16px;
       }
       .lp-desc {
-        font-size: 12px;
+        font-size: 12.5px;
         color: #8a8880;
-        line-height: 1.5;
-        margin-bottom: 8px;
+        line-height: 1.55;
+        margin-bottom: 10px;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
@@ -4103,20 +4095,12 @@
     tooltip.querySelector('.lp-desc').textContent = data.description;
     tooltip.querySelector('.lp-source').textContent = data.source;
 
-    const img = tooltip.querySelector('.lp-image');
-    if (data.image) {
-      img.src = data.image;
-      img.style.display = 'block';
-    } else {
-      img.style.display = 'none';
-    }
-
     // Position near the link
     const rect = link.getBoundingClientRect();
     const vpW = window.innerWidth;
     const vpH = window.innerHeight;
     const tW = 320;
-    const tH = data.image ? 260 : 140;
+    const tH = 140;
 
     let left = rect.left + rect.width / 2 - tW / 2;
     let top = rect.bottom + 10;
