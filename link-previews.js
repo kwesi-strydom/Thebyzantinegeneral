@@ -1,10 +1,7 @@
 /**
  * Link Preview Hover Cards — The Byzantine General
  *
- * Drop this script into any act page to enable hover previews
- * on external hyperlinks. Desktop only (no hover on mobile).
- *
- * Usage: <script src="link-previews.js" defer></script>
+ * Hover previews on external hyperlinks. Desktop only.
  */
 
 (function() {
