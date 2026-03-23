@@ -2929,7 +2929,7 @@
 
     <div class="contribute-cards">
 
-      <a class="contribute-card" href="https://hypothes.is/" target="_blank">
+      <a class="contribute-card" href="javascript:void(0)" onclick="showAnnotationHint()">
         <span class="contribute-card-icon">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg>
         </span>
@@ -2937,6 +2937,15 @@
         <div class="contribute-card-desc">Highlight any passage across the investigation. Add comments, link sources, or challenge claims directly in context using Hypothesis.</div>
         <div class="contribute-card-action">Start Annotating →</div>
       </a>
+      <!-- Annotation hint overlay -->
+      <div id="annotationHint" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:10000; background:rgba(0,0,0,0.7); align-items:center; justify-content:center;" onclick="this.style.display='none'">
+        <div style="background:#111118; border:1px solid rgba(201,169,110,0.3); border-radius:12px; padding:40px 48px; max-width:480px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.6);" onclick="event.stopPropagation()">
+          <div style="font-family:var(--serif); font-size:24px; color:var(--text); margin-bottom:16px;">How to Annotate</div>
+          <div style="font-family:var(--sans); font-size:14px; color:var(--text-dim); line-height:1.7; margin-bottom:12px;">Look for the <span style="color:var(--accent); font-weight:600;">&lt;</span> arrow on the right edge of any page to expand the annotations sidebar.</div>
+          <div style="font-family:var(--sans); font-size:14px; color:var(--text-dim); line-height:1.7; margin-bottom:24px;">From there, highlight any text to add comments, link sources, or challenge claims. You'll need a free <span style="color:var(--accent);">Hypothesis</span> account to contribute.</div>
+          <div style="font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('annotationHint').style.display='none'">Click anywhere to close</div>
+        </div>
+      </div>
 
       <a class="contribute-card" href="https://github.com/kwesi-strydom/Thebyzantinegeneral" target="_blank">
         <span class="contribute-card-icon">
@@ -4210,6 +4219,11 @@
       target.scrollTop = 0;
     }
     if (afterCb) afterCb();
+  }
+
+  function showAnnotationHint() {
+    var hint = document.getElementById('annotationHint');
+    if (hint) hint.style.display = 'flex';
   }
 
   function loadDocVideo() {
